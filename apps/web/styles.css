@@ -15,13 +15,13 @@ body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarel
   filter: blur(20px); opacity: 0.8; pointer-events: none;
 }
 
-.topbar { position: sticky; top: 0; display: flex; align-items: center; gap: 14px; padding: 12px 20px; background: rgba(10, 14, 28, 0.2); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.topbar { position: sticky; top: 0; display: flex; align-items: center; gap: 20px; padding: 24px 28px; background: rgba(10, 14, 28, 0.2); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255,255,255,0.08); }
 .topbar { position: relative; }
 #menuCanvas { position: absolute; inset: 0; pointer-events: none; }
-.brand { font-weight: 700; letter-spacing: 0.2px; }
-#logo { height: 28px; width: 28px; object-fit: contain; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3)); }
-.menu { display: flex; gap: 16px; }
-.menu a { color: #cfe4ff; text-decoration: none; }
+.brand { font-weight: 700; letter-spacing: 0.2px; font-size: 32px; }
+#logo { height: 56px; width: 56px; object-fit: contain; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3)); }
+.menu { display: flex; gap: 24px; }
+.menu a { color: #cfe4ff; text-decoration: none; font-size: 32px; line-height: 1; }
 .menu a:hover { color: var(--accent); }
 
 .content { max-width: 960px; margin: 40px auto; padding: 0 20px; }
