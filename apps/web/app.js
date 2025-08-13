@@ -16,13 +16,19 @@ menu.addEventListener('click', (e) => {
   e.preventDefault();
   const targetId = link.getAttribute('data-target');
   switchPage(targetId);
-  // maintenir le sous-menu ouvert jusqu'au click
-  const li = link.closest('li');
-  const sub = li && li.parentElement && li.parentElement.classList.contains('submenu') ? li.parentElement : null;
-  if (sub) {
-    sub.style.display = 'block';
-    setTimeout(() => { sub.style.display = ''; }, 100); // laisser le temps au navigateur de naviguer
-  }
+});
+
+// Réinitialise l'affichage des sous-menus à chaque mouvement de souris
+menu.addEventListener('mouseover', (e) => {
+  const item = e.target.closest('.menu-root > li');
+  document.querySelectorAll('.submenu').forEach(s => (s.style.display = 'none'));
+  if (!item) return;
+  const sm = item.querySelector('.submenu');
+  if (sm) sm.style.display = 'block';
+});
+
+menu.addEventListener('mouseleave', () => {
+  document.querySelectorAll('.submenu').forEach(s => (s.style.display = 'none'));
 });
 
 window.addEventListener('resize', drawCylMenu);
