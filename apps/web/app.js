@@ -16,6 +16,13 @@ menu.addEventListener('click', (e) => {
   e.preventDefault();
   const targetId = link.getAttribute('data-target');
   switchPage(targetId);
+  // maintenir le sous-menu ouvert jusqu'au click
+  const li = link.closest('li');
+  const sub = li && li.parentElement && li.parentElement.classList.contains('submenu') ? li.parentElement : null;
+  if (sub) {
+    sub.style.display = 'block';
+    setTimeout(() => { sub.style.display = ''; }, 100); // laisser le temps au navigateur de naviguer
+  }
 });
 
 window.addEventListener('resize', drawCylMenu);
