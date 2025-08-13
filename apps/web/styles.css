@@ -5,6 +5,7 @@
 .breakdown { width: 100%; border-collapse: collapse; margin-top: 12px; }
 .breakdown th, .breakdown td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; }
 .toolbar { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
+.badge-sim { color: #45d17a; font-weight: 700; margin-left: 8px; font-size: 0.75em; }
 :root {
   --bg: #0b1020;
   --fg: #e6f0ff;
