@@ -51,6 +51,15 @@ app.get('/draws', async (req: Request, res: Response) => {
   res.json(draws.slice(0, limit));
 });
 
+// Draw by date (YYYY-MM-DD)
+app.get('/draws/:date', async (req: Request, res: Response) => {
+  const ymd = String(req.params.date);
+  const draws = await loadDraws();
+  const found = draws.find(d => (d.date || '').startsWith(ymd));
+  if (!found) return res.status(404).json({ code: 'NOT_FOUND', message: `No draw for ${ymd}` });
+  res.json(found);
+});
+
 app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log(`API prête sur http://localhost:${port}`);
