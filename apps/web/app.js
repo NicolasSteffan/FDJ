@@ -137,6 +137,12 @@ function switchPage(id) {
   if (id === 'page-monitor-metrics') {
     renderChart();
   }
+  if (id === 'page-latest') {
+    loadLatest();
+  }
+  if (id === 'page-history') {
+    loadHistory();
+  }
 }
 
 btnHealth?.addEventListener('click', async () => {
@@ -149,4 +155,24 @@ btnHealth?.addEventListener('click', async () => {
     healthOut.textContent = 'Erreur: ' + e.message;
   }
 });
+
+async function loadLatest() {
+  const box = document.querySelector('#page-latest');
+  box.querySelector('.contentbox')?.remove();
+  const pre = document.createElement('pre'); pre.className = 'contentbox jsonView'; pre.textContent = 'Chargement...'; box.appendChild(pre);
+  try {
+    const data = await fetch('http://localhost:3001/draws/latest', { cache: 'no-store' }).then(r => r.json());
+    pre.textContent = JSON.stringify(data, null, 2);
+  } catch (e) { pre.textContent = 'Erreur: ' + e.message; }
+}
+
+async function loadHistory() {
+  const box = document.querySelector('#page-history');
+  box.querySelector('.contentbox')?.remove();
+  const pre = document.createElement('pre'); pre.className = 'contentbox jsonView'; pre.textContent = 'Chargement...'; box.appendChild(pre);
+  try {
+    const data = await fetch('http://localhost:3001/draws?limit=10', { cache: 'no-store' }).then(r => r.json());
+    pre.textContent = JSON.stringify(data, null, 2);
+  } catch (e) { pre.textContent = 'Erreur: ' + e.message; }
+}
 
