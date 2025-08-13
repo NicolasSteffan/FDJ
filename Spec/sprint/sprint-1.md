@@ -22,5 +22,5 @@
 - [x] UI: fond/menu/bouton visibles
 - [x] API: `/ping` retourne `{ pong: true, time }`
 - [x] Scraper: `data/sample_draws.json` généré
-- [ ] Monitoring fictif: graphique affiché
+- [x] Monitoring fictif: graphique affiché
 

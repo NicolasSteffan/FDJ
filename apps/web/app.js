@@ -3,6 +3,8 @@ const btn = document.getElementById('actionBtn');
 const menu = document.querySelector('.menu');
 const chart = document.getElementById('chart');
 const menuCanvas = document.getElementById('menuCanvas');
+const btnHealth = document.getElementById('btnHealth');
+const healthOut = document.getElementById('healthOut');
 
 btn.addEventListener('click', () => {
   showToast('Action déclenchée (placeholder).');
@@ -129,4 +131,15 @@ function switchPage(id) {
     renderChart();
   }
 }
+
+btnHealth?.addEventListener('click', async () => {
+  healthOut.textContent = 'Chargement...';
+  try {
+    const p = await fetch('http://localhost:3001/ping', { cache: 'no-store' }).then(r => r.json());
+    const h = await fetch('http://localhost:3001/health', { cache: 'no-store' }).then(r => r.json());
+    healthOut.textContent = JSON.stringify({ ping: p, health: h }, null, 2);
+  } catch (e) {
+    healthOut.textContent = 'Erreur: ' + e.message;
+  }
+});
 

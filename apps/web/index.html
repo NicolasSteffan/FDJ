@@ -136,7 +136,9 @@
 
       <section id="page-monitor-health" class="page hidden">
         <h2>Santé services</h2>
-        <p>Statuts `/health` des services.</p>
+        <p>Statuts `/ping` et `/health` (API locale).</p>
+        <button id="btnHealth">Rafraîchir</button>
+        <pre id="healthOut" class="jsonView"></pre>
       </section>
 
       <section id="page-monitor-logs" class="page hidden">
