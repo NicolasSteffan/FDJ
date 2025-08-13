@@ -2,10 +2,18 @@
 .ball { width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: #08223a; background: radial-gradient(circle at 35% 30%, #fff 0%, #ffe58a 40%, #e1b81d 85%); box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 2px 3px rgba(0,0,0,0.4); }
 .star { background: radial-gradient(circle at 35% 30%, #fff 0%, #bfe1ff 40%, #4aa8ff 85%); }
 .draw-card { background: rgba(255,255,255,0.04); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); }
+.draw-date { font-size: 20px; font-weight: 800; color: var(--accent); letter-spacing: 0.3px; margin-bottom: 8px; }
 .breakdown { width: 100%; border-collapse: collapse; margin-top: 12px; }
 .breakdown th, .breakdown td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; }
 .toolbar { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
 .badge-sim { color: #45d17a; font-weight: 700; margin-left: 8px; font-size: 0.75em; }
+/* Historique */
+.history { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.history th, .history td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; text-align: left; }
+.date-chip { display: inline-block; padding: 4px 8px; border-radius: 999px; background: rgba(63,182,255,0.15); color: var(--accent); font-weight: 700; }
+.ball.small { width: 24px; height: 24px; font-size: 12px; }
+.balls.compact { gap: 6px; margin: 0; }
+.pager { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
 :root {
   --bg: #0b1020;
   --fg: #e6f0ff;

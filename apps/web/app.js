@@ -7,7 +7,6 @@ const btnHealth = document.getElementById('btnHealth');
 const healthOut = document.getElementById('healthOut');
 const datePick = document.getElementById('datePick');
 const btnPick = document.getElementById('btnPick');
-const btnScrape = document.getElementById('btnScrape');
 const latestCard = document.getElementById('latestCard');
 
 btn.addEventListener('click', () => {
@@ -175,14 +174,37 @@ async function loadLatest() {
 }
 
 async function loadHistory() {
-  const box = document.querySelector('#page-history');
-  box.querySelector('.contentbox')?.remove();
-  const pre = document.createElement('pre'); pre.className = 'contentbox jsonView'; pre.textContent = 'Chargement...'; box.appendChild(pre);
+  const limitSel = document.getElementById('histLimit');
+  const limit = Number(limitSel?.value || 10);
+  const tbody = document.querySelector('#historyTable tbody');
+  const pageTxt = document.getElementById('pageInfo');
+  if (!tbody) return;
+  pageState.page = pageState.page || 1;
+  pageState.limit = limit;
+  pageTxt.textContent = `page ${pageState.page}`;
+  tbody.innerHTML = '<tr><td colspan="3">Chargement...</td></tr>';
   try {
-    const data = await fetch('http://localhost:3001/draws?limit=10', { cache: 'no-store' }).then(r => r.json());
-    pre.textContent = JSON.stringify(data, null, 2);
-  } catch (e) { pre.textContent = 'Erreur: ' + e.message; }
+    const data = await fetch(`http://localhost:3001/draws?limit=${limit}`, { cache: 'no-store' }).then(r => r.json());
+    tbody.innerHTML = '';
+    data.forEach(d => {
+      const tr = document.createElement('tr');
+      const nums = document.createElement('div'); nums.className = 'balls compact'; d.numbers.forEach(n => { const b = formatBall(n, false); b.classList.add('small'); nums.appendChild(b); });
+      const sts = document.createElement('div'); sts.className = 'balls compact'; d.stars.forEach(s => { const b = formatBall(s, true); b.classList.add('small'); sts.appendChild(b); });
+      tr.innerHTML = `<td><span class=\"date-chip\">${formatYmd(d.date)}</span></td>`;
+      const tdN = document.createElement('td'); tdN.appendChild(nums);
+      const tdS = document.createElement('td'); tdS.appendChild(sts);
+      tr.appendChild(tdN); tr.appendChild(tdS);
+      tbody.appendChild(tr);
+    });
+  } catch (e) { 
+    tbody.innerHTML = `<tr><td colspan=\"3\">Erreur: ${e.message}</td></tr>`;
+  }
 }
+
+const pageState = {};
+document.getElementById('btnHistLoad')?.addEventListener('click', () => { pageState.page = 1; loadHistory(); });
+document.getElementById('prevPage')?.addEventListener('click', () => { if ((pageState.page||1) > 1) { pageState.page--; loadHistory(); } });
+document.getElementById('nextPage')?.addEventListener('click', () => { pageState.page = (pageState.page||1) + 1; loadHistory(); });
 
 function formatBall(n, isStar) {
   const d = document.createElement('div');
@@ -197,7 +219,7 @@ function renderDraw(payload) {
   if (!payload || !payload.draw) { latestCard.textContent = 'Aucune donnée.'; return; }
   const { draw, breakdown } = payload;
   const wrap = document.createElement('div');
-  const h = document.createElement('div'); h.textContent = `Date: ${draw.date}`; wrap.appendChild(h);
+  const h = document.createElement('div'); h.className = 'draw-date'; h.textContent = `Tirage du ${formatYmd(draw.date)}`; wrap.appendChild(h);
   const balls = document.createElement('div'); balls.className = 'balls';
   draw.numbers.forEach(n => balls.appendChild(formatBall(n, false)));
   draw.stars.forEach(s => balls.appendChild(formatBall(s, true)));
@@ -216,6 +238,16 @@ function renderDraw(payload) {
   latestCard.appendChild(wrap);
 }
 
+function formatYmd(iso) {
+  try {
+    const d = new Date(iso);
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const da = String(d.getDate()).padStart(2,'0');
+    return `${da}/${m}/${y}`;
+  } catch { return iso; }
+}
+
 btnPick?.addEventListener('click', async () => {
   if (!datePick.value) return;
   latestCard.innerHTML = 'Chargement...';
@@ -225,11 +257,21 @@ btnPick?.addEventListener('click', async () => {
   } catch (e) { latestCard.textContent = 'Erreur: ' + e.message; }
 });
 
-btnScrape?.addEventListener('click', async () => {
+// le bouton Charger enchaîne: POST /scrape/run puis GET /draws/:date/full
+btnPick?.addEventListener('click', async () => {
   const date = datePick.value || '';
+  latestCard.innerHTML = 'Chargement...';
   try {
-    const res = await fetch(`http://localhost:3001/scrape/run${date ? `?date=${date}` : ''}`, { method: 'POST' }).then(r => r.json());
-    showToast(`Scrape ${res.status} (${res.date})`);
-  } catch (e) { showToast('Erreur scraping: ' + e.message); }
+    if (date) {
+      await fetch(`http://localhost:3001/scrape/run?date=${date}`, { method: 'POST' }).then(r => r.json());
+      const full = await fetch(`http://localhost:3001/draws/${date}/full`, { cache: 'no-store' });
+      if (full.ok) { renderDraw(await full.json()); return; }
+      latestCard.textContent = 'Aucun résultat pour cette date.';
+      return;
+    }
+    const full = await fetch('http://localhost:3001/draws/latest/full', { cache: 'no-store' });
+    if (full.ok) { renderDraw(await full.json()); return; }
+    latestCard.textContent = 'Aucun résultat disponible.';
+  } catch (e) { latestCard.textContent = 'Erreur: ' + e.message; }
 });
 
