@@ -1,7 +1,6 @@
 const toast = document.getElementById('toast');
 const btn = document.getElementById('actionBtn');
-const menuMonitoring = document.getElementById('menu-monitoring');
-const monitoringSection = document.getElementById('monitoring');
+const menu = document.querySelector('.menu');
 const chart = document.getElementById('chart');
 const menuCanvas = document.getElementById('menuCanvas');
 
@@ -9,12 +8,12 @@ btn.addEventListener('click', () => {
   showToast('Action déclenchée (placeholder).');
 });
 
-menuMonitoring.addEventListener('click', (e) => {
+menu.addEventListener('click', (e) => {
+  const link = e.target.closest('a[data-target]');
+  if (!link) return;
   e.preventDefault();
-  monitoringSection.classList.toggle('hidden');
-  if (!monitoringSection.classList.contains('hidden')) {
-    renderChart();
-  }
+  const targetId = link.getAttribute('data-target');
+  switchPage(targetId);
 });
 
 window.addEventListener('resize', drawCylMenu);
@@ -119,5 +118,15 @@ function roundRect(ctx, x, y, width, height, radius) {
   ctx.arcTo(x, y + height, x, y, r);
   ctx.arcTo(x, y, x + width, y, r);
   ctx.closePath();
+}
+
+function switchPage(id) {
+  document.querySelectorAll('.page').forEach(sec => sec.classList.add('hidden'));
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('hidden');
+  if (id === 'page-monitor-metrics') {
+    renderChart();
+  }
 }
 
