@@ -19,8 +19,8 @@
 
 📝 Checklist d’avancement
 
-- [ ] UI: fond/menu/bouton visibles
-- [ ] API: `/ping` retourne `{ pong: true, time }`
-- [ ] Scraper: `data/sample_draws.json` généré
+- [x] UI: fond/menu/bouton visibles
+- [x] API: `/ping` retourne `{ pong: true, time }`
+- [x] Scraper: `data/sample_draws.json` généré
 - [ ] Monitoring fictif: graphique affiché
 
