@@ -1,0 +1,85 @@
+﻿{
+    "date":  "2025-08-08T00:00:00.000Z",
+    "breakdown":  [
+                      {
+                          "rankLabel":  "5+2",
+                          "winners":  0,
+                          "amount":  0,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "5+1",
+                          "winners":  1,
+                          "amount":  970.05836,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "5+0",
+                          "winners":  6,
+                          "amount":  37.78644,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "4+2",
+                          "winners":  58,
+                          "amount":  1.21754,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "4+1",
+                          "winners":  839,
+                          "amount":  155.05,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "3+2",
+                          "winners":  2359,
+                          "amount":  58.29,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "4+0",
+                          "winners":  1914,
+                          "amount":  50.49,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "2+2",
+                          "winners":  36957,
+                          "amount":  13.07,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "3+1",
+                          "winners":  42492,
+                          "amount":  12.68,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "3+0",
+                          "winners":  92517,
+                          "amount":  10.85,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "1+2",
+                          "winners":  215719,
+                          "amount":  5.63,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "2+1",
+                          "winners":  640893,
+                          "amount":  5.97,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "2+0",
+                          "winners":  1364969,
+                          "amount":  4.52,
+                          "currency":  "EUR"
+                      }
+                  ],
+    "provider":  "euromillones",
+    "endpoint":  "https://www.euromillones.com/en/results/euromillions"
+}

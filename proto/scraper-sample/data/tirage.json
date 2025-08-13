@@ -1,0 +1,103 @@
+[
+  {
+    "date": "2025-08-05T00:00:00.000Z",
+    "numbers": [
+      1,
+      3,
+      5,
+      42,
+      47
+    ],
+    "stars": [
+      5,
+      10
+    ],
+    "breakdown": [
+      {
+        "rankLabel": "5+2",
+        "winners": 0,
+        "amount": 0,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "5+1",
+        "winners": 3,
+        "amount": 281225.84,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "5+0",
+        "winners": 5,
+        "amount": 39436.26,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "4+2",
+        "winners": 28,
+        "amount": 2193.46,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "4+1",
+        "winners": 736,
+        "amount": 153.71,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "4+0",
+        "winners": 1683,
+        "amount": 49.93,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "3+2",
+        "winners": 1848,
+        "amount": 64.71,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "2+2",
+        "winners": 27758,
+        "amount": 15.13,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "3+1",
+        "winners": 38712,
+        "amount": 12.1,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "3+0",
+        "winners": 89293,
+        "amount": 9.77,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "1+2",
+        "winners": 154890,
+        "amount": 6.82,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "2+1",
+        "winners": 579368,
+        "amount": 5.74,
+        "currency": "EUR"
+      },
+      {
+        "rankLabel": "2+0",
+        "winners": 1303797,
+        "amount": 4.11,
+        "currency": "EUR"
+      }
+    ],
+    "meta": {
+      "providerUsed": "lotteryextreme",
+      "providersTried": [
+        "lotteryextreme:prize_breakdown"
+      ],
+      "errors": []
+    }
+  }
+]

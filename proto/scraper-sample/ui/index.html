@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EuroMillions – Proto Visualisation</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="title">
+        <h1>EuroMillions – Résultats <span id="header-date">2025-08-08</span></h1>
+        <div id="global-status" class="muted">Chargement…</div>
+      </div>
+      <div class="actions">
+        <button id="reloadBtn">Recharger</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card" id="tiragePanel">
+        <div class="card-head">
+          <h2>Tirage principal</h2>
+          <div class="inline-actions">
+            <input id="datePicker" type="date" value="2025-08-08" />
+            <span id="tirageStatus" class="status"></span>
+          </div>
+        </div>
+        <div id="tirage">
+          <div class="row">
+            <div class="badge">Numéros</div>
+            <div class="values" id="numbers"></div>
+          </div>
+          <div class="row">
+            <div class="badge star">Étoiles</div>
+            <div class="values" id="stars"></div>
+          </div>
+          <div class="meta">Date: <span id="dateText">2025-08-08T00:00:00.000Z</span></div>
+        </div>
+        <pre id="tirage-error" class="error" hidden></pre>
+      </section>
+
+      <section class="card" id="gainsPanel">
+        <div class="card-head">
+          <h2>Gains (tirage)</h2>
+          <span id="gainsStatus" class="status"></span>
+        </div>
+        <div id="gainsTable"></div>
+        <div id="gainsTotals" class="totals"></div>
+        <pre id="gains-error" class="error" hidden></pre>
+      </section>
+
+
+
+      <section class="card wide" id="diagPanel">
+        <div class="card-head">
+          <h2>Diagnostics</h2>
+        </div>
+        <div id="diagList" class="diagnostics"></div>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+  </html>
+

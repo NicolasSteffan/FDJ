@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FDJ – Proto Monitoring Mock</title>
+    <style>
+      body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b1020;color:#e6f0ff;margin:0;padding:24px}
+      .card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;max-width:760px}
+      h1{margin-top:0}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Monitoring (mock)</h1>
+      <svg id="chart" width="720" height="260" viewBox="0 0 720 260" aria-label="Mock chart"></svg>
+    </div>
+    <script>
+      const chart=document.getElementById('chart');
+      const width=720,height=260,padding=30; const data=[4,9,7,15,14,19,23,21,27,31];
+      const maxV=Math.max(...data);
+      const pts=data.map((v,i)=>{const x=padding+(i*(width-2*padding))/(data.length-1);const y=height-padding-(v/maxV)*(height-2*padding);return `${x},${y}`}).join(' ');
+      const grid=document.createElementNS('http://www.w3.org/2000/svg','g');grid.setAttribute('stroke','rgba(255,255,255,0.12)');
+      for(let i=0;i<5;i++){const y=padding+i*((height-2*padding)/4);const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',`${padding}`);line.setAttribute('x2',`${width-padding}`);line.setAttribute('y1',`${y}`);line.setAttribute('y2',`${y}`);grid.appendChild(line);}chart.appendChild(grid);
+      const poly=document.createElementNS('http://www.w3.org/2000/svg','polyline');poly.setAttribute('fill','none');poly.setAttribute('stroke','#3fb6ff');poly.setAttribute('stroke-width','2');poly.setAttribute('points',pts);chart.appendChild(poly);
+    </script>
+  </body>
+  </html>
+

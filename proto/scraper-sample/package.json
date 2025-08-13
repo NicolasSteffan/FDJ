@@ -1,0 +1,15 @@
+{
+  "name": "scraper-sample-proto",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2"
+  }
+}
+

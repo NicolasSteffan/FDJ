@@ -1,0 +1,24 @@
+{
+  "name": "fdj-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "services/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:api": "npm --prefix services/api run dev",
+    "dev:scraper": "npm --prefix services/scraper run dev",
+    "dev:all": "concurrently -n api,scraper -c blue,magenta \"npm run dev:api\" \"npm run dev:scraper\"",
+    "build": "npm --prefix services/api run build && npm --prefix services/scraper run build",
+    "open:web": "node scripts/open-web.mjs",
+    "proto:api": "npm --prefix proto/api-ping run dev",
+    "proto:scraper": "npm --prefix proto/scraper-sample run dev",
+    "open:proto:ui": "node scripts/open-proto-ui.mjs",
+    "open:proto:monitoring": "node scripts/open-proto-monitoring.mjs"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
+

@@ -1,0 +1,47 @@
+[2025-08-13T10:03:37.362Z] SCRAPE start date=2025-08-08
+[2025-08-13T10:03:37.372Z] TIRAGE GET https://www.lotteryextreme.com/euromillions/prize_breakdown(2025-08-08)
+[2025-08-13T10:03:37.691Z] TIRAGE HTTP 200
+[2025-08-13T10:03:37.768Z] TIRAGE numbers=5 stars=2
+[2025-08-13T10:03:37.783Z] TIRAGE rows=13
+[2025-08-13T10:03:37.786Z] ETOILE+ PDJ GET https://www.pdj.pf/resultats/resultats-de-leuro-millions-my-million/
+[2025-08-13T10:03:37.960Z] ETOILE+ PDJ HTTP 200
+[2025-08-13T10:03:38.186Z] ETOILE+ PDJ rows=0
+[2025-08-13T10:03:38.192Z] ETOILE+ LBN GET https://www.lesbonsnumeros.com/euromillions/resultats/rapports-tirage-1866-vendredi-8-aout-2025.htm
+[2025-08-13T10:03:38.472Z] ETOILE+ LBN HTTP 200
+[2025-08-13T10:03:38.677Z] ETOILE+ LBN GET https://www.lesbonsnumeros.com/euromillions/
+[2025-08-13T10:03:38.754Z] ETOILE+ LBN HTTP 200
+[2025-08-13T10:03:38.811Z] ETOILE+ EUROMILLONES GET https://www.euromillones.com/en/results/euromillions--results-2025-08-08-fri
+[2025-08-13T10:03:39.342Z] ETOILE+ EUROMILLONES HTTP 200
+[2025-08-13T10:03:39.526Z] ETOILE+ EUROMILLONES rows=13
+[2025-08-13T10:03:39.529Z] WROTE data/tirage.json
+[2025-08-13T10:03:39.535Z] WROTE data/tirage_etoile.json
+[2025-08-13T10:03:39.537Z] SCRAPE done date=2025-08-08 provider_tirage=lotteryextreme provider_etoile=euromillones
+[2025-08-13T11:11:32.038Z] SCRAPE start date=2025-08-08
+[2025-08-13T11:11:32.041Z] TIRAGE GET https://www.lotteryextreme.com/euromillions/prize_breakdown(2025-08-08)
+[2025-08-13T11:11:32.396Z] TIRAGE HTTP 200
+[2025-08-13T11:11:32.492Z] TIRAGE numbers=5 stars=2
+[2025-08-13T11:11:32.500Z] TIRAGE rows=13
+[2025-08-13T11:11:32.502Z] WROTE data/tirage.json
+[2025-08-13T11:11:32.503Z] SCRAPE done date=2025-08-08 provider_tirage=lotteryextreme
+[2025-08-13T11:19:19.083Z] SCRAPE start date=2025-08-08
+[2025-08-13T11:19:19.086Z] TIRAGE GET https://www.lotteryextreme.com/euromillions/prize_breakdown(2025-08-08)
+[2025-08-13T11:19:19.425Z] TIRAGE HTTP 200
+[2025-08-13T11:19:19.497Z] TIRAGE numbers=5 stars=2
+[2025-08-13T11:19:19.507Z] TIRAGE rows=13
+[2025-08-13T11:19:19.512Z] WROTE data/tirage.json
+[2025-08-13T11:19:19.513Z] SCRAPE done date=2025-08-08 provider_tirage=lotteryextreme
+[2025-08-13T11:19:28.540Z] SCRAPE start date=2025-08-06
+[2025-08-13T11:19:28.542Z] TIRAGE GET https://www.lotteryextreme.com/euromillions/prize_breakdown(2025-08-06)
+[2025-08-13T11:19:28.732Z] TIRAGE HTTP 200
+[2025-08-13T11:19:28.766Z] SCRAPE ERROR date=2025-08-06 Parse error: expected 7 numbers got 0
+[2025-08-13T11:19:39.368Z] SCRAPE start date=2025-08-05
+[2025-08-13T11:19:39.370Z] TIRAGE GET https://www.lotteryextreme.com/euromillions/prize_breakdown(2025-08-05)
+[2025-08-13T11:19:39.554Z] TIRAGE HTTP 200
+[2025-08-13T11:19:39.592Z] TIRAGE numbers=5 stars=2
+[2025-08-13T11:19:39.596Z] TIRAGE rows=13
+[2025-08-13T11:19:39.601Z] WROTE data/tirage.json
+[2025-08-13T11:19:39.603Z] SCRAPE done date=2025-08-05 provider_tirage=lotteryextreme
+[2025-08-13T11:19:46.118Z] SCRAPE start date=2025-08-06
+[2025-08-13T11:19:46.119Z] TIRAGE GET https://www.lotteryextreme.com/euromillions/prize_breakdown(2025-08-06)
+[2025-08-13T11:19:46.307Z] TIRAGE HTTP 200
+[2025-08-13T11:19:46.343Z] SCRAPE ERROR date=2025-08-06 Parse error: expected 7 numbers got 0
