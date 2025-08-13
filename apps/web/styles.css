@@ -1,3 +1,10 @@
+.balls { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+.ball { width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: #08223a; background: radial-gradient(circle at 35% 30%, #fff 0%, #ffe58a 40%, #e1b81d 85%); box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 2px 3px rgba(0,0,0,0.4); }
+.star { background: radial-gradient(circle at 35% 30%, #fff 0%, #bfe1ff 40%, #4aa8ff 85%); }
+.draw-card { background: rgba(255,255,255,0.04); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); }
+.breakdown { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.breakdown th, .breakdown td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; }
+.toolbar { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
 :root {
   --bg: #0b1020;
   --fg: #e6f0ff;

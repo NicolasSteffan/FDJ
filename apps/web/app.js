@@ -5,6 +5,10 @@ const chart = document.getElementById('chart');
 const menuCanvas = document.getElementById('menuCanvas');
 const btnHealth = document.getElementById('btnHealth');
 const healthOut = document.getElementById('healthOut');
+const datePick = document.getElementById('datePick');
+const btnPick = document.getElementById('btnPick');
+const btnScrape = document.getElementById('btnScrape');
+const latestCard = document.getElementById('latestCard');
 
 btn.addEventListener('click', () => {
   showToast('Action déclenchée (placeholder).');
@@ -163,12 +167,10 @@ btnHealth?.addEventListener('click', async () => {
 });
 
 async function loadLatest() {
-  const box = document.querySelector('#page-latest');
-  box.querySelector('.contentbox')?.remove();
-  const pre = document.createElement('pre'); pre.className = 'contentbox jsonView'; pre.textContent = 'Chargement...'; box.appendChild(pre);
+  latestCard.innerHTML = 'Chargement...';
   try {
-    const data = await fetch('http://localhost:3001/draws/latest', { cache: 'no-store' }).then(r => r.json());
-    pre.textContent = JSON.stringify(data, null, 2);
+    const full = await fetch('http://localhost:3001/draws/latest/full', { cache: 'no-store' }).then(r => r.json());
+    renderDraw(full);
   } catch (e) { pre.textContent = 'Erreur: ' + e.message; }
 }
 
@@ -181,4 +183,53 @@ async function loadHistory() {
     pre.textContent = JSON.stringify(data, null, 2);
   } catch (e) { pre.textContent = 'Erreur: ' + e.message; }
 }
+
+function formatBall(n, isStar) {
+  const d = document.createElement('div');
+  d.className = 'ball' + (isStar ? ' star' : '');
+  d.textContent = n;
+  return d;
+}
+
+function money(v, c) { return (v || 0).toLocaleString('fr-FR', { style: 'currency', currency: c || 'EUR' }); }
+
+function renderDraw(payload) {
+  if (!payload || !payload.draw) { latestCard.textContent = 'Aucune donnée.'; return; }
+  const { draw, breakdown } = payload;
+  const wrap = document.createElement('div');
+  const h = document.createElement('div'); h.textContent = `Date: ${draw.date}`; wrap.appendChild(h);
+  const balls = document.createElement('div'); balls.className = 'balls';
+  draw.numbers.forEach(n => balls.appendChild(formatBall(n, false)));
+  draw.stars.forEach(s => balls.appendChild(formatBall(s, true)));
+  wrap.appendChild(balls);
+  const table = document.createElement('table'); table.className = 'breakdown';
+  table.innerHTML = '<thead><tr><th>Rang</th><th>Gagnants</th><th>Gain</th></tr></thead>';
+  const tb = document.createElement('tbody');
+  (breakdown || []).forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.rankLabel}</td><td>${r.winners.toLocaleString('fr-FR')}</td><td>${money(r.amount, r.currency)}</td>`;
+    tb.appendChild(tr);
+  });
+  table.appendChild(tb);
+  wrap.appendChild(table);
+  latestCard.innerHTML = '';
+  latestCard.appendChild(wrap);
+}
+
+btnPick?.addEventListener('click', async () => {
+  if (!datePick.value) return;
+  latestCard.innerHTML = 'Chargement...';
+  try {
+    const full = await fetch(`http://localhost:3001/draws/${datePick.value}/full`, { cache: 'no-store' }).then(r => r.json());
+    renderDraw(full);
+  } catch (e) { latestCard.textContent = 'Erreur: ' + e.message; }
+});
+
+btnScrape?.addEventListener('click', async () => {
+  const date = datePick.value || '';
+  try {
+    const res = await fetch(`http://localhost:3001/scrape/run${date ? `?date=${date}` : ''}`, { method: 'POST' }).then(r => r.json());
+    showToast(`Scrape ${res.status} (${res.date})`);
+  } catch (e) { showToast('Erreur scraping: ' + e.message); }
+});
 
