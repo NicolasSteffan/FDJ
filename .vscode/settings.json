@@ -1,0 +1,18 @@
+{
+  "workbench.startupEditor": "none",
+  "workbench.editor.restoreViewState": true,
+  "files.defaultLanguage": "markdown",
+  "markdown.preview.openMarkdownLinks": "inEditor",
+  "markdown.preview.scrollPreviewWithEditor": true,
+  "markdown.preview.scrollEditorWithPreview": true,
+  "files.associations": {
+    "TODO.md": "markdown"
+  },
+  "explorer.autoReveal": true,
+  "editor.wordWrap": "on",
+  "editor.fontSize": 14,
+  "editor.lineHeight": 1.6,
+  "workbench.colorTheme": "Default Light+",
+  "editor.minimap.enabled": true,
+  "editor.renderWhitespace": "boundary"
+}

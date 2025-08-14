@@ -12,6 +12,8 @@
     "dev:all": "concurrently -n api,scraper -c blue,magenta \"npm run dev:api\" \"npm run dev:scraper\"",
     "build": "npm --prefix services/api run build && npm --prefix services/scraper run build",
     "open:web": "node scripts/open-web.mjs",
+    "open:todo": "node scripts/open-todo.mjs",
+    "startup": "npm run open:todo",
     "proto:api": "npm --prefix proto/api-ping run dev",
     "proto:scraper": "npm --prefix proto/scraper-sample run dev",
     "open:proto:ui": "node scripts/open-proto-ui.mjs",
