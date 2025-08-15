@@ -1,0 +1,52 @@
+/**
+ * Tables Components CSS - Conforme bible.md règle 3
+ * Tous les styles des tableaux et sélecteurs séparés du code métier
+ * Copié depuis apps/web/index.html vers apps/web/ pour éviter problèmes MIME type live-server
+ */
+
+/* Data source selector */
+.data-source-selector { 
+  background: rgba(255,255,255,0.04); 
+  padding: 16px; 
+  border-radius: 12px; 
+  border: 1px solid rgba(255,255,255,0.06); 
+  margin: 20px 0; 
+}
+
+.source-toggle { 
+  display: flex; 
+  gap: 10px; 
+  align-items: center; 
+}
+
+.source-toggle input[type="radio"] { 
+  margin-right: 5px; 
+}
+
+.source-toggle label { 
+  cursor: pointer; 
+  padding: 8px 16px; 
+  border-radius: 6px; 
+}
+
+.source-toggle label:hover { 
+  background: rgba(63,182,255,0.1); 
+}
+
+/* Tables de démonstration */
+.demo-table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  margin: 15px 0; 
+}
+
+.demo-table th, .demo-table td { 
+  padding: 10px; 
+  border-bottom: 1px solid rgba(255,255,255,0.1); 
+  text-align: left; 
+}
+
+.demo-table th { 
+  color: var(--accent); 
+  font-weight: 600; 
+}

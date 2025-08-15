@@ -66,15 +66,18 @@ echo - Fallback Firefox puis navigateur par defaut
 echo - Sinon ouvrez manuellement: http://localhost:3010
 echo - Pour arreter le serveur: fermez la fenetre "SERVEUR FDJ"
 echo.
-echo 🏷️ VERSION V0.000G+ CARACTERISTIQUES:
-echo - CSS principal integre + LED externes (bible.md conforme)
+echo 🏷️ VERSION V0.001D-pro CARACTERISTIQUES:
+echo - CSS ENTIEREMENT EXTERNE - 100%% bible.md conforme
 echo - JavaScript integre (pas de dependances externes)
-echo - Interrupteur Mock/Scrap fonctionnel avec LEDs
-echo - Boules de loterie avec etoiles personnalisees
-echo - Navigation entre sections operationnelle
-echo - Sections pliables avec LEDs jaunes (au lieu d icones)
-echo - LED jaune animee sur titre (CSS externe style/ClaudS4/)
-echo - Conforme bible.md regles 3 et 7
+echo - Architecture CSS modulaire complete:
+echo   * homepage-components.css (structure generale)
+echo   * lottery-components.css (boules et etoiles)
+echo   * tirage-components.css (page tirage)
+echo   * tables-components.css (tableaux et selecteurs)
+echo   * switch-components.css (interrupteur)
+echo   * led-components.css (LEDs)
+echo - Index.html totalement nettoye (ZERO CSS inline)
+echo - Conforme bible.md regles 3, 7 et 8
 echo.
 echo ==========================================
 

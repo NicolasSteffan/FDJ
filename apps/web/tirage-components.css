@@ -1,0 +1,143 @@
+/**
+ * Tirage Components CSS - Conforme bible.md règle 3
+ * Tous les styles de la page tirage séparés du code métier
+ * Copié depuis apps/web/index.html vers apps/web/ pour éviter problèmes MIME type live-server
+ */
+
+/* Page Tirage - Contrôles */
+.tirage-controls {
+  background: rgba(255,255,255,0.04);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 20px;
+}
+
+.controls-row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.date-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.date-picker label {
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.date-picker input {
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.05);
+  color: var(--fg);
+  font-size: 16px;
+}
+
+/* Section Résultats */
+.results-section {
+  background: rgba(255,255,255,0.04);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 20px;
+}
+
+.draw-result {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.draw-date {
+  font-size: 18px;
+  color: var(--accent);
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.draw-balls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+/* Section Gains */
+.gains-section {
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+
+.gains-header {
+  padding: 15px 20px;
+  background: rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gains-header:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.gains-content {
+  padding: 20px;
+  display: none;
+}
+
+.gains-content.expanded {
+  display: block;
+}
+
+.gains-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gains-table th,
+.gains-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.gains-table th {
+  background: rgba(255,255,255,0.05);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.gains-table tr:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.result-combo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gain-amount {
+  font-weight: 600;
+  color: #27ae60;
+}
+
+/* Responsive pour la page tirage */
+@media (max-width: 768px) {
+  .controls-row { 
+    flex-direction: column; 
+    align-items: stretch; 
+  }
+}

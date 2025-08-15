@@ -1,0 +1,209 @@
+/**
+ * Homepage Components CSS - Conforme bible.md règle 3
+ * Tous les styles de la page d'accueil séparés du code métier
+ * Copié depuis apps/web/index.html vers apps/web/ pour éviter problèmes MIME type live-server
+ */
+
+/* Variables CSS principales - base globale */
+:root {
+  --bg: #0b1020;
+  --fg: #e6f0ff;
+  --accent: #3fb6ff;
+}
+
+/* Reset et base */
+* { 
+  box-sizing: border-box; 
+}
+
+html, body { 
+  height: 100%; 
+  margin: 0; 
+}
+
+body { 
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif; 
+  color: var(--fg); 
+  background: var(--bg); 
+}
+
+/* Background effects */
+.background {
+  position: fixed; 
+  inset: 0;
+  background: radial-gradient(60% 80% at 50% 30%, rgba(63,182,255,0.18), transparent 60%),
+              radial-gradient(40% 50% at 80% 70%, rgba(142,63,255,0.18), transparent 60%);
+  filter: blur(20px); 
+  opacity: 0.8; 
+  pointer-events: none;
+}
+
+/* Layout de base */
+.content { 
+  max-width: 960px; 
+  margin: 40px auto; 
+  padding: 0 20px; 
+}
+
+.hidden { 
+  display: none; 
+}
+
+/* Header avec style cylindrique */
+.topbar { 
+  position: sticky; 
+  top: 0; 
+  display: flex; 
+  align-items: center; 
+  gap: 18px; 
+  padding: 18px 24px; 
+  background: rgba(10, 14, 28, 0.2); 
+  backdrop-filter: blur(6px); 
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+}
+
+#menuCanvas { 
+  position: absolute; 
+  inset: 0; 
+  pointer-events: none; 
+  z-index: 0;
+}
+
+.brand { 
+  font-weight: 700; 
+  letter-spacing: 0.2px; 
+  font-size: 24px; 
+  position: relative;
+  z-index: 1;
+}
+
+#logo { 
+  height: 42px; 
+  width: 42px; 
+  object-fit: cover; 
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3)); 
+  border-radius: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Menu avec style cylindrique */
+.menu { 
+  display: block; 
+  position: relative;
+  z-index: 1;
+}
+
+.menu-root { 
+  display: flex; 
+  gap: 18px; 
+  margin: 0; 
+  padding: 0; 
+  list-style: none; 
+  align-items: center; 
+}
+
+.menu-root > li { 
+  position: relative; 
+  padding-bottom: 8px; 
+}
+
+.menu a, .menu .menu-head { 
+  color: #cfe4ff; 
+  text-decoration: none; 
+  font-size: 24px; 
+  line-height: 1; 
+  cursor: pointer; 
+}
+
+.menu a:hover { 
+  color: var(--accent); 
+}
+
+.submenu { 
+  display: none; 
+  position: absolute; 
+  top: 100%; 
+  left: 0; 
+  background: rgba(10,14,28,0.9); 
+  border: 1px solid rgba(255,255,255,0.06); 
+  border-radius: 8px; 
+  padding: 8px; 
+  list-style: none; 
+  min-width: 220px; 
+  z-index: 1000; 
+}
+
+.submenu li { 
+  padding: 6px 8px; 
+}
+
+.submenu a { 
+  display: block; 
+  font-size: 18px; 
+  color: #e6f0ff; 
+}
+
+.menu-root > li:hover .submenu { 
+  display: block; 
+}
+
+/* Cards et conteneurs */
+.demo-card { 
+  background: rgba(255,255,255,0.04); 
+  padding: 20px; 
+  border-radius: 12px; 
+  border: 1px solid rgba(255,255,255,0.06); 
+  margin: 20px 0; 
+}
+
+/* Status messages */
+.status { 
+  padding: 15px; 
+  border-radius: 8px; 
+  margin: 10px 0; 
+  background: rgba(39, 174, 96, 0.1); 
+  border: 1px solid rgba(39, 174, 96, 0.3); 
+}
+
+.status.error { 
+  background: rgba(231, 76, 60, 0.1); 
+  border-color: rgba(231, 76, 60, 0.3); 
+}
+
+.status.warning { 
+  background: rgba(241, 196, 15, 0.1); 
+  border-color: rgba(241, 196, 15, 0.3); 
+}
+
+/* Boutons */
+button { 
+  background: var(--accent); 
+  color: #032030; 
+  border: 0; 
+  padding: 10px 16px; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  font-weight: 600; 
+  margin: 5px; 
+}
+
+button:hover { 
+  filter: brightness(1.1); 
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .topbar { 
+    flex-wrap: wrap; 
+  }
+  
+  .menu-root { 
+    flex-wrap: wrap; 
+  }
+  
+  .content { 
+    padding: 0 15px; 
+  }
+}
