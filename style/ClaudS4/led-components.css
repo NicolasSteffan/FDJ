@@ -1,0 +1,61 @@
+/**
+ * LED Components CSS - Conforme bible.md règle 3
+ * Tous les styles des LEDs séparés du code métier
+ */
+
+/* LED pour le titre de la page d'accueil */
+.home-led {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffd700;
+  box-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
+  margin-right: 12px;
+  vertical-align: middle;
+  animation: pulse-led 2s infinite ease-in-out;
+}
+
+/* Animation de pulsation pour les LEDs */
+@keyframes pulse-led {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+/* LEDs pour les sections pliables */
+.gains-toggle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ffd700;
+  box-shadow: 0 0 8px #ffd700;
+  transition: all 0.3s ease;
+  display: inline-block;
+  position: relative;
+}
+
+.gains-toggle.expanded {
+  background: #ffff00;
+  box-shadow: 0 0 12px #ffff00;
+}
+
+/* LEDs pour l'interrupteur Mock/Scrap */
+.led {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #7f8c8d;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.led.active {
+  background: #00ff88;
+  box-shadow: 0 0 10px #00ff88;
+}

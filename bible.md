@@ -102,6 +102,8 @@ Elles garantissent la cohérence, la maintenabilité et la qualité du projet.
 4. **Respecter la structure des dossiers** définie
 5. **Suivre les conventions de nommage** établies
 6. **Maintenir go.bat à jour** et le fournir à chaque réponse
+7. **Mettre systématiquement à jour le go.bat et le lancer quand nécessaire** - Automatiser le démarrage après chaque modification
+8. **Utiliser Microsoft Edge comme navigateur par défaut** - go.bat doit prioriser Edge, avec fallback Firefox puis navigateur par défaut
 
 ---
 

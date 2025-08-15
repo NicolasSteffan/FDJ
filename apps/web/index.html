@@ -6,6 +6,8 @@
     <title>FDJ – Concours IA Euromillions</title>
     
     <!-- Styles CSS intégrés pour éviter les problèmes de chemins -->
+    <!-- CSS LED Components - Conforme bible.md règle 3 -->
+    <link rel="stylesheet" href="./led-components.css">
 
     <style>
       /* Variables CSS principales */
@@ -430,14 +432,10 @@
         background: rgba(255,255,255,0.08);
       }
       
-      .gains-toggle {
-        font-size: 18px;
-        transition: transform 0.3s;
-      }
-      
-      .gains-toggle.expanded {
-        transform: rotate(180deg);
-      }
+      /* .gains-toggle styles moved to led-components.css - bible.md compliance */
+
+
+
       
       .gains-content {
         padding: 20px;
@@ -568,7 +566,7 @@
     <main class="content">
       <!-- Section Accueil -->
       <section id="home" class="section">
-        <h1>🎉 Architecture OOP - FDJ EuroMillion</h1>
+        <h1><span class="home-led"></span> Architecture OOP - FDJ EuroMillion</h1>
         
         <div class="status">
           <h3>✅ Système Opérationnel</h3>
@@ -738,7 +736,7 @@ style/ClaudS4/            # Styles CSS séparés
         <div class="gains-section" id="resultsSection" style="display: none;">
           <div class="gains-header" onclick="toggleResults()">
             <h3>Résultat</h3>
-            <span class="gains-toggle" id="resultsToggle">▲</span>
+            <span class="gains-toggle expanded" id="resultsToggle"></span>
           </div>
           <div class="gains-content expanded" id="resultsContent">
             <div class="draw-result">
@@ -754,7 +752,7 @@ style/ClaudS4/            # Styles CSS séparés
         <div class="gains-section" id="gainsSection" style="display: none;">
           <div class="gains-header" onclick="toggleGains()">
             <h3>Gains et Répartitions</h3>
-            <span class="gains-toggle" id="gainsToggle">▲</span>
+            <span class="gains-toggle expanded" id="gainsToggle"></span>
           </div>
           <div class="gains-content expanded" id="gainsContent">
             <table class="gains-table">
@@ -1230,11 +1228,9 @@ style/ClaudS4/            # Styles CSS séparés
         if (isExpanded) {
           resultsContent.classList.remove('expanded');
           resultsToggle.classList.remove('expanded');
-          resultsToggle.textContent = '▼';
         } else {
           resultsContent.classList.add('expanded');
           resultsToggle.classList.add('expanded');
-          resultsToggle.textContent = '▲';
         }
       }
 
@@ -1247,17 +1243,47 @@ style/ClaudS4/            # Styles CSS séparés
         if (isExpanded) {
           gainsContent.classList.remove('expanded');
           gainsToggle.classList.remove('expanded');
-          gainsToggle.textContent = '▼';
         } else {
           gainsContent.classList.add('expanded');
           gainsToggle.classList.add('expanded');
-          gainsToggle.textContent = '▲';
         }
       }
 
               // Afficher la section d'accueil par défaut
         document.addEventListener('DOMContentLoaded', () => {
           console.log('🚀 FDJ Architecture OOP - Index unifié chargé');
+          
+          // DEBUG LED - Vérification détaillée
+          console.log('🔍 DEBUG LED - Vérification de l\'affichage:');
+          
+          // 1. Vérifier si le CSS est chargé
+          const ledCssLink = document.querySelector('link[href*="led-components.css"]');
+          console.log('📄 LED CSS Link trouvé:', ledCssLink ? 'OUI' : 'NON');
+          if (ledCssLink) {
+            console.log('🔗 Chemin LED CSS:', ledCssLink.href);
+            console.log('📊 État du lien:', ledCssLink.sheet ? 'CHARGÉ' : 'NON CHARGÉ');
+          }
+          
+          // 2. Vérifier si l'élément LED existe
+          const homeLed = document.querySelector('.home-led');
+          console.log('💡 Élément .home-led trouvé:', homeLed ? 'OUI' : 'NON');
+          if (homeLed) {
+            console.log('📐 Styles calculés LED:', window.getComputedStyle(homeLed));
+            console.log('🎨 Background LED:', window.getComputedStyle(homeLed).background);
+            console.log('📏 Dimensions LED:', {
+              width: window.getComputedStyle(homeLed).width,
+              height: window.getComputedStyle(homeLed).height,
+              display: window.getComputedStyle(homeLed).display
+            });
+          }
+          
+          // 3. Lister tous les styles chargés
+          console.log('📋 Nombre de feuilles de style:', document.styleSheets.length);
+          for (let i = 0; i < document.styleSheets.length; i++) {
+            const sheet = document.styleSheets[i];
+            console.log(`📄 Feuille ${i}:`, sheet.href || 'INLINE');
+          }
+          
           showSection('home');
         
         // Dessiner le menu cylindrique
