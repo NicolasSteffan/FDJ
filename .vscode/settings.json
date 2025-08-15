@@ -15,5 +15,21 @@
   "workbench.colorTheme": "Default Light+",
   "editor.minimap.enabled": true,
   "editor.renderWhitespace": "boundary",
-  "terminal.integrated.confirmRunCommand": true
+  "terminal.integrated.confirmRunCommand": true,
+  
+  // Configuration Cursor AI - Mistral (non supporté nativement)
+  // "cursor.ai.provider": "custom",
+  // "cursor.ai.custom.endpoint": "https://api.mistral.ai/v1/chat/completions",
+  // "cursor.ai.custom.apiKey": "epR5WaEa7Jfiva1aGtRxb6uGmXMBU3Xe",
+  // "cursor.ai.custom.model": "mistral-large-latest",
+  
+  // Configuration Cursor AI - Tentatives diverses
+  // "cursor.ai.provider": "openai",
+  // "cursor.ai.openai.apiKey": "epR5WaEa7Jfiva1aGtRxb6uGmXMBU3Xe",
+  // "cursor.ai.openai.baseURL": "https://api.mistral.ai/v1",
+  
+  // Tentative avec d'autres paramètres possibles
+  "cursor.ai.model": "mistral-large-latest",
+  "cursor.ai.apiKey": "epR5WaEa7Jfiva1aGtRxb6uGmXMBU3Xe",
+  "cursor.ai.endpoint": "https://api.mistral.ai/v1/chat/completions"
 }

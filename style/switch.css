@@ -1,0 +1,118 @@
+/* Styles pour l'interrupteur Mock/Scrap */
+
+.toggle-switch {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+}
+
+.toggle-switch label {
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 35px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 35px;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 15px rgba(63, 182, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  background: linear-gradient(135deg, #3fb6ff 0%, #2980b9 100%);
+  transition: .4s;
+  border-radius: 31px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 25px;
+  width: 25px;
+  left: 3px;
+  background: linear-gradient(135deg, #ffffff 0%, #ecf0f1 100%);
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* État Mock - bullet à gauche */
+.switch.mock .slider:before {
+  transform: translateX(0px);
+  background: linear-gradient(135deg, #ffffff 0%, #ecf0f1 100%);
+}
+
+/* État Scrap - bullet à droite */
+.switch.scrap .slider:before {
+  transform: translateX(45px);
+  background: linear-gradient(135deg, #ffffff 0%, #ecf0f1 100%);
+}
+
+/* Container de l'interrupteur */
+.switch-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Labels de l'interrupteur */
+.switch-label-left, .switch-label-right {
+  font-size: 16px;
+  font-weight: 500;
+  min-width: 60px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.switch-label-left {
+  opacity: 0.6;
+}
+
+.switch-label-right {
+  opacity: 1;
+  color: var(--accent);
+}
+
+/* Styles pour les LEDs */
+.led {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.led-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #666;
+  transition: background-color 0.3s ease;
+}
+
+.led-indicator.active {
+  background-color: #27ae60;
+  box-shadow: 0 0 8px rgba(39, 174, 96, 0.6);
+}

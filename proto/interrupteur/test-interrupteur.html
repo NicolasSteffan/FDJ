@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Interrupteur</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b1020;
+            color: #e6f0ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        .container {
+            background: rgba(255,255,255,0.05);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        
+        h1 {
+            color: #3fb6ff;
+            margin-bottom: 30px;
+        }
+        
+        .toggle-switch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .switch-label-left, .switch-label-right {
+            font-size: 16px;
+            font-weight: 500;
+            min-width: 60px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .switch-label-left {
+            opacity: 0.6;
+        }
+        
+        .switch-label-right {
+            opacity: 1;
+            color: #3fb6ff;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 80px;
+            height: 35px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 35px;
+            border: 2px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        
+        /* Fond toujours bleu pour l'interrupteur */
+        .switch {
+            border-color: #3fb6ff;
+            box-shadow: 0 0 15px rgba(63, 182, 255, 0.4);
+        }
+        
+        .slider {
+            background: linear-gradient(135deg, #3fb6ff 0%, #2980b9 100%);
+        }
+        
+        /* État Mock - bullet à gauche */
+        .switch.mock .slider:before {
+            transform: translateX(0px);
+            background: linear-gradient(135deg, #ffffff 0%, #ecf0f1 100%);
+        }
+        
+        /* État Scrap - bullet à droite */
+        .switch.scrap .slider:before {
+            transform: translateX(45px);
+            background: linear-gradient(135deg, #ffffff 0%, #ecf0f1 100%);
+        }
+        
+        .switch:hover {
+            border-color: #3fb6ff;
+            box-shadow: 0 0 10px rgba(63, 182, 255, 0.3);
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            transition: .4s;
+            border-radius: 31px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 25px;
+            width: 25px;
+            left: 3px;
+            background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+
+        
+        .led {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .led-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #666;
+            transition: background-color 0.3s ease;
+        }
+        
+        .led-indicator.active {
+            background-color: #27ae60;
+            box-shadow: 0 0 8px rgba(39, 174, 96, 0.6);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Interrupteur</h1>
+        
+        <div class="toggle-switch">
+            <div class="switch-container">
+                <span class="switch-label-left">Scrap</span>
+                <div class="led">
+                    <div class="led-indicator" id="scrapLed"></div>
+                </div>
+                <div class="switch mock">
+                    <input type="checkbox" id="dataToggle">
+                    <span class="slider"></span>
+                </div>
+                <div class="led">
+                    <div class="led-indicator" id="jsonLed"></div>
+                </div>
+                <span class="switch-label-right">Mock</span>
+            </div>
+        </div>
+        
+        <div class="status" id="status">
+            État actuel : <strong>Mock</strong> (LED JSON active)
+        </div>
+    </div>
+
+    <script>
+        let currentDataSource = 'mock'; // 'mock' ou 'scrap'
+        
+        function toggleSwitch() {
+            const toggle = document.getElementById('dataToggle');
+            
+            // Inverser l'état de la checkbox
+            toggle.checked = !toggle.checked;
+            
+            // Appeler la fonction de mise à jour
+            toggleDataSource();
+        }
+        
+        function toggleDataSource() {
+            const toggle = document.getElementById('dataToggle');
+            const switchElement = document.querySelector('.switch');
+            const slider = document.querySelector('.slider');
+            const status = document.getElementById('status');
+            
+
+            
+            // Logique inversée : checked = Scrap (à gauche), unchecked = Mock (à droite)
+            currentDataSource = toggle.checked ? 'scrap' : 'mock';
+            console.log('Source de données changée:', currentDataSource);
+            
+            // Changer l'apparence visuelle de l'interrupteur selon l'état
+            if (toggle.checked) {
+                // Mode Scrap actif - style bleu
+                switchElement.classList.remove('mock');
+                switchElement.classList.add('scrap');
+                status.innerHTML = 'État actuel : <strong>Scrap</strong> (LED Scrap active)';
+            } else {
+                // Mode Mock actif - style gris
+                switchElement.classList.remove('scrap');
+                switchElement.classList.add('mock');
+                status.innerHTML = 'État actuel : <strong>Mock</strong> (LED JSON active)';
+            }
+            
+            // Mettre à jour visuellement les labels
+            updateSwitchLabels();
+            
+            // Mettre à jour les LEDs
+            updateLeds();
+        }
+        
+        function updateSwitchLabels() {
+            const toggle = document.getElementById('dataToggle');
+            const leftLabel = document.querySelector('.switch-label-left');
+            const rightLabel = document.querySelector('.switch-label-right');
+            const switchElement = document.querySelector('.switch');
+            const slider = document.querySelector('.slider');
+            
+            if (toggle.checked) {
+                // Mode Scrap actif
+                leftLabel.style.opacity = '1';
+                leftLabel.style.color = '#3fb6ff';
+                rightLabel.style.opacity = '0.6';
+                rightLabel.style.color = '#e6f0ff';
+                
+                // Appliquer les classes actives
+                switchElement.classList.remove('mock');
+                switchElement.classList.add('scrap');
+            } else {
+                // Mode Mock actif
+                leftLabel.style.opacity = '0.6';
+                leftLabel.style.color = '#e6f0ff';
+                rightLabel.style.opacity = '1';
+                rightLabel.style.color = '#3fb6ff';
+                
+                // Retirer les classes actives
+                switchElement.classList.remove('scrap');
+                switchElement.classList.add('mock');
+            }
+        }
+        
+        function updateLeds() {
+            const toggle = document.getElementById('dataToggle');
+            const scrapLed = document.getElementById('scrapLed');
+            const jsonLed = document.getElementById('jsonLed');
+            
+            if (toggle.checked) {
+                // Mode Scrap actif
+                scrapLed.classList.add('active');
+                jsonLed.classList.remove('active');
+            } else {
+                // Mode Mock actif
+                scrapLed.classList.remove('active');
+                jsonLed.classList.add('active');
+            }
+        }
+        
+        // Initialisation au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Test Interrupteur chargé');
+            
+            // Ajouter un événement click sur l'interrupteur
+            const switchElement = document.querySelector('.switch');
+            const toggle = document.getElementById('dataToggle');
+            
+            switchElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleSwitch();
+            });
+            
+
+            
+            // Initialiser l'état (Scrap par défaut)
+            setTimeout(() => {
+                updateSwitchLabels();
+                updateLeds();
+            }, 100);
+            
+
+        });
+    </script>
+</body>
+</html>
