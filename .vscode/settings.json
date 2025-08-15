@@ -6,7 +6,7 @@
   "markdown.preview.scrollPreviewWithEditor": true,
   "markdown.preview.scrollEditorWithPreview": true,
   "files.associations": {
-    "TODO.md": "markdown"
+    "Notes/TODO.md": "markdown"
   },
   "explorer.autoReveal": true,
   "editor.wordWrap": "on",

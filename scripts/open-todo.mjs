@@ -13,7 +13,7 @@ import { existsSync } from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const projectRoot = join(__dirname, '..');
-const todoPath = join(projectRoot, 'TODO.md');
+const todoPath = join(projectRoot, 'Notes/TODO.md');
 
 console.log('🚀 Ouverture automatique du TODO...');
 

@@ -1,0 +1,87 @@
+/**
+ * FDJ Project - Main Stylesheet
+ * Refactored from apps/web/styles.css
+ * Architecture: Modular CSS for OOP structure
+ */
+
+/* Variables CSS principales */
+:root {
+  --bg: #0b1020;
+  --fg: #e6f0ff;
+  --accent: #3fb6ff;
+}
+
+/* Reset et base */
+* { 
+  box-sizing: border-box; 
+}
+
+html, body { 
+  height: 100%; 
+  margin: 0; 
+}
+
+body { 
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif; 
+  color: var(--fg); 
+  background: var(--bg); 
+}
+
+/* Background effects */
+.background {
+  position: fixed; 
+  inset: 0;
+  background: radial-gradient(60% 80% at 50% 30%, rgba(63,182,255,0.18), transparent 60%),
+              radial-gradient(40% 50% at 80% 70%, rgba(142,63,255,0.18), transparent 60%);
+  filter: blur(20px); 
+  opacity: 0.8; 
+  pointer-events: none;
+}
+
+/* Utilitaires globaux */
+.hidden { 
+  display: none; 
+}
+
+.toast { 
+  position: fixed; 
+  right: 20px; 
+  bottom: 20px; 
+  background: rgba(0,0,0,0.7); 
+  padding: 10px 16px; 
+  border-radius: 8px; 
+}
+
+/* Layout de base */
+.content { 
+  max-width: 960px; 
+  margin: 40px auto; 
+  padding: 0 20px; 
+}
+
+.page.hidden { 
+  display: none; 
+}
+
+.monitoring { 
+  margin-top: 32px; 
+  background: rgba(255,255,255,0.04); 
+  padding: 16px; 
+  border-radius: 12px; 
+  border: 1px solid rgba(255,255,255,0.06); 
+}
+
+/* Éléments de base */
+button { 
+  background: var(--accent); 
+  color: #032030; 
+  border: 0; 
+  padding: 10px 16px; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  font-weight: 600; 
+}
+
+button:hover { 
+  filter: brightness(1.1); 
+}

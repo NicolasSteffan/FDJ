@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FDJ - Corporate Clean</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #FFFFFF;
+            color: #2C3E50;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: #2980B9;
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .header-info {
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+        }
+        
+        nav {
+            margin-top: 15px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 0;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            background: #3498DB;
+            border-right: 1px solid #2980B9;
+        }
+        
+        .nav-links li:first-child {
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .nav-links li:last-child {
+            border-right: none;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .nav-links a {
+            display: block;
+            padding: 12px 25px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-links a:hover,
+        .nav-links .active a {
+            background: #16A085;
+        }
+        
+        /* Main Content */
+        main {
+            padding: 40px 0;
+        }
+        
+        .page-title {
+            background: #ECF0F1;
+            padding: 30px 0;
+            margin-bottom: 40px;
+            border-left: 5px solid #2980B9;
+        }
+        
+        .page-title h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2C3E50;
+            margin-bottom: 10px;
+        }
+        
+        .page-title .breadcrumb {
+            color: #7F8C8D;
+            font-size: 14px;
+        }
+        
+        .page-title .breadcrumb a {
+            color: #2980B9;
+            text-decoration: none;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .main-content {
+            background: white;
+            border: 1px solid #BDC3C7;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .content-header {
+            background: #34495E;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+        
+        .content-body {
+            padding: 30px;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .results-table th {
+            background: #ECF0F1;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #BDC3C7;
+            color: #2C3E50;
+        }
+        
+        .results-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ECF0F1;
+        }
+        
+        .results-table tr:hover {
+            background: #F8F9FA;
+        }
+        
+        .number-ball {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #2980B9;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 5px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .star-ball {
+            background: #F39C12;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .widget {
+            background: white;
+            border: 1px solid #BDC3C7;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .widget-header {
+            background: #16A085;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        
+        .widget-body {
+            padding: 20px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ECF0F1;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
+            color: #7F8C8D;
+            font-size: 14px;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #2C3E50;
+            font-size: 16px;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 3px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #2980B9;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1F639A;
+        }
+        
+        .btn-success {
+            background: #16A085;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #138B75;
+        }
+        
+        .btn-secondary {
+            background: #95A5A6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #798B8D;
+        }
+        
+        /* Footer */
+        footer {
+            background: #34495E;
+            color: #BDC3C7;
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-section h4 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section a {
+            color: #BDC3C7;
+            text-decoration: none;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .footer-section a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #7F8C8D;
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-title h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">📊 FDJ Analytics Pro</div>
+                <div class="header-info">
+                    <span>📅 14 Janvier 2025</span>
+                    <span>⏰ 14:30</span>
+                    <span>👤 Utilisateur Admin</span>
+                </div>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li class="active"><a href="#dashboard">Tableau de Bord</a></li>
+                    <li><a href="#results">Résultats</a></li>
+                    <li><a href="#statistics">Statistiques</a></li>
+                    <li><a href="#reports">Rapports</a></li>
+                    <li><a href="#settings">Paramètres</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="page-title">
+                <h1>Tableau de Bord - Analyse Euromillions</h1>
+                <div class="breadcrumb">
+                    <a href="#home">Accueil</a> > <a href="#dashboard">Tableau de Bord</a> > Analyse Principale
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="main-content">
+                    <div class="content-header">
+                        📋 Derniers Résultats Euromillions
+                    </div>
+                    <div class="content-body">
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Numéros Gagnants</th>
+                                    <th>Étoiles</th>
+                                    <th>Jackpot</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>12/01/2025</td>
+                                    <td>
+                                        <span class="number-ball">7</span>
+                                        <span class="number-ball">14</span>
+                                        <span class="number-ball">23</span>
+                                        <span class="number-ball">35</span>
+                                        <span class="number-ball">42</span>
+                                    </td>
+                                    <td>
+                                        <span class="number-ball star-ball">3</span>
+                                        <span class="number-ball star-ball">8</span>
+                                    </td>
+                                    <td>180.000.000 €</td>
+                                    <td>
+                                        <button class="btn btn-primary" onclick="analyzeResult()">Analyser</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>09/01/2025</td>
+                                    <td>
+                                        <span class="number-ball">2</span>
+                                        <span class="number-ball">18</span>
+                                        <span class="number-ball">29</span>
+                                        <span class="number-ball">41</span>
+                                        <span class="number-ball">47</span>
+                                    </td>
+                                    <td>
+                                        <span class="number-ball star-ball">1</span>
+                                        <span class="number-ball star-ball">12</span>
+                                    </td>
+                                    <td>165.000.000 €</td>
+                                    <td>
+                                        <button class="btn btn-secondary">Voir Détails</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>05/01/2025</td>
+                                    <td>
+                                        <span class="number-ball">11</span>
+                                        <span class="number-ball">22</span>
+                                        <span class="number-ball">33</span>
+                                        <span class="number-ball">44</span>
+                                        <span class="number-ball">49</span>
+                                    </td>
+                                    <td>
+                                        <span class="number-ball star-ball">5</span>
+                                        <span class="number-ball star-ball">9</span>
+                                    </td>
+                                    <td>150.000.000 €</td>
+                                    <td>
+                                        <button class="btn btn-secondary">Voir Détails</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div style="text-align: center; margin-top: 20px;">
+                            <button class="btn btn-success">📊 Générer Rapport Complet</button>
+                            <button class="btn btn-primary">📁 Exporter Données</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="widget">
+                        <div class="widget-header">📈 Statistiques Rapides</div>
+                        <div class="widget-body">
+                            <div class="stat-item">
+                                <span class="stat-label">Total Tirages</span>
+                                <span class="stat-value">2,847</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Analyse IA</span>
+                                <span class="stat-value">Activée</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Précision</span>
+                                <span class="stat-value">87.2%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Dernière MAJ</span>
+                                <span class="stat-value">14:25</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget">
+                        <div class="widget-header">🎯 Actions Rapides</div>
+                        <div class="widget-body">
+                            <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">
+                                🔄 Actualiser Données
+                            </button>
+                            <button class="btn btn-success" style="width: 100%; margin-bottom: 10px;">
+                                🤖 Lancer Prédiction
+                            </button>
+                            <button class="btn btn-secondary" style="width: 100%;">
+                                📋 Nouveau Rapport
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="widget">
+                        <div class="widget-header">🔔 Notifications</div>
+                        <div class="widget-body">
+                            <div style="font-size: 14px; color: #7F8C8D; line-height: 1.6;">
+                                <p><strong>Nouveau tirage</strong><br>
+                                Résultats disponibles - 14:25</p>
+                                <p><strong>Maintenance système</strong><br>
+                                Prévue dimanche 3h00 - 5h00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Analyse de Données</a></li>
+                        <li><a href="#">Prédictions IA</a></li>
+                        <li><a href="#">Rapports Personnalisés</a></li>
+                        <li><a href="#">Support Technique</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Ressources</h4>
+                    <ul>
+                        <li><a href="#">Documentation API</a></li>
+                        <li><a href="#">Guides Utilisateur</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Tutoriels Vidéo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="#">📧 support@fdj-analytics.fr</a></li>
+                        <li><a href="#">📞 01 23 45 67 89</a></li>
+                        <li><a href="#">💬 Chat en Direct</a></li>
+                        <li><a href="#">📍 Paris, France</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 FDJ Analytics Pro - Plateforme Corporate Professional</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function analyzeResult() {
+            alert('📊 Analyse en cours...\n\nRésultat:\n• Patron détecté: Nombres premiers\n• Fréquence: Moyenne\n• Recommandation: Surveiller les multiples de 7');
+        }
+
+        // Table hover effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('.results-table tbody tr');
+            rows.forEach(row => {
+                row.addEventListener('click', function() {
+                    rows.forEach(r => r.style.backgroundColor = '');
+                    this.style.backgroundColor = '#EBF3FD';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

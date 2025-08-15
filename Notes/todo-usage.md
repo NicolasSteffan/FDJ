@@ -3,7 +3,7 @@
 ## 🚀 **Ouverture automatique**
 
 ### Au démarrage de Cursor
-Le fichier `TODO.md` s'ouvre automatiquement grâce à la configuration VSCode.
+Le fichier `Notes/TODO.md` s'ouvre automatiquement grâce à la configuration VSCode.
 
 ### Manuel
 ```bash
@@ -36,7 +36,7 @@ Plan de rationalisation en multi-fichiers :
 ## 🔧 **Configuration**
 
 ### Fichiers impliqués
-- `TODO.md` - La note principale
+- `Notes/TODO.md` - La note principale
 - `.vscode/settings.json` - Configuration Cursor/VSCode
 - `.vscode/workspace.json` - Configuration workspace
 - `scripts/open-todo.mjs` - Script d'ouverture
@@ -44,7 +44,7 @@ Plan de rationalisation en multi-fichiers :
 
 ### Personnalisation
 Vous pouvez modifier :
-- Le style de la TODO dans `TODO.md`
+- Le style de la TODO dans `Notes/TODO.md`
 - Les paramètres d'ouverture dans `.vscode/settings.json`
 - Les scripts dans `package.json`
 
