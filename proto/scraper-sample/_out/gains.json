@@ -1,0 +1,83 @@
+﻿{
+    "date":  "2025-08-08T00:00:00.000Z",
+    "breakdown":  [
+                      {
+                          "rankLabel":  "5+2",
+                          "winners":  0,
+                          "amount":  0,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "5+1",
+                          "winners":  6,
+                          "amount":  183180.91,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "5+0",
+                          "winners":  21,
+                          "amount":  12232.11,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "4+2",
+                          "winners":  72,
+                          "amount":  1111.25,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "4+1",
+                          "winners":  1464,
+                          "amount":  100.67,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "4+0",
+                          "winners":  4276,
+                          "amount":  25.6,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "3+2",
+                          "winners":  2636,
+                          "amount":  59.1,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "2+2",
+                          "winners":  36400,
+                          "amount":  15.03,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "3+1",
+                          "winners":  54367,
+                          "amount":  11.23,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "3+0",
+                          "winners":  136121,
+                          "amount":  8.35,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "1+2",
+                          "winners":  185239,
+                          "amount":  7.43,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "2+1",
+                          "winners":  761556,
+                          "amount":  5.69,
+                          "currency":  "EUR"
+                      },
+                      {
+                          "rankLabel":  "2+0",
+                          "winners":  1883537,
+                          "amount":  3.7,
+                          "currency":  "EUR"
+                      }
+                  ]
+}

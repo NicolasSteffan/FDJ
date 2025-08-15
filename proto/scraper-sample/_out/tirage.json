@@ -1,0 +1,16 @@
+﻿{
+    "date":  "2025-08-08T00:00:00.000Z",
+    "provider":  "lotteryextreme",
+    "game":  "euromillions",
+    "numbers":  [
+                    2,
+                    12,
+                    19,
+                    34,
+                    44
+                ],
+    "stars":  [
+                  6,
+                  10
+              ]
+}

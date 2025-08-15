@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FDJ - Modern Minimal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #FFFFFF;
+            color: #34495E;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: #FFFFFF;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2C3E50;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #34495E;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #3498DB;
+        }
+        
+        /* Main Content */
+        main {
+            padding: 60px 0;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 300;
+            color: #2C3E50;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            color: #7F8C8D;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        
+        .cta-button {
+            background: #3498DB;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .cta-button:hover {
+            background: #2980B9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+        
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+        
+        .card {
+            background: #FFFFFF;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: #ECF0F1;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2C3E50;
+            margin-bottom: 15px;
+        }
+        
+        .card p {
+            color: #7F8C8D;
+            line-height: 1.7;
+        }
+        
+        /* Results Section */
+        .results-section {
+            background: #F8F9FA;
+            padding: 60px 0;
+            border-radius: 20px;
+            margin: 60px 0;
+        }
+        
+        .results-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 300;
+            color: #2C3E50;
+            margin-bottom: 40px;
+        }
+        
+        .lottery-numbers {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .number {
+            width: 50px;
+            height: 50px;
+            background: #3498DB;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .star {
+            background: #F39C12;
+        }
+        
+        /* Footer */
+        footer {
+            background: #2C3E50;
+            color: #ECF0F1;
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 80px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .lottery-numbers {
+                gap: 10px;
+            }
+            
+            .number {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">🎯 FDJ Analytics</div>
+            <ul class="nav-links">
+                <li><a href="#home">Accueil</a></li>
+                <li><a href="#results">Résultats</a></li>
+                <li><a href="#stats">Statistiques</a></li>
+                <li><a href="#predictions">Prédictions</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Analyse Intelligente Euromillions</h1>
+            <p>Découvrez les tendances, analysez les résultats et optimisez vos chances avec notre plateforme d'analyse avancée.</p>
+            <button class="cta-button" onclick="showResults()">Voir les Résultats</button>
+        </section>
+
+        <section class="cards-grid">
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>Analyse des Tendances</h3>
+                <p>Étudiez les patterns et fréquences des numéros gagnants sur l'historique complet des tirages.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎯</div>
+                <h3>Prédictions IA</h3>
+                <p>Algorithmes d'apprentissage automatique pour identifier les combinaisons les plus probables.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📈</div>
+                <h3>Statistiques Avancées</h3>
+                <p>Visualisations interactives et rapports détaillés pour une analyse approfondie.</p>
+            </div>
+        </section>
+
+        <section class="results-section">
+            <h2 class="results-title">Dernier Tirage</h2>
+            <div class="lottery-numbers">
+                <div class="number">7</div>
+                <div class="number">14</div>
+                <div class="number">23</div>
+                <div class="number">35</div>
+                <div class="number">42</div>
+                <div class="number star">3</div>
+                <div class="number star">8</div>
+            </div>
+            <p style="text-align: center; color: #7F8C8D;">Tirage du 12 Janvier 2025</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 FDJ Analytics - Design Modern Minimal</p>
+        </div>
+    </footer>
+
+    <script>
+        function showResults() {
+            document.querySelector('.results-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        // Animation d'entrée
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

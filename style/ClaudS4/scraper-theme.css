@@ -1,0 +1,256 @@
+/**
+ * FDJ Project - Scraper Theme Stylesheet
+ * Refactored from proto/scraper-sample/ui/styles.css
+ * Theme spécialisé pour l'interface de scraping
+ */
+
+/* Variables spécifiques au thème scraper */
+:root {
+  --scraper-bg: #0b1020;
+  --scraper-fg: #e8eefc;
+  --scraper-muted: #a9b3c9;
+  --scraper-accent: #5aa2ff;
+  --scraper-card: #121a2f;
+  --scraper-star: #ffc107;
+  --scraper-danger: #ff5a7a;
+}
+
+/* Base pour le thème scraper */
+.scraper-theme {
+  background: var(--scraper-bg);
+  color: var(--scraper-fg);
+}
+
+.scraper-theme * {
+  box-sizing: border-box;
+}
+
+/* Header spécialisé scraper */
+.scraper-topbar {
+  padding: 12px 16px;
+  border-bottom: 1px solid #223;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.scraper-title h1 {
+  margin: 0 0 2px 0;
+  font-size: 20px;
+}
+
+.scraper-muted {
+  color: var(--scraper-muted);
+  font-size: 13px;
+}
+
+.scraper-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scraper-actions button {
+  background: var(--scraper-accent);
+  color: #091226;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.scraper-actions button:hover {
+  filter: brightness(1.08);
+}
+
+/* Grid layout principal */
+.scraper-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+/* Cartes de données */
+.scraper-card {
+  background: var(--scraper-card);
+  border: 1px solid #1c2542;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.scraper-card.wide {
+  grid-column: 1 / -1;
+}
+
+.scraper-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.scraper-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 16px;
+  color: var(--scraper-accent);
+}
+
+.scraper-inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Status indicators */
+.scraper-status {
+  color: var(--scraper-muted);
+  font-size: 12px;
+}
+
+.scraper-status.ok {
+  color: #7ee787;
+}
+
+.scraper-status.error {
+  color: var(--scraper-danger);
+}
+
+.scraper-status.empty {
+  color: var(--scraper-muted);
+}
+
+/* Données et badges */
+.scraper-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.scraper-badge {
+  background: #1b2749;
+  color: var(--scraper-fg);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.scraper-badge.star {
+  background: #2a2131;
+  color: var(--scraper-star);
+}
+
+.scraper-values {
+  font-size: 18px;
+  letter-spacing: 2px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.scraper-chip {
+  background: #0f1a33;
+  border: 1px solid #213057;
+  border-radius: 999px;
+  padding: 4px 10px;
+  min-width: 36px;
+  text-align: center;
+}
+
+.scraper-chip.star {
+  border-color: #5d3c19;
+  color: var(--scraper-star);
+}
+
+.scraper-meta {
+  margin-top: 8px;
+  color: var(--scraper-muted);
+  font-size: 12px;
+}
+
+/* Tables */
+.scraper-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.scraper-table th,
+.scraper-table td {
+  border-bottom: 1px solid #223;
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.scraper-table thead th {
+  color: var(--scraper-muted);
+  font-weight: 600;
+}
+
+/* Error displays */
+.scraper-error {
+  color: var(--scraper-danger);
+  background: #2a1120;
+  border: 1px solid #3a1b2a;
+  padding: 8px;
+  border-radius: 6px;
+  overflow: auto;
+  max-height: 240px;
+}
+
+.scraper-totals {
+  margin-top: 8px;
+  color: var(--scraper-muted);
+  font-size: 13px;
+}
+
+/* Diagnostics */
+.scraper-diagnostics {
+  font-size: 13px;
+  color: var(--scraper-muted);
+  display: grid;
+  gap: 6px;
+}
+
+.scraper-diagnostics .item {
+  border: 1px dashed #2a355a;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.scraper-diagnostics .key {
+  color: var(--scraper-fg);
+}
+
+/* JSON Views */
+.scraper-json-view {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #223;
+  background: #0d1326;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow: auto;
+  max-height: 260px;
+}
+
+.scraper-json-view.ok {
+  border-color: #1f4f2b;
+  background: #0d1a12;
+  color: #8df0a3;
+}
+
+.scraper-json-view.error {
+  border-color: #5a1e29;
+  background: #1a0d12;
+  color: #ff8096;
+}
