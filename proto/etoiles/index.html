@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designs d'Étoiles - Prototype FDJ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b1020;
+            color: #e6f0ff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #3fb6ff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .designs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .design-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .design-card:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: #3fb6ff;
+            transform: translateY(-5px);
+        }
+
+        .design-title {
+            color: #3fb6ff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .star-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+            margin-bottom: 15px;
+        }
+
+        /* Design 1: Étoile classique 5 branches */
+        .star-classic {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6b7b8c 0%, #4a5f7a 50%, #2c3e50 100%);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Design 2: Étoile arrondie */
+        .star-rounded {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #87ceeb 0%, #4682b4 50%, #1e3a8a 100%);
+            clip-path: polygon(50% 0%, 65% 38%, 100% 38%, 75% 62%, 88% 100%, 50% 75%, 12% 100%, 25% 62%, 0% 38%, 35% 38%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            border-radius: 15px;
+        }
+
+        /* Design 3: Étoile avec bordure */
+        .star-border {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffa500 50%, #ff8c00 100%);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-weight: bold;
+            font-size: 18px;
+            border: 3px solid #fff;
+            box-shadow: 0 0 15px rgba(255,215,0,0.6);
+        }
+
+        /* Design 4: Étoile 6 branches */
+        .star-six {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 50%, #6a1b99 100%);
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Design 5: Étoile simple ronde */
+        .star-circle {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 50%, #a93226 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            position: relative;
+        }
+
+        .star-circle::before {
+            content: '★';
+            position: absolute;
+            font-size: 70px;
+            color: rgba(255,255,255,0.3);
+            z-index: 0;
+        }
+
+        .star-circle span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Design 6: Étoile diamant */
+        .star-diamond {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 50%, #138d75 100%);
+            clip-path: polygon(50% 0%, 80% 50%, 50% 100%, 20% 50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Design 7: Étoile moderne */
+        .star-modern {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 50%, #d35400 100%);
+            clip-path: polygon(50% 0%, 63% 38%, 100% 38%, 69% 59%, 82% 100%, 50% 75%, 18% 100%, 31% 59%, 0% 38%, 37% 38%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            border-radius: 8px;
+        }
+
+        /* Design 8: Étoile avec effet néon */
+        .star-neon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 50%, #006064 100%);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            box-shadow: 0 0 20px rgba(0,188,212,0.8), inset 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        /* Design 9: Étoile avec dégradé arc-en-ciel */
+        .star-rainbow {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #ff9ff3 75%, #54a0ff 100%);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+        }
+
+        /* Design 10: Étoile métallique */
+        .star-metallic {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 50%, #7f8c8d 100%);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 18px;
+            border: 2px solid #34495e;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Design 11: Étoile cristal */
+        .star-crystal {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(174,214,241,0.9) 50%, rgba(93,173,226,0.9) 100%);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 18px;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 0 20px rgba(93,173,226,0.6), inset 0 0 20px rgba(255,255,255,0.4);
+        }
+
+        /* Design 12: Étoile feu */
+        .star-fire {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff4757 0%, #ff3838 25%, #ff2f2f 50%, #ff1e1e 75%, #c44569 100%);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(255,71,87,0.7);
+            animation: pulse 2s infinite;
+        }
+
+        /* Design 13: Étoile néon arrondie */
+        .star-neon-rounded {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00e1ff 0%, #00b8d4 50%, #008ba3 100%);
+            clip-path: polygon(50% 8%, 58% 38%, 90% 38%, 68% 58%, 78% 92%, 50% 72%, 22% 92%, 32% 58%, 10% 38%, 42% 38%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 0 25px rgba(0,225,255,0.9), 
+                0 0 50px rgba(0,225,255,0.7),
+                inset 0 0 25px rgba(255,255,255,0.3);
+            animation: neonGlow 3s infinite alternate;
+        }
+        
+        .star-neon-rounded::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00e1ff, #00b8d4, #008ba3, #00e1ff);
+            clip-path: polygon(50% 8%, 58% 38%, 90% 38%, 68% 58%, 78% 92%, 50% 72%, 22% 92%, 32% 58%, 10% 38%, 42% 38%);
+            z-index: -1;
+            border-radius: 17px;
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes neonGlow {
+            0% { 
+                box-shadow: 
+                    0 0 25px rgba(0,225,255,0.9), 
+                    0 0 50px rgba(0,225,255,0.7),
+                    inset 0 0 25px rgba(255,255,255,0.3);
+            }
+            100% { 
+                box-shadow: 
+                    0 0 35px rgba(0,225,255,1), 
+                    0 0 70px rgba(0,225,255,0.9),
+                    inset 0 0 35px rgba(255,255,255,0.4);
+            }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .description {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            line-height: 1.4;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer p {
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌟 Designs d'Étoiles Prototype</h1>
+        <p>13 styles différents d'étoiles avec chiffres pour FDJ EuroMillion</p>
+    </div>
+
+    <div class="designs-grid">
+        <div class="design-card">
+            <div class="design-title">Étoile Classique</div>
+            <div class="star-container">
+                <div class="star-classic">2</div>
+            </div>
+            <div class="description">Étoile 5 branches traditionnelle avec dégradé bleu-gris</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Arrondie</div>
+            <div class="star-container">
+                <div class="star-rounded">5</div>
+            </div>
+            <div class="description">Branches plus douces avec coins arrondis</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Bordure Dorée</div>
+            <div class="star-container">
+                <div class="star-border">7</div>
+            </div>
+            <div class="description">Étoile dorée avec bordure blanche et effet lumineux</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile 6 Branches</div>
+            <div class="star-container">
+                <div class="star-six">9</div>
+            </div>
+            <div class="description">Design hexagonal moderne violet</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Cercle</div>
+            <div class="star-container">
+                <div class="star-circle"><span>3</span></div>
+            </div>
+            <div class="description">Cercle avec étoile en arrière-plan</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Diamant</div>
+            <div class="star-container">
+                <div class="star-diamond">8</div>
+            </div>
+            <div class="description">Forme de diamant vert turquoise</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Moderne</div>
+            <div class="star-container">
+                <div class="star-modern">4</div>
+            </div>
+            <div class="description">Style contemporain avec coins légèrement arrondis</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Néon</div>
+            <div class="star-container">
+                <div class="star-neon">6</div>
+            </div>
+            <div class="description">Effet néon cyan avec lueur externe</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Arc-en-ciel</div>
+            <div class="star-container">
+                <div class="star-rainbow">1</div>
+            </div>
+            <div class="description">Dégradé multicolore vibrant</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Métallique</div>
+            <div class="star-container">
+                <div class="star-metallic">11</div>
+            </div>
+            <div class="description">Aspect métal brossé avec bordure</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Cristal</div>
+            <div class="star-container">
+                <div class="star-crystal">12</div>
+            </div>
+            <div class="description">Effet transparent cristallin</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Feu</div>
+            <div class="star-container">
+                <div class="star-fire">10</div>
+            </div>
+            <div class="description">Rouge ardent avec animation de pulsation</div>
+        </div>
+
+        <div class="design-card">
+            <div class="design-title">Étoile Néon Arrondie</div>
+            <div class="star-container">
+                <div class="star-neon-rounded">13</div>
+            </div>
+            <div class="description">Cyan néon avec forme arrondie, bordure rotative et lueur pulsante</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Prototype FDJ - Sélectionnez le design d'étoile qui vous convient le mieux</p>
+    </div>
+</body>
+</html>
