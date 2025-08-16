@@ -1,5 +1,7 @@
 🔍 Sprint 2 – Scraping complet & stockage
 
+> **📋 SUIVI DES TÂCHES :** Consultez la section "RESTE À FAIRE Sprint 2" en fin de document pour cocher l'avancement. Cette section doit toujours rester en fin de fichier.
+
 📦 Livrables
 
 - Scraping historique complet, normalisé
@@ -95,13 +97,42 @@
 - **Qualité :** Tests unitaires passants, gestion d'erreurs robuste
 - **Flexibilité :** Basculement transparent entre sources de données
 
-## 📝 Avantages de cette organisation
+---
 
-1. **Progression logique :** SQLite → Scraping → UI avec accès direct
-2. **Simplicité maximale :** Pas de couche API intermédiaire
-3. **Performance :** Accès direct aux données, plus rapide
-4. **Développement :** Moins de complexité, debug plus facile
-5. **SQLite local :** Base de données simple, fichier unique
-6. **Migration douce :** Sélecteur permettant de comparer JSON vs SQLite
-7. **Flexibilité :** Basculement temps réel entre les sources
+## ❌ **RESTE À FAIRE Sprint 2**
+
+> **Instructions :** Cette section doit TOUJOURS rester en fin de document. Cochez `[x]` les tâches terminées et laissez `[ ]` pour les tâches en cours/à faire.
+
+### **1. 🗄️ Base SQLite (PRIORITÉ 1)**
+- [ ] Remplacer localStorage par SQLite local
+- [ ] Schémas draws, gains, sources
+- [ ] Accès direct SQLite depuis UI web
+
+### **2. 🔄 Sélecteur JSON/SQLite (PRIORITÉ 2)**  
+- [ ] Toggle dans interface Tirage/Historique
+- [ ] Basculement temps réel JSON ↔ SQLite
+- [ ] Compatibilité données existantes
+
+### **3. 📊 Scraping robuste (PRIORITÉ 3)**
+- [ ] Cartographier 1-2 sources fiables
+- [ ] Retry/rate-limiting automatique
+- [ ] Déduplication des doublons
+- [ ] Import direct en SQLite
+
+### **4. 🎨 Finitions UI (PRIORITÉ 4)**
+- [ ] Pagination native SQLite 
+- [ ] Indicateurs loading/erreur
+- [ ] Interface déclenchement scraping batch
+
+## 📋 **ORDRE DE TRAVAIL**
+1. **SQLite local** → Test accès direct UI
+2. **Sélecteur** → Toggle JSON/SQLite opérationnel  
+3. **Scraping** → Sources + import SQLite
+4. **Finitions** → UX complète
+
+## 🎯 **Livrable Sprint 2**
+**Base SQLite + Scraping robuste + Sélecteur JSON/SQLite fonctionnel**
+
+---
+**📌 IMPORTANT :** Cette section "RESTE À FAIRE Sprint 2" doit toujours être maintenue en fin de document pour un suivi facile de l'avancement.
 
