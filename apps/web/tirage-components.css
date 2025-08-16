@@ -973,9 +973,7 @@ select option:focus {
   transition: transform 0.3s ease;
 }
 
-.tirage-tag.expanded .tirage-expand-arrow {
-  transform: rotate(90deg);
-}
+/* Pas de rotation pour les flèches ▲/▼ - le contenu textuel change directement */
 
 /* Contenu déplié (gains) */
 .tirage-tag-content {
@@ -986,7 +984,21 @@ select option:focus {
 }
 
 .tirage-tag.expanded .tirage-tag-content {
-  max-height: 500px;
+  max-height: 1000px;
+}
+
+/* Règles spécifiques pour les tirage-tag imbriqués (sections dans Admin Monitoring) */
+.tirage-tag .tirage-tag {
+  margin: 10px 20px;
+  background: rgba(255,255,255,0.05);
+}
+
+.tirage-tag .tirage-tag .tirage-tag-content {
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.tirage-tag .tirage-tag.expanded .tirage-tag-content {
+  max-height: 600px;
 }
 
 .tirage-gains {
