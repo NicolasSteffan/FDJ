@@ -77,6 +77,13 @@
               <li><a href="#" onclick="showSection('status')">Analyse</a></li>
             </ul>
           </li>
+          <li>
+            <span class="menu-head">Admin</span>
+            <ul class="submenu">
+              <li><a href="#" onclick="showSection('admin-diagnostic')">Diagnostic Base de données</a></li>
+              <li><a href="#" onclick="showSection('admin-monitoring')">Monitoring Base de données</a></li>
+            </ul>
+          </li>
         </ul>
       </nav>
     </header>
@@ -235,7 +242,9 @@ style/ClaudS4/            # Styles CSS séparés
           <div class="controls-row">
             <div class="date-load-group">
               <div class="date-picker">
+                <button onclick="changeDate(-1)" class="date-arrow date-arrow-left">◀</button>
                 <input type="date" id="drawDate" value="2025-08-13">
+                <button onclick="changeDate(1)" class="date-arrow date-arrow-right">▶</button>
               </div>
               
               <button onclick="loadDraw()" class="load-btn">
@@ -323,11 +332,7 @@ style/ClaudS4/            # Styles CSS séparés
           <p>Cette version fonctionne avec ou sans serveur HTTP et démontre l'architecture refactorisée.</p>
         </div>
 
-        <div class="demo-card">
-          <h2>🔍 Diagnostic</h2>
-          <div id="diagnostic"></div>
-          <button onclick="runDiagnostic()">Lancer Diagnostic</button>
-        </div>
+
 
         <div class="demo-card">
           <h2>🚀 Pour utiliser la version serveur</h2>
@@ -337,6 +342,76 @@ style/ClaudS4/            # Styles CSS séparés
             <li>Ou démarrez manuellement : <code>live-server --port=3010</code></li>
           </ol>
           <p><strong>URL serveur :</strong> <a href="http://localhost:3010" target="_blank">http://localhost:3010</a></p>
+        </div>
+      </section>
+
+      <!-- Section Admin - Diagnostic Base -->
+      <section id="admin-diagnostic" class="section hidden">
+        <h1>🔍 Admin - Diagnostic Base de Données</h1>
+        
+        <div class="demo-card">
+          <h2>📊 Vue d'ensemble</h2>
+          <div id="diagnostic-stats"></div>
+          <button onclick="loadDatabaseDiagnostic()">🔄 Actualiser</button>
+        </div>
+
+        <div class="demo-card">
+          <h2>📋 Données Stockées</h2>
+          <div id="diagnostic-details"></div>
+        </div>
+
+        <div class="demo-card">
+          <h2>🛠️ Actions</h2>
+          <button onclick="clearDatabase()">
+            🗑️ Vider la Base
+          </button>
+          <button onclick="exportDatabase()">
+            📤 Exporter
+          </button>
+        </div>
+      </section>
+
+      <!-- Section Admin - Monitoring Base -->
+      <section id="admin-monitoring" class="section hidden">
+        <h1>📊 Admin - Monitoring Base de Données</h1>
+        
+        <div class="demo-card">
+          <h2 onclick="toggleMonitoringSection('selection')" class="monitoring-section-title">
+            <span class="monitoring-led" id="selection-led"></span>
+            Sélection Table
+            <span class="monitoring-arrow" id="selection-arrow"></span>
+          </h2>
+          <div id="selection-content" class="monitoring-section-content">
+            <div class="selector-group">
+              <label for="tableSelector">Table à surveiller :</label>
+              <select id="tableSelector" onchange="loadTableData()">
+                <option value="draws">Tirages (draws)</option>
+                <option value="gains">Gains (gains)</option>
+                <option value="all">Toutes les données</option>
+              </select>
+            </div>
+            <div class="selector-group">
+              <label for="pageSize">Résultats par page :</label>
+              <select id="pageSize" onchange="loadTableData()">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <h2 onclick="toggleMonitoringSection('data')" class="monitoring-section-title">
+            <span class="monitoring-led" id="data-led"></span>
+            Données de la Table
+            <span class="monitoring-arrow" id="data-arrow"></span>
+          </h2>
+          <div id="data-content" class="monitoring-section-content">
+            <div id="monitoring-stats"></div>
+            <div id="monitoring-table"></div>
+            <div id="monitoring-pagination"></div>
+          </div>
         </div>
       </section>
     </main>
@@ -351,6 +426,14 @@ style/ClaudS4/            # Styles CSS séparés
         const sections = document.querySelectorAll('.section');
         sections.forEach(section => section.classList.add('hidden'));
         document.getElementById(sectionId).classList.remove('hidden');
+        
+        // Initialiser les sections spéciales
+        if (sectionId === 'admin-diagnostic') {
+          loadDatabaseDiagnostic();
+        } else if (sectionId === 'admin-monitoring') {
+          initializeMonitoringLEDs();
+          loadTableData();
+        }
       }
 
       // Générateur de tirage aléatoire
@@ -492,21 +575,297 @@ style/ClaudS4/            # Styles CSS séparés
       }
 
       // Diagnostic du système
-      function runDiagnostic() {
-        const diagnostic = document.getElementById('diagnostic');
-        diagnostic.innerHTML = `
-          <h4>🔍 Résultats du diagnostic :</h4>
-          <p>✅ <strong>Architecture OOP :</strong> Opérationnelle</p>
-          <p>✅ <strong>Styles CSS :</strong> Chargés et appliqués</p>
-          <p>✅ <strong>JavaScript :</strong> Fonctionnel</p>
-          <p>✅ <strong>Composants UI :</strong> Interactifs</p>
-          <p>✅ <strong>Logo CSS :</strong> Intégré (pas d'image externe)</p>
-          <p>📝 <strong>Version :</strong> Index.html unifié</p>
-          <hr style="border: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
-          <p><strong>Compatible :</strong><br>
-          - Ouverture directe (double-clic)<br>
-          - Serveur HTTP (live-server, go.bat)</p>
+      // === FONCTIONS ADMIN ===
+      
+      // Charger le diagnostic de la base de données
+      function loadDatabaseDiagnostic() {
+        const stats = document.getElementById('diagnostic-stats');
+        const details = document.getElementById('diagnostic-details');
+        
+        // Statistiques
+        const totalKeys = Object.keys(localStorage).length;
+        const drawKeys = Object.keys(localStorage).filter(key => key.startsWith('draw_'));
+        const otherKeys = Object.keys(localStorage).filter(key => !key.startsWith('draw_'));
+        
+        stats.innerHTML = `
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h4 style="color: #00ff00;">🎯 Tirages</h4>
+              <p style="color: #00ff00;">${drawKeys.length}</p>
+            </div>
+            <div class="stat-card">
+              <h4 style="color: #ffa500;">📊 Autres Données</h4>
+              <p style="color: #ffa500;">${otherKeys.length}</p>
+            </div>
+            <div class="stat-card">
+              <h4 style="color: #00bfff;">🗄️ Total Clés</h4>
+              <p style="color: #00bfff;">${totalKeys}</p>
+            </div>
+          </div>
         `;
+        
+        // Détails des tirages
+        if (drawKeys.length > 0) {
+          let detailsHtml = `
+            <h4>📋 Tirages stockés (${drawKeys.length} au total)</h4>
+            <div style="max-height: 300px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; padding: 10px;">
+          `;
+          
+          drawKeys.sort().slice(-10).forEach(key => {
+            const data = JSON.parse(localStorage.getItem(key));
+            const date = key.replace('draw_', '');
+            detailsHtml += `
+              <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px 0;">
+                <strong>${date}</strong> - ${data.source || 'Unknown'} 
+                ${data.numbers ? `(${data.numbers.join(',')})` : ''}
+                <span style="color: #888; font-size: 0.9em;">${data.gains?.length || 0} gains</span>
+              </div>
+            `;
+          });
+          
+          detailsHtml += '</div>';
+          details.innerHTML = detailsHtml;
+        } else {
+          details.innerHTML = '<p>Aucun tirage stocké en base de données.</p>';
+        }
+      }
+      
+      // Vider la base de données
+      function clearDatabase() {
+        if (confirm('⚠️ Êtes-vous sûr de vouloir vider toute la base de données ? Cette action est irréversible.')) {
+          localStorage.clear();
+          loadDatabaseDiagnostic();
+          alert('✅ Base de données vidée avec succès.');
+        }
+      }
+      
+      // Exporter la base de données
+      function exportDatabase() {
+        const data = {};
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          data[key] = JSON.parse(localStorage.getItem(key));
+        }
+        
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `fdj_database_export_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+      
+      // === MONITORING ===
+      let currentPage = 1;
+      let currentData = [];
+      
+      // Charger les données de la table sélectionnée
+      function loadTableData() {
+        const tableType = document.getElementById('tableSelector').value;
+        const pageSize = parseInt(document.getElementById('pageSize').value);
+        
+        currentPage = 1; // Reset à la page 1
+        currentData = getAllTableData(tableType);
+        displayTableData(currentData, pageSize, currentPage, tableType);
+      }
+      
+      // Récupérer toutes les données selon le type de table
+      function getAllTableData(tableType) {
+        const data = [];
+        
+        if (tableType === 'draws' || tableType === 'all') {
+          // Récupérer tous les tirages
+          Object.keys(localStorage).filter(key => key.startsWith('draw_')).forEach(key => {
+            const drawData = JSON.parse(localStorage.getItem(key));
+            const date = key.replace('draw_', '');
+            data.push({
+              type: 'draw',
+              date: date,
+              numbers: drawData.numbers?.join(', ') || 'N/A',
+              stars: drawData.stars?.join(', ') || 'N/A',
+              source: drawData.source || 'Unknown',
+              gains: drawData.gains?.length || 0
+            });
+          });
+        }
+        
+        if (tableType === 'gains' || tableType === 'all') {
+          // Récupérer tous les gains de tous les tirages
+          Object.keys(localStorage).filter(key => key.startsWith('draw_')).forEach(key => {
+            const drawData = JSON.parse(localStorage.getItem(key));
+            const date = key.replace('draw_', '');
+            if (drawData.gains) {
+              drawData.gains.forEach(gain => {
+                data.push({
+                  type: 'gain',
+                  date: date,
+                  rang: gain.rang || gain.rankLabel || 'N/A',
+                  gagnants: gain.gagnants || gain.winners || 0,
+                  gain: gain.gain || gain.amount || 'N/A',
+                  source: drawData.source || 'Unknown'
+                });
+              });
+            }
+          });
+        }
+        
+        return data.sort((a, b) => b.date.localeCompare(a.date));
+      }
+      
+      // Afficher les données dans un tableau avec pagination
+      function displayTableData(data, pageSize, page, tableType) {
+        const stats = document.getElementById('monitoring-stats');
+        const tableDiv = document.getElementById('monitoring-table');
+        const pagination = document.getElementById('monitoring-pagination');
+        
+        // Statistiques
+        stats.innerHTML = `<strong>Total: ${data.length} entrées</strong> | Page ${page} sur ${Math.ceil(data.length / pageSize)}`;
+        
+        // Données paginées
+        const startIndex = (page - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const pageData = data.slice(startIndex, endIndex);
+        
+        // Créer le tableau
+        let tableHtml = '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
+        
+        // Headers selon le type
+        if (tableType === 'draws') {
+          tableHtml += '<tr style="background: rgba(255,255,255,0.1);"><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Date</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Numéros</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Étoiles</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Source</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Gains</th></tr>';
+          pageData.forEach(item => {
+            tableHtml += `<tr><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.date}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.numbers}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.stars}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.source}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.gains}</td></tr>`;
+          });
+        } else if (tableType === 'gains') {
+          tableHtml += '<tr style="background: rgba(255,255,255,0.1);"><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Date Tirage</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Rang</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Gagnants</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Montant</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Source</th></tr>';
+          pageData.forEach(item => {
+            tableHtml += `<tr><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.date}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.rang}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.gagnants}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.gain}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.source}</td></tr>`;
+          });
+        } else { // all
+          tableHtml += '<tr style="background: rgba(255,255,255,0.1);"><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Type</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Date</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Données</th><th style="padding: 10px; border: 1px solid rgba(255,255,255,0.2);">Source</th></tr>';
+          pageData.forEach(item => {
+            const dataText = item.type === 'draw' ? `${item.numbers} | ${item.stars}` : `${item.rang} - ${item.gagnants} gagnants`;
+            tableHtml += `<tr><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.type}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.date}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${dataText}</td><td style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">${item.source}</td></tr>`;
+          });
+        }
+        
+        tableHtml += '</table>';
+        tableDiv.innerHTML = tableHtml;
+        
+        // Pagination
+        const totalPages = Math.ceil(data.length / pageSize);
+        let paginationHtml = '';
+        
+        if (totalPages > 1) {
+          paginationHtml += '<div style="display: flex; gap: 10px; align-items: center; justify-content: center;">';
+          
+          if (page > 1) {
+            paginationHtml += `<button onclick="changePage(${page - 1})" style="padding: 5px 10px; background: var(--accent); color: var(--dark); border: none; border-radius: 3px; cursor: pointer;">← Précédent</button>`;
+          }
+          
+          paginationHtml += `<span>Page ${page} sur ${totalPages}</span>`;
+          
+          if (page < totalPages) {
+            paginationHtml += `<button onclick="changePage(${page + 1})" style="padding: 5px 10px; background: var(--accent); color: var(--dark); border: none; border-radius: 3px; cursor: pointer;">Suivant →</button>`;
+          }
+          
+          paginationHtml += '</div>';
+        }
+        
+        pagination.innerHTML = paginationHtml;
+      }
+      
+      // Changer de page
+      function changePage(newPage) {
+        const pageSize = parseInt(document.getElementById('pageSize').value);
+        const tableType = document.getElementById('tableSelector').value;
+        currentPage = newPage;
+        displayTableData(currentData, pageSize, currentPage, tableType);
+      }
+      
+      // === GESTION SECTIONS PLIABLES MONITORING ===
+      
+      // État des sections (par défaut toutes déployées)
+      const monitoringSections = {
+        selection: true, // true = déployé, false = plié
+        data: true
+      };
+      
+      // Basculer l'état d'une section
+      function toggleMonitoringSection(sectionName) {
+        const content = document.getElementById(sectionName + '-content');
+        const led = document.getElementById(sectionName + '-led');
+        const arrow = document.getElementById(sectionName + '-arrow');
+        
+        // Basculer l'état
+        monitoringSections[sectionName] = !monitoringSections[sectionName];
+        
+        if (monitoringSections[sectionName]) {
+          // Déplier
+          content.classList.remove('collapsed');
+          content.classList.add('expanded');
+          led.classList.remove('collapsed');
+          led.classList.add('expanded');
+          arrow.classList.remove('collapsed');
+          arrow.classList.add('expanded');
+        } else {
+          // Plier
+          content.classList.remove('expanded');
+          content.classList.add('collapsed');
+          led.classList.remove('expanded');
+          led.classList.add('collapsed');
+          arrow.classList.remove('expanded');
+          arrow.classList.add('collapsed');
+        }
+      }
+      
+      // Initialiser l'état des LEDs et flèches au chargement
+      function initializeMonitoringLEDs() {
+        Object.keys(monitoringSections).forEach(sectionName => {
+          const content = document.getElementById(sectionName + '-content');
+          const led = document.getElementById(sectionName + '-led');
+          const arrow = document.getElementById(sectionName + '-arrow');
+          
+          if (monitoringSections[sectionName]) {
+            content.classList.add('expanded');
+            led.classList.add('expanded');
+            arrow.classList.add('expanded');
+          } else {
+            content.classList.add('collapsed');
+            led.classList.add('collapsed');
+            arrow.classList.add('collapsed');
+          }
+        });
+      }
+      
+      // === NAVIGATION DATE ===
+      
+      // Changer la date du sélecteur
+      function changeDate(direction) {
+        const dateInput = document.getElementById('drawDate');
+        const currentDate = new Date(dateInput.value);
+        
+        // Vérifier que la date est valide
+        if (isNaN(currentDate.getTime())) {
+          console.error('Date invalide dans le sélecteur');
+          return;
+        }
+        
+        // Ajouter ou soustraire un jour
+        currentDate.setDate(currentDate.getDate() + direction);
+        
+        // Formater la date au format YYYY-MM-DD
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const newDateString = `${year}-${month}-${day}`;
+        
+        // Mettre à jour le sélecteur
+        dateInput.value = newDateString;
+        
+        console.log(`📅 Date changée: ${direction > 0 ? 'suivant' : 'précédent'} → ${newDateString}`);
       }
 
       // Fonction pour dessiner le menu cylindrique
