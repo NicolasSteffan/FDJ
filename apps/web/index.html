@@ -60,7 +60,6 @@
             <ul class="submenu">
               <li><a href="#" onclick="showSection('tirage')">Tirage</a></li>
               <li><a href="#" onclick="showHistorique()">Historique</a></li>
-              <li><a href="#" onclick="showSection('demo')">Détails tirage</a></li>
             </ul>
           </li>
           <li>
@@ -82,6 +81,7 @@
             <ul class="submenu">
               <li><a href="#" onclick="showSection('admin-diagnostic')">Diagnostic Base de données</a></li>
               <li><a href="#" onclick="showSection('admin-monitoring')">Monitoring Base de données</a></li>
+              <li><a href="#" onclick="showSection('components')">Architecture - Documentation</a></li>
             </ul>
           </li>
         </ul>
@@ -120,73 +120,42 @@
 
       <!-- Section Démo -->
       <section id="demo" class="section hidden">
-        <h1>🎯 Démonstration des Composants</h1>
-
-        <div class="demo-card">
-          <h2>⚽ Composant Boules de Loterie</h2>
-          <p>Exemple de tirage EuroMillions :</p>
-          <div class="balls">
-            <div class="ball">7</div>
-            <div class="ball">14</div>
-            <div class="ball">21</div>
-            <div class="ball">28</div>
-            <div class="ball">35</div>
-            <div class="ball star">3</div>
-            <div class="ball star">9</div>
+        <!-- Section Historique (non-pliable) -->
+        <div class="historique-section">
+          <div class="historique-header">
+            <h2 class="historique-title">Historique</h2>
+            
+            <div class="historique-pagination">
+              <label for="historiquePagination">Résultats par page :</label>
+              <select id="historiquePagination" onchange="loadHistoriqueFromDatabase()">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="all">Tous</option>
+              </select>
           </div>
-          <button onclick="generateRandomDraw()">Générer Tirage Aléatoire</button>
         </div>
 
-        <div class="demo-card">
-          <h2>🔄 Sélecteur de Source de Données</h2>
-          <div class="data-source-selector">
-            <h3>Source de données active :</h3>
-            <div class="source-toggle">
-              <label>
-                <input type="radio" name="dataSource" value="json" checked onchange="switchDataSource(this.value)">
-                📄 Fichiers JSON
-              </label>
-              <label>
-                <input type="radio" name="dataSource" value="sqlite" onchange="switchDataSource(this.value)">
-                🗄️ Base SQLite
-              </label>
+          <!-- Tableau des tirages sous forme de tags dépliables -->
+          <div class="tirages-container" id="tiragesContainer">
+            <p class="no-data-message">Aucun tirage en base de données. Effectuez d'abord un scraping depuis la page Tirage.</p>
             </div>
-            <p id="sourceStatus">Source active : JSON</p>
-          </div>
-        </div>
-
-        <div class="demo-card">
-          <h2>📊 Tableau de Données</h2>
-          <table class="demo-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Numéros</th>
-                <th>Étoiles</th>
-                <th>Source</th>
-              </tr>
-            </thead>
-            <tbody id="drawsTable">
-              <tr>
-                <td>14/01/2025</td>
-                <td>7, 14, 21, 28, 35</td>
-                <td>3, 9</td>
-                <td>Demo</td>
-              </tr>
-            </tbody>
-          </table>
-          <button onclick="loadHistoriqueMock()">Charger Historique Mock</button>
-          <button onclick="addRandomRow()">Ajouter Tirage</button>
         </div>
       </section>
 
       <!-- Section Composants -->
       <section id="components" class="section hidden">
-        <h1>🧩 Bibliothèque de Composants</h1>
+        <h1>Architecture - Documentation</h1>
 
+        <!-- Section Structure OOP (pliable) -->
         <div class="demo-card">
-          <h2>📁 Structure des Fichiers OOP</h2>
-          <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto;">
+          <h2 onclick="toggleArchitectureSection('structure')" class="architecture-section-title">
+            <span class="led_generique_petite" id="structure-led"></span>
+            Structure des Fichiers OOP
+            <span class="architecture-arrow" id="structure-arrow"></span>
+          </h2>
+          <div id="structure-content" class="architecture-section-content">
+            <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto;">
 src/
 ├── models/                 # Modèles de données
 │   ├── Draw.js            # Modèle de tirage
@@ -208,23 +177,32 @@ style/ClaudS4/            # Styles CSS séparés
 ├── main.css             # Styles principaux
 ├── components.css       # Styles des composants
 └── scraper-theme.css    # Thème scraper
-          </pre>
+            </pre>
+          </div>
         </div>
 
+        <!-- Section Documentation (pliable) -->
         <div class="demo-card">
-          <h2>📚 Documentation</h2>
-          <ul>
-            <li><strong>bible.md</strong> - Règles fondamentales du projet</li>
-            <li><strong>MIGRATION_GUIDE.md</strong> - Guide de migration</li>
-            <li><strong>REFACTORING_SUMMARY.md</strong> - Résumé technique</li>
-            <li><strong>tests/compatibility-test.js</strong> - Tests de compatibilité</li>
-            <li><strong>go.bat</strong> - Script de lancement robuste</li>
-          </ul>
+          <h2 onclick="toggleArchitectureSection('documentation')" class="architecture-section-title">
+            <span class="led_generique_petite" id="documentation-led"></span>
+            Documentation
+            <span class="architecture-arrow" id="documentation-arrow"></span>
+          </h2>
+          <div id="documentation-content" class="architecture-section-content">
+            <ul>
+              <li><strong>bible.md</strong> - Règles fondamentales du projet</li>
+              <li><strong>MIGRATION_GUIDE.md</strong> - Guide de migration</li>
+              <li><strong>REFACTORING_SUMMARY.md</strong> - Résumé technique</li>
+              <li><strong>tests/compatibility-test.js</strong> - Tests de compatibilité</li>
+              <li><strong>go.bat</strong> - Script de lancement robuste</li>
+            </ul>
+          </div>
         </div>
       </section>
 
       <!-- Section Tirage -->
       <section id="tirage" class="section hidden">
+        <h1><span class="tirage-led"></span> Tirage</h1>
 
         <!-- Contrôles -->
         <div class="tirage-controls">
@@ -259,16 +237,12 @@ style/ClaudS4/            # Styles CSS séparés
             <div class="toggle-switch">
               <div class="switch-container">
                 <span class="switch-label-left">Scrap</span>
-                <div class="led">
-                  <div class="led-indicator" id="scrapLed"></div>
-                </div>
+                <div class="led_generique_petite expanded" id="scrapLed"></div>
                 <div class="switch scrap">
                   <input type="checkbox" id="dataToggle" checked>
                   <span class="slider"></span>
                 </div>
-                <div class="led">
-                  <div class="led-indicator" id="jsonLed"></div>
-                </div>
+                <div class="led_generique_petite collapsed" id="jsonLed"></div>
                 <span class="switch-label-right">Mock</span>
               </div>
             </div>
@@ -286,7 +260,7 @@ style/ClaudS4/            # Styles CSS séparés
         <!-- Section Résultats (pliable) -->
         <div class="gains-section" id="resultsSection" style="display: none;">
           <div class="gains-header" onclick="toggleResults()">
-            <h3>Résultat</h3>
+            <h3><span class="led_generique_petite expanded" id="results-led"></span>Résultat</h3>
             <span class="gains-toggle expanded" id="resultsToggle"></span>
           </div>
           <div class="gains-content expanded" id="resultsContent">
@@ -302,7 +276,7 @@ style/ClaudS4/            # Styles CSS séparés
         <!-- Section Gains (pliable) -->
         <div class="gains-section" id="gainsSection" style="display: none;">
           <div class="gains-header" onclick="toggleGains()">
-            <h3>Gains et Répartitions</h3>
+            <h3><span class="led_generique_petite expanded" id="gains-led"></span>Gains et Répartitions</h3>
             <span class="gains-toggle expanded" id="gainsToggle"></span>
           </div>
           <div class="gains-content expanded" id="gainsContent">
@@ -381,7 +355,7 @@ style/ClaudS4/            # Styles CSS séparés
         
         <div class="demo-card">
           <h2 onclick="toggleMonitoringSection('selection')" class="monitoring-section-title">
-            <span class="monitoring-led" id="selection-led"></span>
+            <span class="led_generique_petite" id="selection-led"></span>
             Sélection Table
             <span class="monitoring-arrow" id="selection-arrow"></span>
           </h2>
@@ -407,7 +381,7 @@ style/ClaudS4/            # Styles CSS séparés
 
         <div class="demo-card">
           <h2 onclick="toggleMonitoringSection('data')" class="monitoring-section-title">
-            <span class="monitoring-led" id="data-led"></span>
+            <span class="led_generique_petite" id="data-led"></span>
             Données de la Table
             <span class="monitoring-arrow" id="data-arrow"></span>
           </h2>
@@ -422,7 +396,7 @@ style/ClaudS4/            # Styles CSS séparés
 
     <!-- Mock Data pour les tirages -->
     <script src="./mock-data.js"></script>
-    
+
     <!-- JavaScript intégré pour éviter les problèmes de modules ES6 -->
     <script>
       // Navigation entre sections
@@ -978,6 +952,36 @@ style/ClaudS4/            # Styles CSS séparés
         updateBreadcrumb('source-selected');
       }
 
+      // Fonction pour mettre à jour les LEDs de l'interrupteur
+      function updateLeds() {
+        const scrapLed = document.getElementById('scrapLed');
+        const jsonLed = document.getElementById('jsonLed');
+        
+        if (currentDataSource === 'scrap') {
+          // Mode Scrap actif (interrupteur à GAUCHE) : LED Scrap VERTE, LED Mock GRISE
+          if (scrapLed) {
+            scrapLed.classList.remove('collapsed');
+            scrapLed.classList.add('expanded');
+          }
+          if (jsonLed) {
+            jsonLed.classList.remove('expanded');
+            jsonLed.classList.add('collapsed');
+          }
+        } else {
+          // Mode Mock actif (interrupteur à DROITE) : LED Scrap GRISE, LED Mock VERTE
+          if (scrapLed) {
+            scrapLed.classList.remove('expanded');
+            scrapLed.classList.add('collapsed');
+          }
+          if (jsonLed) {
+            jsonLed.classList.remove('collapsed');
+            jsonLed.classList.add('expanded');
+          }
+        }
+        
+        console.log(`🔄 LEDs mises à jour: Scrap=${currentDataSource === 'scrap' ? 'VERT' : 'GRIS'}, Mock=${currentDataSource === 'mock' ? 'VERT' : 'GRIS'}`);
+      }
+
       // Fonction pour vider le tableau des gains
       function clearGainsTable() {
         const gainsSection = document.getElementById('gainsSection');
@@ -1284,14 +1288,34 @@ style/ClaudS4/            # Styles CSS séparés
           const scrapedData = await scrapDrawFromLotteryExtreme(selectedDate);
           
           if (scrapedData && scrapedData.numbers && scrapedData.stars) {
-            console.log('✅ Scraping réussi, sauvegarde en base');
+            console.log('✅ Scraping réussi, données reçues:', scrapedData);
+            console.log('🎯 Structure des données scrappées:', {
+              numbers: scrapedData.numbers,
+              stars: scrapedData.stars,
+              breakdown: scrapedData.breakdown,
+              gains: scrapedData.gains,
+              breakdownLength: scrapedData.breakdown ? scrapedData.breakdown.length : 'undefined'
+            });
+            
+            // Mapper breakdown vers gains avec format unifié
+            const gains = (scrapedData.breakdown || []).map(item => ({
+              rang: item.rankLabel,
+              gagnants: item.winners,
+              gain: item.amount,
+              // Garder aussi les propriétés originales pour compatibilité
+              rankLabel: item.rankLabel,
+              winners: item.winners,
+              amount: item.amount
+            }));
+            
+            console.log('🎯 Gains mappés pour sauvegarde:', gains);
             
             // Sauvegarder en base
             const dataToSave = {
               date: selectedDate,
               numbers: scrapedData.numbers,
               stars: scrapedData.stars,
-              gains: scrapedData.gains || [],
+              gains: gains,
               source: 'scraped',
               timestamp: new Date().toISOString()
             };
@@ -1299,8 +1323,69 @@ style/ClaudS4/            # Styles CSS séparés
             localStorage.setItem(`draw_${selectedDate}`, JSON.stringify(dataToSave));
             console.log('💾 Données sauvegardées en base');
             
-            // Afficher les résultats
-            displayDrawFromDatabase(dataToSave, selectedDate);
+            // Vérification immédiate de la sauvegarde
+            const savedData = JSON.parse(localStorage.getItem(`draw_${selectedDate}`));
+            console.log('✅ Vérification sauvegarde - données récupérées:', savedData);
+            console.log('🎯 Vérification gains après sauvegarde:', savedData.gains);
+            console.log('📊 Nombre de gains sauvegardés:', savedData.gains ? savedData.gains.length : 'undefined');
+            
+            // Afficher les résultats (utiliser les fonctions existantes)
+            console.log('🎨 Affichage des résultats...');
+            
+            // Afficher les boules du tirage
+            const resultsSection = document.getElementById('resultsSection');
+            const resultDate = document.getElementById('resultDate');
+            const resultBalls = document.getElementById('resultBalls');
+            
+            // Formatter la date
+            const dateObj = new Date(selectedDate + 'T00:00:00');
+            const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+            
+            resultDate.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+            
+            // Créer les boules
+            resultBalls.innerHTML = '';
+            
+            // Boules numéros
+            scrapedData.numbers.forEach(number => {
+              const ball = document.createElement('span');
+              ball.className = 'ball';
+              ball.textContent = number;
+              resultBalls.appendChild(ball);
+            });
+            
+            // Boules étoiles
+            scrapedData.stars.forEach(star => {
+              const starBall = document.createElement('span');
+              starBall.className = 'ball star';
+              starBall.textContent = star;
+              resultBalls.appendChild(starBall);
+            });
+            
+            resultsSection.style.display = 'block';
+            
+            // Afficher les gains avec les données mappées
+            if (scrapedData.breakdown && scrapedData.breakdown.length > 0) {
+              console.log('🎯 Affichage des gains avec breakdown:', scrapedData.breakdown);
+              
+              // Créer un objet compatible avec displayGainsData
+              const mockDataForDisplay = {
+                gains: gains // Utiliser les gains déjà mappés
+              };
+              
+              console.log('🎯 Données gains formatées pour affichage:', mockDataForDisplay);
+              displayGainsData(mockDataForDisplay);
+            } else {
+              console.log('⚠️ Pas de breakdown, affichage gains par défaut');
+              displayGainsData();
+            }
+            
+            updateBreadcrumb('success');
             
           } else {
             console.log('⭕ Scraping retourné vide, sauvegarde tirage vide');
@@ -1318,8 +1403,32 @@ style/ClaudS4/            # Styles CSS séparés
             localStorage.setItem(`draw_${selectedDate}`, JSON.stringify(emptyDraw));
             console.log('💾 Tirage vide sauvegardé');
             
-            // Afficher le message
-            displayNoDrawMessage(selectedDate);
+            // Afficher le message de tirage vide
+            const resultsSection = document.getElementById('resultsSection');
+            const resultDate = document.getElementById('resultDate');
+            const resultBalls = document.getElementById('resultBalls');
+            
+            // Formatter la date
+            const dateObj = new Date(selectedDate + 'T00:00:00');
+            const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+            
+            resultDate.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+            
+            resultBalls.innerHTML = `
+              <div style="text-align: center; padding: 30px; color: var(--accent);">
+                <div style="font-size: 48px; margin-bottom: 15px;">📅</div>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Pas de tirage trouvé</div>
+                <div style="font-size: 14px; color: #888;">Aucun tirage EuroMillions pour cette date</div>
+              </div>
+            `;
+            
+            resultsSection.style.display = 'block';
+            updateBreadcrumb('info');
           }
           
         } catch (error) {
@@ -1430,6 +1539,7 @@ style/ClaudS4/            # Styles CSS séparés
         resultsSection.style.display = 'block';
         
         // Afficher les gains Mock
+        console.log('🎯 Appel displayGainsData avec drawData:', drawData);
         displayGainsData(drawData);
         
         // Mettre à jour le fil d'Ariane
@@ -1787,20 +1897,26 @@ style/ClaudS4/            # Styles CSS séparés
       }
 
       function displayGainsData(mockDrawData = null) {
+        console.log('🎯 displayGainsData appelée avec:', mockDrawData);
+        console.log('🎯 currentDataSource:', currentDataSource);
+        
         const gainsSection = document.getElementById('gainsSection');
         const gainsTableBody = document.getElementById('gainsTableBody');
+        
+        console.log('🎯 gainsSection trouvé:', !!gainsSection);
+        console.log('🎯 gainsTableBody trouvé:', !!gainsTableBody);
 
         let gainsData;
         
-        if (currentDataSource === 'mock' && mockDrawData && mockDrawData.gains) {
-          // Utiliser les vrais données Mock
+        if (mockDrawData && mockDrawData.gains && mockDrawData.gains.length > 0) {
+          // Utiliser les données fournies (Mock ou Scraped)
           gainsData = mockDrawData.gains.map((gain, index) => ({
             rank: index + 1,
-            combo: gain.rang,
-            winners: gain.gagnants,
-            gain: gain.gain
+            combo: gain.rang || gain.rankLabel || `${index + 1}+0`,
+            winners: gain.gagnants || gain.winners || 0,
+            gain: gain.gain || gain.amount || 'N/A'
           }));
-          console.log('🎲 Gains Mock chargés:', gainsData.length, 'rangs');
+          console.log('🎲 Gains fournis chargés:', gainsData.length, 'rangs, source:', currentDataSource);
         } else {
           // Données de gains par défaut (Scrap simulé)
           gainsData = [
@@ -1885,41 +2001,60 @@ style/ClaudS4/            # Styles CSS séparés
         });
 
         gainsSection.style.display = 'block';
+        console.log('✅ gainsSection affiché, nombre de lignes ajoutées:', gainsData.length);
       }
 
       function toggleResults() {
         const resultsContent = document.getElementById('resultsContent');
         const resultsToggle = document.getElementById('resultsToggle');
+        const resultsLed = document.getElementById('results-led');
         
         const isExpanded = resultsContent.classList.contains('expanded');
         
         if (isExpanded) {
           resultsContent.classList.remove('expanded');
           resultsToggle.classList.remove('expanded');
+          if (resultsLed) {
+            resultsLed.classList.remove('expanded');
+            resultsLed.classList.add('collapsed');
+          }
         } else {
           resultsContent.classList.add('expanded');
           resultsToggle.classList.add('expanded');
+          if (resultsLed) {
+            resultsLed.classList.remove('collapsed');
+            resultsLed.classList.add('expanded');
+          }
         }
       }
 
       function toggleGains() {
         const gainsContent = document.getElementById('gainsContent');
         const gainsToggle = document.getElementById('gainsToggle');
+        const gainsLed = document.getElementById('gains-led');
         
         const isExpanded = gainsContent.classList.contains('expanded');
         
         if (isExpanded) {
           gainsContent.classList.remove('expanded');
           gainsToggle.classList.remove('expanded');
+          if (gainsLed) {
+            gainsLed.classList.remove('expanded');
+            gainsLed.classList.add('collapsed');
+          }
         } else {
           gainsContent.classList.add('expanded');
           gainsToggle.classList.add('expanded');
+          if (gainsLed) {
+            gainsLed.classList.remove('collapsed');
+            gainsLed.classList.add('expanded');
+          }
         }
       }
 
-              // Afficher la section d'accueil par défaut
-        document.addEventListener('DOMContentLoaded', () => {
-          console.log('🚀 FDJ Architecture OOP - Index unifié chargé');
+      // Afficher la section d'accueil par défaut
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('🚀 FDJ Architecture OOP - Index unifié chargé');
           
           // DEBUG LED - Vérification détaillée
           console.log('🔍 DEBUG LED - Vérification de l\'affichage:');
@@ -1956,7 +2091,7 @@ style/ClaudS4/            # Styles CSS séparés
           // Si aucune section n'est visible, montrer home par défaut
           const visibleSections = document.querySelectorAll('.section:not(.hidden)');
           if (visibleSections.length === 0) {
-            showSection('home');
+        showSection('home');
           }
         
         // Dessiner le menu cylindrique
@@ -1997,6 +2132,273 @@ style/ClaudS4/            # Styles CSS séparés
           }
         }, 100);
       });
+
+      // === NOUVELLE PAGE HISTORIQUE ===
+
+      // Fonction pour charger et afficher les tirages depuis la base
+      function loadHistoriqueFromDatabase() {
+        console.log('🔄 Chargement de l\'historique depuis la base de données...');
+        
+        const container = document.getElementById('tiragesContainer');
+        const paginationSelect = document.getElementById('historiquePagination');
+        
+        if (!container) {
+          console.error('❌ Container tiragesContainer introuvable');
+          return;
+        }
+
+        // Récupérer tous les tirages depuis localStorage
+        const draws = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('draw_')) {
+            try {
+              const drawData = JSON.parse(localStorage.getItem(key));
+              if (drawData && drawData.date) {
+                draws.push(drawData);
+              }
+            } catch (error) {
+              console.warn('⚠️ Erreur parsing draw:', key, error);
+            }
+          }
+        }
+
+        console.log(`📊 ${draws.length} tirages trouvés en base`);
+
+        if (draws.length === 0) {
+          container.innerHTML = '<p class="no-data-message">Aucun tirage en base de données. Effectuez d\'abord un scraping depuis la page Tirage.</p>';
+          return;
+        }
+
+        // Trier par date (plus récent en premier)
+        draws.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // Appliquer la pagination
+        const pageSize = paginationSelect ? paginationSelect.value : '10';
+        let drawsToDisplay = draws;
+        
+        if (pageSize !== 'all') {
+          const limit = parseInt(pageSize);
+          drawsToDisplay = draws.slice(0, limit);
+          console.log(`📄 Affichage de ${drawsToDisplay.length}/${draws.length} tirages (limite: ${pageSize})`);
+        } else {
+          console.log(`📄 Affichage de tous les tirages (${draws.length})`);
+        }
+
+        // Générer le HTML des tags
+        container.innerHTML = drawsToDisplay.map(draw => createTirageTag(draw)).join('');
+        
+        // Ajouter info de pagination si nécessaire
+        if (pageSize !== 'all' && draws.length > parseInt(pageSize)) {
+          const infoDiv = document.createElement('div');
+          infoDiv.style.cssText = 'text-align: center; color: #888; margin-top: 20px; font-size: 14px;';
+          infoDiv.innerHTML = `Affichage de ${drawsToDisplay.length} sur ${draws.length} tirages - Modifiez la sélection pour voir plus`;
+          container.appendChild(infoDiv);
+        }
+      }
+
+      // Créer un tag de tirage dépliable
+      function createTirageTag(drawData) {
+        const dateObj = new Date(drawData.date + 'T00:00:00');
+        const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+          weekday: 'short',
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+
+        // Créer les boules numéros
+        const numberBalls = drawData.numbers.map(num => 
+          `<span class="ball">${num}</span>`
+        ).join('');
+
+        // Créer les boules étoiles
+        const starBalls = drawData.stars.map(star => 
+          `<span class="ball star">${star}</span>`
+        ).join('');
+
+        // Créer les gains si disponibles
+        const gainsHtml = createGainsHtml(drawData.gains || []);
+
+        return `
+          <div class="tirage-tag" data-date="${drawData.date}">
+            <div class="tirage-tag-header" onclick="toggleTirageTag('${drawData.date}')">
+              <div class="tirage-tag-info">
+                <div class="tirage-date">${formattedDate}</div>
+                <div class="tirage-numbers">
+                  ${numberBalls}
+                  ${starBalls}
+                </div>
+                <div class="tirage-source">${drawData.source || 'unknown'}</div>
+              </div>
+              <div class="tirage-expand-arrow">▶</div>
+            </div>
+            <div class="tirage-tag-content">
+              <div class="tirage-gains">
+                <div class="gains-title">Gains et Répartitions</div>
+                ${gainsHtml}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Créer le HTML des gains
+      function createGainsHtml(gains) {
+        if (!gains || gains.length === 0) {
+          return '<p style="color: #888; font-style: italic;">Aucun gain disponible pour ce tirage.</p>';
+        }
+
+        const gainsItems = gains.map(gain => {
+          // Parser le rang pour créer les boules (ex: "5+2" → 5 boules + 2 étoiles)
+          const rang = gain.rang || gain.rankLabel || '';
+          const [numbers, stars] = rang.split('+').map(n => parseInt(n) || 0);
+          
+          // Créer les boules visuelles
+          const numberBalls = Array.from({length: numbers}, (_, i) => 
+            `<span class="ball">${i + 1}</span>`
+          ).join('');
+          
+          const starBalls = Array.from({length: stars}, (_, i) => 
+            `<span class="ball star">${i + 1}</span>`
+          ).join('');
+
+          return `
+            <div class="gain-item">
+              <div class="gain-combo">
+                ${numberBalls}${starBalls}
+              </div>
+              <div class="gain-details">
+                <div class="gain-amount">${gain.gain || gain.amount || 'N/A'}</div>
+                <div class="gain-winners">${gain.gagnants || gain.winners || 0} gagnant(s)</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `<div class="gains-grid">${gainsItems}</div>`;
+      }
+
+      // Basculer l'état déplié/plié d'un tag
+      function toggleTirageTag(date) {
+        const tag = document.querySelector(`[data-date="${date}"]`);
+        if (tag) {
+          tag.classList.toggle('expanded');
+          console.log(`🔄 Toggle tirage tag pour ${date}`);
+        }
+      }
+
+      // Fonction pour initialiser la page historique
+      function showHistorique() {
+        showSection('demo');
+        setTimeout(() => {
+          loadHistoriqueFromDatabase();
+        }, 100);
+      }
+
+      // === ARCHITECTURE - DOCUMENTATION PAGE ===
+
+      // État des sections Architecture
+      const architectureSectionsState = {
+        structure: true,     // Déployée par défaut
+        documentation: true  // Déployée par défaut
+      };
+
+      // Basculer l'état d'une section Architecture
+      function toggleArchitectureSection(sectionName) {
+        const content = document.getElementById(`${sectionName}-content`);
+        const led = document.getElementById(`${sectionName}-led`);
+        const arrow = document.getElementById(`${sectionName}-arrow`);
+        
+        if (!content || !led || !arrow) {
+          console.error('❌ Éléments Architecture introuvables pour:', sectionName);
+          return;
+        }
+
+        // Basculer l'état
+        architectureSectionsState[sectionName] = !architectureSectionsState[sectionName];
+        const isExpanded = architectureSectionsState[sectionName];
+        
+        // Mettre à jour les classes
+        if (isExpanded) {
+          content.classList.add('expanded');
+          led.classList.remove('collapsed');
+          led.classList.add('expanded');
+          arrow.classList.add('expanded');
+        } else {
+          content.classList.remove('expanded');
+          led.classList.remove('expanded');
+          led.classList.add('collapsed');
+          arrow.classList.remove('expanded');
+        }
+        
+        // Mettre à jour le texte de la flèche (▼ pour déplier, ▲ pour replier)
+        arrow.textContent = isExpanded ? '▲' : '▼';
+        
+        // Mettre à jour les classes des flèches
+        if (isExpanded) {
+          arrow.classList.add('expanded');
+          arrow.classList.remove('collapsed');
+        } else {
+          arrow.classList.add('collapsed');
+          arrow.classList.remove('expanded');
+        }
+        
+        console.log(`🔄 Section Architecture '${sectionName}' ${isExpanded ? 'déployée' : 'pliée'}`);
+      }
+
+      // Initialiser les LEDs Architecture au chargement de la page
+      function initializeArchitectureLEDs() {
+        Object.keys(architectureSectionsState).forEach(sectionName => {
+          const content = document.getElementById(`${sectionName}-content`);
+          const led = document.getElementById(`${sectionName}-led`);
+          const arrow = document.getElementById(`${sectionName}-arrow`);
+          
+          if (content && led && arrow) {
+            const isExpanded = architectureSectionsState[sectionName];
+            
+            if (isExpanded) {
+              content.classList.add('expanded');
+              led.classList.add('expanded');
+              arrow.classList.add('expanded');
+              arrow.textContent = '▲';  // Flèche haute = déployé
+            } else {
+              led.classList.add('collapsed');
+              arrow.classList.add('collapsed');
+              arrow.textContent = '▼';  // Flèche bas = fermé
+            }
+          }
+        });
+      }
+
+      // Ajouter l'initialisation des LEDs Architecture lors de l'affichage de la section
+      const originalShowSection = showSection;
+      showSection = function(sectionName) {
+        originalShowSection(sectionName);
+        if (sectionName === 'components') {
+          setTimeout(initializeArchitectureLEDs, 100);
+        }
+        if (sectionName === 'tirage') {
+          // Initialiser les LEDs de l'interrupteur quand on va sur la page Tirage
+          setTimeout(updateLeds, 100);
+        }
+      };
+
+      // Initialisation des LEDs au chargement de la page
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Initialisation des LEDs de l\'interrupteur');
+        updateLeds();
+        
+        // Ajouter event listener sur l'interrupteur pour suivre la boule
+        const dataToggle = document.getElementById('dataToggle');
+        if (dataToggle) {
+          dataToggle.addEventListener('change', function() {
+            console.log('🔄 Interrupteur basculé, position:', this.checked ? 'GAUCHE (Scrap)' : 'DROITE (Mock)');
+            toggleDataSource();
+          });
+        }
+      });
+
     </script>
   </body>
 </html>

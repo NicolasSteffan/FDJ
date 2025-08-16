@@ -757,3 +757,489 @@ button[onclick="exportDatabase()"]:hover {
     margin-right: 8px;
   }
 }
+
+/* === NOUVELLE PAGE HISTORIQUE === */
+
+/* Section Historique (non-pliable) */
+.historique-section {
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 25px;
+  margin: 20px 0;
+}
+
+/* Header avec titre et sélecteur */
+.historique-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.historique-title {
+  color: var(--accent);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  text-align: left;
+  cursor: default;
+}
+
+/* Sélecteur de pagination */
+.historique-pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.historique-pagination label {
+  color: #cfe4ff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.historique-pagination select {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  color: #cfe4ff;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.historique-pagination select:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--accent);
+}
+
+.historique-pagination select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.2);
+}
+
+/* Styles pour les options de la liste déroulante */
+.historique-pagination select option {
+  background: rgba(10,14,28,0.95);
+  color: #cfe4ff;
+  padding: 8px 12px;
+  border: none;
+}
+
+.historique-pagination select option:hover,
+.historique-pagination select option:checked {
+  background: rgba(79, 172, 254, 0.2);
+  color: var(--accent);
+}
+
+/* === STYLES GLOBAUX POUR LES SELECTS === */
+
+/* Style global pour tous les select de l'application */
+select {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  color: #cfe4ff;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+select:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--accent);
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.2);
+}
+
+/* Options des listes déroulantes */
+select option {
+  background: rgba(10,14,28,0.95);
+  color: #cfe4ff;
+  padding: 8px 12px;
+  border: none;
+  font-size: 14px;
+}
+
+select option:hover,
+select option:checked,
+select option:focus {
+  background: rgba(79, 172, 254, 0.2);
+  color: var(--accent);
+}
+
+/* Responsive pour le header */
+@media (max-width: 600px) {
+  .historique-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .historique-pagination {
+    align-self: flex-end;
+  }
+}
+
+/* Container des tirages */
+.tirages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.no-data-message {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  padding: 40px 20px;
+  font-size: 16px;
+}
+
+/* Tags de tirages dépliables */
+.tirage-tag {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.tirage-tag:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 10px rgba(79, 172, 254, 0.2);
+}
+
+/* En-tête du tag (toujours visible) */
+.tirage-tag-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.tirage-tag-header:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.tirage-tag-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.tirage-date {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 16px;
+  min-width: 120px;
+}
+
+.tirage-numbers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tirage-numbers .ball {
+  width: 28px;
+  height: 28px;
+  font-size: 12px;
+  line-height: 28px;
+}
+
+.tirage-source {
+  color: #888;
+  font-size: 12px;
+  background: rgba(255,255,255,0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.tirage-expand-arrow {
+  color: var(--accent);
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.tirage-tag.expanded .tirage-expand-arrow {
+  transform: rotate(90deg);
+}
+
+/* Contenu déplié (gains) */
+.tirage-tag-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.tirage-tag.expanded .tirage-tag-content {
+  max-height: 500px;
+}
+
+.tirage-gains {
+  padding: 20px;
+  background: rgba(0,0,0,0.2);
+}
+
+.gains-title {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.gains-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.gain-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.gain-combo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gain-combo .ball {
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  line-height: 20px;
+}
+
+.gain-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.gain-amount {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.gain-winners {
+  color: #888;
+  font-size: 10px;
+}
+
+/* === ARCHITECTURE - DOCUMENTATION PAGE === */
+
+/* Sections pliables pour Architecture */
+.architecture-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  margin: 0;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  position: relative;
+}
+
+.architecture-section-title:hover {
+  color: var(--accent);
+}
+
+.architecture-led {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 12px;
+  transition: all 0.3s ease;
+}
+
+/* LED États - VERT pour Architecture */
+.architecture-led.collapsed {
+  background: #888;
+  box-shadow: 0 0 5px rgba(136, 136, 136, 0.5);
+}
+
+.architecture-led.expanded {
+  background: #4CAF50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+  animation: ledPulseGreen 2s infinite;
+}
+
+.architecture-arrow {
+  color: var(--accent);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  position: absolute;
+  right: 0;
+}
+
+/* Flèche bas (▼) pour déplier, flèche haute (▲) pour replier */
+.architecture-arrow.collapsed {
+  /* Flèche vers le bas = section fermée */
+}
+
+.architecture-arrow.expanded {
+  /* Flèche vers le haut = section ouverte */
+}
+
+/* Contenu des sections */
+.architecture-section-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding: 0 20px;
+}
+
+.architecture-section-content.expanded {
+  max-height: 1000px;
+  padding: 20px;
+}
+
+/* Style pour le code pre dans architecture */
+#components pre {
+  margin: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Liste documentation */
+#components ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+#components li {
+  margin-bottom: 8px;
+  color: #cfe4ff;
+}
+
+/* === LED GÉNÉRIQUE PETITE === */
+
+/* LED générique standardisée pour toute l'application */
+.led_generique_petite {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(128,128,128,0.5);
+}
+
+.led_generique_petite.collapsed {
+  background: #808080;
+  box-shadow: 0 0 8px rgba(128,128,128,0.5);
+}
+
+.led_generique_petite.expanded {
+  background: #00ff00;
+  box-shadow: 0 0 10px rgba(0,255,0,0.6), 0 0 20px rgba(0,255,0,0.4);
+  animation: pulse-green 2s infinite ease-in-out;
+}
+
+@keyframes pulse-green {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+/* === STYLES GLOBAUX POUR TOUS LES TITRES DE SECTION === */
+
+/* Effet hover pour tous les titres de section h1, h2 pliables */
+h1:hover,
+h2.architecture-section-title:hover,
+h2.monitoring-section-title:hover,
+.tirage-tag-header:hover h2,
+.gains-header:hover h3 {
+  color: var(--accent) !important;
+  transition: color 0.3s ease;
+}
+
+/* Style de base pour les titres avec LED */
+h1 {
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+/* LED pour la page Tirage */
+.tirage-led {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 15px;
+  box-shadow: 0 0 10px rgba(79, 172, 254, 0.6);
+  animation: ledPulse 2s infinite;
+}
+
+/* LEDs pour les sections pliables de la page Tirage - REMPLACÉ PAR led_generique_petite
+.results-led,
+.gains-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.results-led {
+  background: #4CAF50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+  animation: ledPulseGreen 2s infinite;
+}
+
+.gains-led {
+  background: #4CAF50;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+  animation: ledPulseGreen 2s infinite;
+}
+*/
+
+/* Ajustement des h3 dans gains-header pour aligner avec LED */
+.gains-header h3 {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+/* Animation pour LED verte (Architecture) */
+@keyframes ledPulseGreen {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.8);
+  }
+}

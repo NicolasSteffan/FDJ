@@ -42,7 +42,7 @@ body {
 .content { 
   max-width: 960px; 
   margin: 40px auto; 
-  padding: 0 20px; 
+  padding: 100px 20px 0 20px; /* Augmentation du padding-top pour compenser le header fixe */
 }
 
 .hidden { 
@@ -88,6 +88,21 @@ body {
   z-index: 1;
 }
 
+/* Header fixe toujours visible */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(10,14,28,0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+}
+
 /* Menu avec style cylindrique */
 .menu { 
   display: block; 
@@ -126,13 +141,16 @@ body {
   position: absolute; 
   top: 100%; 
   left: 0; 
-  background: rgba(10,14,28,0.9); 
-  border: 1px solid rgba(255,255,255,0.06); 
+  background: rgba(10,14,28,0.95); 
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  z-index: 1001; 
   border-radius: 8px; 
   padding: 8px; 
   list-style: none; 
   min-width: 220px; 
-  z-index: 1000; 
 }
 
 .submenu li { 
@@ -204,6 +222,6 @@ button:hover {
   }
   
   .content { 
-    padding: 0 15px; 
+    padding: 100px 15px 0 15px; /* Maintenir le padding-top sur mobile */
   }
 }
