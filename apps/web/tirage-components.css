@@ -995,10 +995,225 @@ select option:focus {
 
 .tirage-tag .tirage-tag .tirage-tag-content {
   border-top: 1px solid rgba(255,255,255,0.08);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
 }
 
 .tirage-tag .tirage-tag.expanded .tirage-tag-content {
   max-height: 600px;
+}
+
+/* === SCROLL POUR SOUS-SECTIONS === */
+.tirage-tag.expanded .tirage-tag-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar personnalisée */
+.tirage-tag .tirage-tag-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tirage-tag .tirage-tag-content::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+
+.tirage-tag .tirage-tag-content::-webkit-scrollbar-thumb {
+  background: rgba(79, 172, 254, 0.6);
+  border-radius: 4px;
+}
+
+.tirage-tag .tirage-tag-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 172, 254, 0.8);
+}
+
+/* === TAGS DE TEST SQLITE === */
+.test-tags-container {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.test-tag {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 15px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.test-tag:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: var(--accent);
+}
+
+.test-label {
+  flex: 1;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.test-button {
+  background: rgba(79, 172, 254, 0.2);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: var(--accent);
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.test-button:hover {
+  background: rgba(79, 172, 254, 0.3);
+  transform: translateY(-1px);
+}
+
+.test-button:active {
+  transform: translateY(0);
+}
+
+/* Animation de pulsation pour les tests en cours */
+.test-tag.testing .led_generique_petite {
+  animation: pulse-orange 1s infinite;
+}
+
+@keyframes pulse-orange {
+  0%, 100% { 
+    background: #ff8800; 
+    box-shadow: 0 0 8px rgba(255, 136, 0, 0.5); 
+  }
+  50% { 
+    background: #ffaa44; 
+    box-shadow: 0 0 12px rgba(255, 136, 0, 0.8); 
+  }
+}
+
+/* === SECTION INSTALL FROM SCRATCH === */
+.install-section {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.install-warning {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  padding: 15px;
+  color: #ffc107;
+}
+
+.install-warning h4 {
+  margin: 0 0 10px 0;
+  color: #ff9800;
+}
+
+.install-warning ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.install-warning li {
+  margin: 5px 0;
+  color: #fff;
+}
+
+.install-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.install-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.install-button.delete {
+  background: rgba(220, 38, 38, 0.2);
+  border: 1px solid #dc2626;
+  color: #ef4444;
+}
+
+.install-button.delete:hover {
+  background: rgba(220, 38, 38, 0.3);
+  transform: translateY(-2px);
+}
+
+.install-button.install {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid #22c55e;
+  color: #22c55e;
+}
+
+.install-button.install:hover {
+  background: rgba(34, 197, 94, 0.3);
+  transform: translateY(-2px);
+}
+
+.install-button.status {
+  background: rgba(79, 172, 254, 0.2);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.install-button.status:hover {
+  background: rgba(79, 172, 254, 0.3);
+  transform: translateY(-2px);
+}
+
+.install-logs {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.logs-header {
+  background: rgba(79, 172, 254, 0.2);
+  padding: 10px 15px;
+  font-weight: 600;
+  color: var(--accent);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.logs-content {
+  padding: 15px;
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #ccc;
+}
+
+.logs-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.logs-content::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.1);
+}
+
+.logs-content::-webkit-scrollbar-thumb {
+  background: rgba(79, 172, 254, 0.5);
+  border-radius: 3px;
 }
 
 .tirage-gains {

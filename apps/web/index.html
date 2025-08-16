@@ -382,14 +382,112 @@ style/ClaudS4/            # Styles CSS séparés
             </div>
           </div>
 
-          <!-- Sous-section 1: Sélection Table SQLite (pliable) -->
-          <div class="tirage-tag expanded" id="sqlite-selection-tirage-tag">
+          <!-- Sous-section 0: Install from Scratch (pliable) -->
+          <div class="tirage-tag collapsed" id="sqlite-install-tirage-tag">
+            <div class="tirage-tag-header" onclick="toggleTirageTag('sqlite-install-tirage-tag')">
+              <h2>
+                <span class="led_generique_petite collapsed" id="sqlite-install-led"></span>
+                Install from Scratch
+              </h2>
+              <span class="tirage-expand-arrow">▼</span>
+            </div>
+            <div class="tirage-tag-content">
+              <div class="install-section">
+                <div class="install-warning">
+                  <h4>⚠️ Installation complète de la base SQLite</h4>
+                  <p>Cette action va :</p>
+                  <ul>
+                    <li>🗑️ Supprimer complètement la base existante</li>
+                    <li>🏗️ Recréer toutes les tables (tirages, gains, sources, config)</li>
+                    <li>📊 Ajouter les index de performance</li>
+                    <li>🎲 Insérer des données de démonstration</li>
+                  </ul>
+                  <p><strong>⚠️ Attention :</strong> Toutes les données existantes seront perdues !</p>
+                </div>
+                
+                <div class="install-actions">
+                  <button class="install-button delete" onclick="deleteDatabase()">
+                    🗑️ Supprimer Base
+                  </button>
+                  <button class="install-button install" onclick="installFreshDatabase()">
+                    🏗️ Installation Complète
+                  </button>
+                  <button class="install-button status" onclick="checkDatabaseStatus()">
+                    📊 Vérifier État
+                  </button>
+                </div>
+                
+                <div id="install-logs" class="install-logs">
+                  <div class="logs-header">📋 Logs d'installation :</div>
+                  <div id="install-logs-content" class="logs-content">
+                    Prêt pour installation...
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sous-section 1: Test Connexion SQLite (pliable) -->
+          <div class="tirage-tag collapsed" id="sqlite-test-tirage-tag">
+            <div class="tirage-tag-header" onclick="toggleTirageTag('sqlite-test-tirage-tag')">
+              <h2>
+                <span class="led_generique_petite collapsed" id="sqlite-test-led"></span>
+                Test Connexion
+              </h2>
+              <span class="tirage-expand-arrow">▼</span>
+            </div>
+            <div class="tirage-tag-content">
+              <!-- Tags de test avec LED pour chaque étape -->
+              <div class="test-tags-container">
+                
+                <!-- Tag: Test Connexion -->
+                <div class="test-tag" id="test-connection-tag">
+                  <span class="led_generique_petite collapsed" id="test-connection-led"></span>
+                  <span class="test-label">Connexion SQLite</span>
+                  <button class="test-button" onclick="testSQLiteConnection()">🔗 Tester</button>
+                </div>
+                
+                <!-- Tag: Test Base -->
+                <div class="test-tag" id="test-database-tag">
+                  <span class="led_generique_petite collapsed" id="test-database-led"></span>
+                  <span class="test-label">Base de données</span>
+                  <button class="test-button" onclick="testSQLiteDatabase()">🗄️ Tester</button>
+                  <button class="test-button" onclick="createFDJDatabase()" style="background: rgba(34, 197, 94, 0.2); border-color: #22c55e; color: #22c55e;">🏗️ Créer Base FDJ</button>
+                </div>
+                
+                <!-- Tag: Test Tables -->
+                <div class="test-tag" id="test-tables-tag">
+                  <span class="led_generique_petite collapsed" id="test-tables-led"></span>
+                  <span class="test-label">Tables (tirages)</span>
+                  <button class="test-button" onclick="testSQLiteTables()">📊 Tester</button>
+                </div>
+                
+                <!-- Tag: Test Insert -->
+                <div class="test-tag" id="test-insert-tag">
+                  <span class="led_generique_petite collapsed" id="test-insert-led"></span>
+                  <span class="test-label">Insert données</span>
+                  <button class="test-button" onclick="testSQLiteInsert()">📝 Tester</button>
+                </div>
+                
+                <!-- Tag: Test Select -->
+                <div class="test-tag" id="test-select-tag">
+                  <span class="led_generique_petite collapsed" id="test-select-led"></span>
+                  <span class="test-label">Select données</span>
+                  <button class="test-button" onclick="testSQLiteSelect()">📋 Tester</button>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+
+          <!-- Sous-section 2: Sélection Table SQLite (pliable) -->
+          <div class="tirage-tag collapsed" id="sqlite-selection-tirage-tag">
             <div class="tirage-tag-header" onclick="toggleTirageTag('sqlite-selection-tirage-tag')">
               <h2>
-                <span class="led_generique_petite expanded" id="sqlite-selection-led"></span>
+                <span class="led_generique_petite collapsed" id="sqlite-selection-led"></span>
                 Sélection Table
               </h2>
-              <span class="tirage-expand-arrow">▲</span>
+              <span class="tirage-expand-arrow">▼</span>
             </div>
             <div class="tirage-tag-content">
               <div class="selector-group">
@@ -397,6 +495,8 @@ style/ClaudS4/            # Styles CSS séparés
                 <select id="sqliteTableSelector" onchange="loadSQLiteTableData()">
                   <option value="tirages">Tirages (tirages)</option>
                   <option value="gains">Gains (gains)</option>
+                  <option value="sources">Sources (sources)</option>
+                  <option value="config">Configuration (config)</option>
                   <option value="all">Toutes les données</option>
                 </select>
               </div>
@@ -412,13 +512,13 @@ style/ClaudS4/            # Styles CSS séparés
           </div>
 
           <!-- Sous-section 2: Données de la Table SQLite (pliable) -->
-          <div class="tirage-tag expanded" id="sqlite-data-tirage-tag">
+          <div class="tirage-tag collapsed" id="sqlite-data-tirage-tag">
             <div class="tirage-tag-header" onclick="toggleTirageTag('sqlite-data-tirage-tag')">
               <h2>
-                <span class="led_generique_petite expanded" id="sqlite-data-led"></span>
+                <span class="led_generique_petite collapsed" id="sqlite-data-led"></span>
                 Données de la Table
               </h2>
-              <span class="tirage-expand-arrow">▲</span>
+              <span class="tirage-expand-arrow">▼</span>
             </div>
             <div class="tirage-tag-content">
               <div id="sqlite-monitoring-stats"></div>
@@ -908,13 +1008,22 @@ style/ClaudS4/            # Styles CSS séparés
           }
         });
         
-        // LEDs des sous-sections (Dump, Sélection et Données)
-        const subLeds = ['sqlite-dump-led', 'sqlite-selection-led', 'sqlite-data-led', 'localstorage-selection-led', 'localstorage-data-led'];
-        subLeds.forEach(ledId => {
-          const led = document.getElementById(ledId);
+        // LEDs des sous-sections - Initialiser selon l'état de leur section parent
+        const subLeds = [
+          {id: 'sqlite-install-led', defaultState: 'collapsed'},
+          {id: 'sqlite-dump-led', defaultState: 'expanded'},
+          {id: 'sqlite-test-led', defaultState: 'collapsed'},
+          {id: 'sqlite-selection-led', defaultState: 'collapsed'},
+          {id: 'sqlite-data-led', defaultState: 'collapsed'},
+          {id: 'localstorage-selection-led', defaultState: 'expanded'},
+          {id: 'localstorage-data-led', defaultState: 'expanded'}
+        ];
+        
+        subLeds.forEach(ledInfo => {
+          const led = document.getElementById(ledInfo.id);
           if (led) {
-            led.classList.remove('collapsed');
-            led.classList.add('expanded');
+            led.classList.remove('collapsed', 'expanded');
+            led.classList.add(ledInfo.defaultState);
           }
         });
       }
@@ -2549,11 +2658,81 @@ style/ClaudS4/            # Styles CSS séparés
         loadLocalStorageTableData();
       }
       
-      // Récupérer données SQLite (à implémenter)
+      // Récupérer données SQLite
       function getSQLiteTableData(tableType) {
-        console.log(`🗄️ SQLite: Récupération ${tableType} (pas encore implémenté)`);
-        // TODO: Implémenter la récupération depuis SQLite
-        return []; // Vide pour l'instant
+        console.log(`🗄️ SQLite: Récupération ${tableType}`);
+        
+        if (!sqliteInitialized || !sqliteDatabase) {
+          console.warn('SQLite non initialisé');
+          return [];
+        }
+        
+        try {
+          let query = '';
+          let columns = [];
+          
+          switch(tableType) {
+            case 'tirages':
+              query = 'SELECT id, date, numbers, stars, jackpot, source, created_at FROM tirages ORDER BY date DESC';
+              columns = ['id', 'date', 'numbers', 'stars', 'jackpot', 'source', 'created_at'];
+              break;
+              
+            case 'gains':
+              query = `
+                SELECT g.id, t.date, g.rang, g.combinaison, g.gains, g.gagnants, t.source
+                FROM gains g
+                JOIN tirages t ON g.tirage_id = t.id
+                ORDER BY t.date DESC, g.rang ASC
+              `;
+              columns = ['id', 'date', 'rang', 'combinaison', 'gains', 'gagnants', 'source'];
+              break;
+              
+            case 'sources':
+              query = 'SELECT id, name, url, active, last_sync, created_at FROM sources ORDER BY id';
+              columns = ['id', 'name', 'url', 'active', 'last_sync', 'created_at'];
+              break;
+              
+            case 'config':
+              query = 'SELECT key, value, description, updated_at FROM config ORDER BY key';
+              columns = ['key', 'value', 'description', 'updated_at'];
+              break;
+              
+            default:
+              console.warn(`Type de table non supporté: ${tableType}`);
+              return [];
+          }
+          
+          const result = sqliteDatabase.exec(query);
+          
+          if (result.length === 0) {
+            console.log(`Aucune donnée trouvée pour ${tableType}`);
+            return [];
+          }
+          
+          // Convertir le résultat en format attendu
+          const rows = result[0].values.map(row => {
+            const obj = {};
+            columns.forEach((col, index) => {
+              obj[col] = row[index];
+            });
+            
+            // Ajouter le type pour l'affichage
+            if (tableType === 'gains') {
+              obj.type = 'gain';
+            } else if (tableType === 'tirages') {
+              obj.type = 'draw';
+            }
+            
+            return obj;
+          });
+          
+          console.log(`✅ SQLite: ${rows.length} lignes récupérées pour ${tableType}`);
+          return rows;
+          
+        } catch (error) {
+          console.error(`Erreur récupération SQLite ${tableType}:`, error);
+          return [];
+        }
       }
       
       // Récupérer données LocalStorage
@@ -2610,12 +2789,17 @@ style/ClaudS4/            # Styles CSS séparés
         const monitoringStats = document.getElementById('sqlite-monitoring-stats');
         
         if (!data || data.length === 0) {
-          monitoringTable.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">🗄️ SQLite pas encore implémenté.<br/>Les données apparaîtront ici une fois la base SQLite configurée.</p>';
-          monitoringStats.innerHTML = '<div style="text-align: center; color: #888; font-size: 12px;">SQLite : En attente d\'implémentation</div>';
+          if (!sqliteInitialized) {
+            monitoringTable.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">🗄️ SQLite non initialisé.<br/>Utilisez la section "Test Connexion" pour initialiser SQLite.</p>';
+            monitoringStats.innerHTML = '<div style="text-align: center; color: #888; font-size: 12px;">SQLite : Non initialisé</div>';
+          } else {
+            monitoringTable.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">📊 Base SQLite vide.<br/>Utilisez le test "Insert données" pour ajouter des données.</p>';
+            monitoringStats.innerHTML = '<div style="text-align: center; color: #888; font-size: 12px;">SQLite : Base vide</div>';
+          }
           return;
         }
         
-        // La suite sera identique à displayLocalStorageTableData mais avec des IDs différents
+        // Utiliser la fonction générique avec les données SQLite
         displayGenericTableData(data, pageSize, page, tableType, 'sqlite-monitoring-stats', 'sqlite-monitoring-table', 'SQLite');
       }
       
@@ -2690,7 +2874,7 @@ style/ClaudS4/            # Styles CSS séparés
             <thead style="background: rgba(241,196,15,0.3); position: sticky; top: 0;">
               <tr>
                 <th style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">Date</th>
-                <th style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">Rang</th>
+                <th style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">Combinaison</th>
                 <th style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">Gagnants</th>
                 <th style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">Gain</th>
                 <th style="padding: 8px; border: 1px solid rgba(255,255,255,0.1);">Source</th>
@@ -2712,11 +2896,11 @@ style/ClaudS4/            # Styles CSS séparés
             `;
           } else {
             tableHTML += `
-              <td style="padding: 6px;">${item.date}</td>
-              <td style="padding: 6px;">${item.rang}</td>
-              <td style="padding: 6px;">${item.gagnants}</td>
-              <td style="padding: 6px;">${item.gain}</td>
-              <td style="padding: 6px;">${item.source}</td>
+              <td style="padding: 6px;">${item.date || 'N/A'}</td>
+              <td style="padding: 6px;">${item.combinaison || item.rang || 'N/A'}</td>
+              <td style="padding: 6px;">${item.gagnants || 0}</td>
+              <td style="padding: 6px;">${item.gains || item.gain || 'N/A'}</td>
+              <td style="padding: 6px;">${item.source || 'N/A'}</td>
             `;
           }
           tableHTML += '</tr>';
@@ -2775,6 +2959,660 @@ style/ClaudS4/            # Styles CSS séparés
           });
         }
       });
+
+      // === VARIABLES GLOBALES SQLITE ===
+      let sqliteDatabase = null;
+      let sqliteInitialized = false;
+      
+      // === FONCTIONS DE TEST SQLITE ===
+      
+      // Fonction pour mettre à jour l'état d'une LED de test
+      function updateTestLED(testId, state, message = '') {
+        const led = document.getElementById(`${testId}-led`);
+        const tag = document.getElementById(`${testId}-tag`);
+        const dumpContent = document.getElementById('sqlite-dump-content');
+        
+        if (led && tag) {
+          // Retirer toutes les classes d'état
+          led.classList.remove('collapsed', 'expanded');
+          tag.classList.remove('testing');
+          
+          switch(state) {
+            case 'testing':
+              led.style.background = '#ff8800';
+              led.style.animation = 'pulse-orange 1s infinite';
+              tag.classList.add('testing');
+              break;
+            case 'success':
+              led.classList.add('expanded');
+              led.style.animation = '';
+              break;
+            case 'error':
+              led.classList.add('collapsed');
+              led.style.background = '#ff4444';
+              led.style.animation = '';
+              break;
+            default:
+              led.classList.add('collapsed');
+              led.style.animation = '';
+          }
+        }
+        
+        // Ajouter message au dump
+        if (message && dumpContent) {
+          const timestamp = new Date().toLocaleTimeString();
+          const logLine = document.createElement('div');
+          logLine.style.color = state === 'success' ? '#00ff00' : state === 'error' ? '#ff4444' : '#ffff00';
+          logLine.textContent = `[${timestamp}] ${message}`;
+          dumpContent.appendChild(logLine);
+          
+          // Scroll vers le bas
+          dumpContent.scrollTop = dumpContent.scrollHeight;
+        }
+      }
+      
+      // Test 1: Connexion SQLite
+      async function testSQLiteConnection() {
+        console.log('🔗 Test connexion SQLite...');
+        updateTestLED('test-connection', 'testing', '🔗 Test connexion SQLite...');
+        
+        try {
+          // Charger sql.js depuis CDN
+          updateTestLED('test-connection', 'testing', '📦 Chargement sql.js...');
+          
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js';
+          document.head.appendChild(script);
+          
+          await new Promise((resolve, reject) => {
+            script.onload = resolve;
+            script.onerror = () => reject(new Error('Impossible de charger sql.js'));
+            setTimeout(() => reject(new Error('Timeout chargement sql.js')), 10000);
+          });
+          
+          updateTestLED('test-connection', 'testing', '🔗 Initialisation sql.js...');
+          
+          // Initialiser sql.js
+          const initSqlJs = window.initSqlJs;
+          const SQL = await initSqlJs({
+            locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+          });
+          
+          // Créer une base de données en mémoire
+          sqliteDatabase = new SQL.Database();
+          sqliteInitialized = true;
+          
+          updateTestLED('test-connection', 'success', '✅ Connexion SQLite: SUCCÈS (sql.js ready)');
+          
+        } catch (error) {
+          console.error('Erreur connexion SQLite:', error);
+          sqliteInitialized = false;
+          updateTestLED('test-connection', 'error', `❌ Connexion SQLite: ÉCHEC - ${error.message}`);
+        }
+      }
+      
+      // Test 2: Base de données
+      async function testSQLiteDatabase() {
+        console.log('🗄️ Test base de données...');
+        updateTestLED('test-database', 'testing', '🗄️ Test création base de données...');
+        
+        try {
+          if (!sqliteInitialized || !sqliteDatabase) {
+            throw new Error('SQLite non initialisé - Exécuter d\'abord Test Connexion');
+          }
+          
+          // Vérifier que la base est fonctionnelle
+          updateTestLED('test-database', 'testing', '🔍 Vérification base de données...');
+          
+          const testQuery = sqliteDatabase.exec("SELECT 1 as test");
+          if (testQuery.length === 0 || testQuery[0].values[0][0] !== 1) {
+            throw new Error('Test de base échoué');
+          }
+          
+          // Base fonctionnelle
+          updateTestLED('test-database', 'success', '✅ Base de données: OPÉRATIONNELLE (en mémoire)');
+          
+        } catch (error) {
+          console.error('Erreur base de données:', error);
+          updateTestLED('test-database', 'error', `❌ Base de données: ÉCHEC - ${error.message}`);
+        }
+      }
+      
+      // Test 3: Tables
+      async function testSQLiteTables() {
+        console.log('📊 Test création tables...');
+        updateTestLED('test-tables', 'testing', '📊 Test création tables...');
+        
+        try {
+          if (!sqliteInitialized || !sqliteDatabase) {
+            throw new Error('SQLite non initialisé - Exécuter d\'abord Test Connexion');
+          }
+          
+          updateTestLED('test-tables', 'testing', '🏗️ Création table tirages...');
+          
+          // Créer table tirages
+          const createTiragesSQL = `
+            CREATE TABLE IF NOT EXISTS tirages (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              date TEXT NOT NULL UNIQUE,
+              numbers TEXT NOT NULL,
+              stars TEXT NOT NULL,
+              jackpot INTEGER,
+              source TEXT DEFAULT 'manual',
+              created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+          `;
+          
+          sqliteDatabase.run(createTiragesSQL);
+          
+          updateTestLED('test-tables', 'testing', '🏗️ Création table gains...');
+          
+          // Créer table gains
+          const createGainsSQL = `
+            CREATE TABLE IF NOT EXISTS gains (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              tirage_id INTEGER NOT NULL,
+              rang INTEGER NOT NULL,
+              combinaison TEXT NOT NULL,
+              gains INTEGER NOT NULL,
+              gagnants INTEGER NOT NULL,
+              FOREIGN KEY (tirage_id) REFERENCES tirages(id)
+            )
+          `;
+          
+          sqliteDatabase.run(createGainsSQL);
+          
+          updateTestLED('test-tables', 'testing', '📝 Création index...');
+          
+          // Créer index pour performances
+          sqliteDatabase.run("CREATE INDEX IF NOT EXISTS idx_tirages_date ON tirages(date)");
+          sqliteDatabase.run("CREATE INDEX IF NOT EXISTS idx_gains_tirage ON gains(tirage_id)");
+          
+          // Vérifier que les tables existent
+          const tables = sqliteDatabase.exec("SELECT name FROM sqlite_master WHERE type='table'");
+          const tableNames = tables[0]?.values.flat() || [];
+          
+          if (!tableNames.includes('tirages') || !tableNames.includes('gains')) {
+            throw new Error('Tables non créées correctement');
+          }
+          
+          updateTestLED('test-tables', 'success', `✅ Tables: CRÉÉES (${tableNames.length} tables: ${tableNames.join(', ')})`);
+          
+        } catch (error) {
+          console.error('Erreur création tables:', error);
+          updateTestLED('test-tables', 'error', `❌ Tables: ÉCHEC - ${error.message}`);
+        }
+      }
+      
+      // Test 4: Insert données
+      async function testSQLiteInsert() {
+        console.log('📝 Test insertion données...');
+        updateTestLED('test-insert', 'testing', '📝 Test insertion données...');
+        
+        try {
+          if (!sqliteInitialized || !sqliteDatabase) {
+            throw new Error('SQLite non initialisé - Exécuter d\'abord Test Connexion');
+          }
+          
+          updateTestLED('test-insert', 'testing', '💾 Insertion tirage test...');
+          
+          // Données de test
+          const testDate = '2025-01-14';
+          const testNumbers = '7,15,23,31,47';
+          const testStars = '3,8';
+          const testJackpot = 125000000;
+          
+          // Insérer tirage de test
+          const insertTirageSQL = `
+            INSERT OR REPLACE INTO tirages (date, numbers, stars, jackpot, source)
+            VALUES (?, ?, ?, ?, ?)
+          `;
+          
+          sqliteDatabase.run(insertTirageSQL, [testDate, testNumbers, testStars, testJackpot, 'test']);
+          
+          updateTestLED('test-insert', 'testing', '💰 Insertion gains test...');
+          
+          // Récupérer l'ID du tirage inséré
+          const tirageResult = sqliteDatabase.exec("SELECT id FROM tirages WHERE date = ? LIMIT 1", [testDate]);
+          if (tirageResult.length === 0) {
+            throw new Error('Tirage test non trouvé après insertion');
+          }
+          
+          const tirageId = tirageResult[0].values[0][0];
+          
+          // Insérer quelques gains de test
+          const insertGainSQL = `
+            INSERT INTO gains (tirage_id, rang, combinaison, gains, gagnants)
+            VALUES (?, ?, ?, ?, ?)
+          `;
+          
+          const testGains = [
+            [tirageId, 1, '5+2', 125000000, 0],
+            [tirageId, 2, '5+1', 350000, 3],
+            [tirageId, 3, '5+0', 35000, 12],
+            [tirageId, 4, '4+2', 2500, 45]
+          ];
+          
+          testGains.forEach(gain => {
+            sqliteDatabase.run(insertGainSQL, gain);
+          });
+          
+          // Vérifier les insertions
+          const countResult = sqliteDatabase.exec("SELECT COUNT(*) FROM tirages");
+          const gainsCountResult = sqliteDatabase.exec("SELECT COUNT(*) FROM gains");
+          
+          const tiragesCount = countResult[0].values[0][0];
+          const gainsCount = gainsCountResult[0].values[0][0];
+          
+          updateTestLED('test-insert', 'success', `✅ Insert: SUCCÈS (${tiragesCount} tirage, ${gainsCount} gains)`);
+          
+        } catch (error) {
+          console.error('Erreur insertion:', error);
+          updateTestLED('test-insert', 'error', `❌ Insert: ÉCHEC - ${error.message}`);
+        }
+      }
+      
+      // Test 5: Select données
+      async function testSQLiteSelect() {
+        console.log('📋 Test sélection données...');
+        updateTestLED('test-select', 'testing', '📋 Test sélection données...');
+        
+        try {
+          if (!sqliteInitialized || !sqliteDatabase) {
+            throw new Error('SQLite non initialisé - Exécuter d\'abord Test Connexion');
+          }
+          
+          updateTestLED('test-select', 'testing', '🔍 Sélection tirages...');
+          
+          // Sélectionner tous les tirages
+          const tiragesResult = sqliteDatabase.exec(`
+            SELECT id, date, numbers, stars, jackpot, source, created_at 
+            FROM tirages 
+            ORDER BY date DESC
+          `);
+          
+          updateTestLED('test-select', 'testing', '💰 Sélection gains...');
+          
+          // Sélectionner les gains avec jointure
+          const gainsResult = sqliteDatabase.exec(`
+            SELECT t.date, g.rang, g.combinaison, g.gains, g.gagnants
+            FROM gains g
+            JOIN tirages t ON g.tirage_id = t.id
+            ORDER BY t.date DESC, g.rang ASC
+          `);
+          
+          // Analyser les résultats
+          const tiragesCount = tiragesResult.length > 0 ? tiragesResult[0].values.length : 0;
+          const gainsCount = gainsResult.length > 0 ? gainsResult[0].values.length : 0;
+          
+          if (tiragesCount === 0) {
+            throw new Error('Aucun tirage trouvé - Exécuter d\'abord Test Insert');
+          }
+          
+          // Afficher un exemple dans les logs
+          if (tiragesResult.length > 0 && tiragesResult[0].values.length > 0) {
+            const firstTirage = tiragesResult[0].values[0];
+            updateTestLED('test-select', 'testing', `📄 Tirage trouvé: ${firstTirage[1]} - ${firstTirage[2]}+${firstTirage[3]}`);
+          }
+          
+          updateTestLED('test-select', 'success', `✅ Select: SUCCÈS (${tiragesCount} tirages, ${gainsCount} gains)`);
+          
+        } catch (error) {
+          console.error('Erreur sélection:', error);
+          updateTestLED('test-select', 'error', `❌ Select: ÉCHEC - ${error.message}`);
+        }
+      }
+      
+      // === FONCTION CRÉATION BASE FDJ COMPLÈTE ===
+      
+      async function createFDJDatabase() {
+        console.log('🏗️ Création base FDJ complète...');
+        updateTestLED('test-database', 'testing', '🏗️ Création base FDJ complète...');
+        
+        try {
+          if (!sqliteInitialized || !sqliteDatabase) {
+            throw new Error('SQLite non initialisé - Exécuter d\'abord Test Connexion');
+          }
+          
+          updateTestLED('test-database', 'testing', '📋 Création schéma base FDJ...');
+          
+          // 1. Créer toutes les tables avec schéma complet
+          const createTablesSQL = `
+            -- Table des tirages
+            CREATE TABLE IF NOT EXISTS tirages (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              date TEXT NOT NULL UNIQUE,
+              numbers TEXT NOT NULL,
+              stars TEXT NOT NULL,
+              jackpot INTEGER,
+              source TEXT DEFAULT 'manual',
+              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+              updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+
+            -- Table des gains par tirage
+            CREATE TABLE IF NOT EXISTS gains (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              tirage_id INTEGER NOT NULL,
+              rang INTEGER NOT NULL,
+              combinaison TEXT NOT NULL,
+              gains INTEGER NOT NULL,
+              gagnants INTEGER NOT NULL,
+              created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+              FOREIGN KEY (tirage_id) REFERENCES tirages(id) ON DELETE CASCADE
+            );
+
+            -- Table des sources de données
+            CREATE TABLE IF NOT EXISTS sources (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              name TEXT NOT NULL UNIQUE,
+              url TEXT,
+              active BOOLEAN DEFAULT 1,
+              last_sync DATETIME,
+              created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+
+            -- Table de configuration
+            CREATE TABLE IF NOT EXISTS config (
+              key TEXT PRIMARY KEY,
+              value TEXT,
+              description TEXT,
+              updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );
+          `;
+          
+          // Exécuter les CREATE TABLE
+          const statements = createTablesSQL.split(';').filter(sql => sql.trim());
+          statements.forEach(sql => {
+            if (sql.trim()) {
+              sqliteDatabase.run(sql.trim());
+            }
+          });
+          
+          updateTestLED('test-database', 'testing', '📊 Création index de performance...');
+          
+          // 2. Créer tous les index de performance
+          const indexesSQL = [
+            "CREATE INDEX IF NOT EXISTS idx_tirages_date ON tirages(date)",
+            "CREATE INDEX IF NOT EXISTS idx_tirages_created ON tirages(created_at)",
+            "CREATE INDEX IF NOT EXISTS idx_gains_tirage ON gains(tirage_id)",
+            "CREATE INDEX IF NOT EXISTS idx_gains_rang ON gains(rang)",
+            "CREATE INDEX IF NOT EXISTS idx_sources_active ON sources(active)"
+          ];
+          
+          indexesSQL.forEach(sql => sqliteDatabase.run(sql));
+          
+          updateTestLED('test-database', 'testing', '🎲 Insertion données de démo...');
+          
+          // 3. Insérer des sources de données
+          const sourcesData = [
+            ['EuroMillions Official', 'https://www.fdj.fr/euromillions', 1],
+            ['LotteryExtreme', 'https://lotteryextreme.com', 1],
+            ['Manual Entry', null, 1]
+          ];
+          
+          sourcesData.forEach(source => {
+            sqliteDatabase.run(
+              "INSERT OR IGNORE INTO sources (name, url, active) VALUES (?, ?, ?)",
+              source
+            );
+          });
+          
+          // 4. Insérer configuration par défaut
+          const configData = [
+            ['app_version', 'V0.002D-SQLite', 'Version actuelle de l\'application'],
+            ['scraping_enabled', 'true', 'Activation du scraping automatique'],
+            ['default_source', 'EuroMillions Official', 'Source par défaut pour les tirages'],
+            ['max_history_days', '365', 'Nombre de jours d\'historique à conserver']
+          ];
+          
+          configData.forEach(config => {
+            sqliteDatabase.run(
+              "INSERT OR REPLACE INTO config (key, value, description) VALUES (?, ?, ?)",
+              config
+            );
+          });
+          
+          updateTestLED('test-database', 'testing', '🎯 Insertion tirages de démonstration...');
+          
+          // 5. Insérer quelques tirages de démonstration
+          const demoTirages = [
+            ['2025-01-14', '7,15,23,31,47', '3,8', 125000000, 'demo'],
+            ['2025-01-11', '12,18,25,33,49', '1,9', 95000000, 'demo'],
+            ['2025-01-09', '4,19,27,35,42', '2,7', 75000000, 'demo']
+          ];
+          
+          demoTirages.forEach(tirage => {
+            sqliteDatabase.run(
+              "INSERT OR REPLACE INTO tirages (date, numbers, stars, jackpot, source) VALUES (?, ?, ?, ?, ?)",
+              tirage
+            );
+          });
+          
+          // 6. Insérer gains correspondants
+          const demoGains = [
+            // Gains pour tirage 2025-01-14
+            [1, 1, '5+2', 125000000, 0],
+            [1, 2, '5+1', 350000, 2],
+            [1, 3, '5+0', 35000, 8],
+            [1, 4, '4+2', 2500, 15],
+            [1, 5, '4+1', 150, 287],
+            
+            // Gains pour tirage 2025-01-11
+            [2, 1, '5+2', 95000000, 1],
+            [2, 2, '5+1', 280000, 3],
+            [2, 3, '5+0', 28000, 12],
+            [2, 4, '4+2', 2200, 18],
+            
+            // Gains pour tirage 2025-01-09
+            [3, 1, '5+2', 75000000, 0],
+            [3, 2, '5+1', 420000, 1],
+            [3, 3, '5+0', 42000, 6],
+            [3, 4, '4+2', 3000, 12]
+          ];
+          
+          demoGains.forEach(gain => {
+            sqliteDatabase.run(
+              "INSERT OR REPLACE INTO gains (tirage_id, rang, combinaison, gains, gagnants) VALUES (?, ?, ?, ?, ?)",
+              gain
+            );
+          });
+          
+          updateTestLED('test-database', 'testing', '✅ Vérification intégrité base...');
+          
+          // 7. Vérifications finales
+          const tables = sqliteDatabase.exec("SELECT name FROM sqlite_master WHERE type='table'");
+          const tableCount = tables[0]?.values.length || 0;
+          
+          const tiragesCount = sqliteDatabase.exec("SELECT COUNT(*) FROM tirages")[0].values[0][0];
+          const gainsCount = sqliteDatabase.exec("SELECT COUNT(*) FROM gains")[0].values[0][0];
+          const sourcesCount = sqliteDatabase.exec("SELECT COUNT(*) FROM sources")[0].values[0][0];
+          const configCount = sqliteDatabase.exec("SELECT COUNT(*) FROM config")[0].values[0][0];
+          
+          updateTestLED('test-database', 'success', 
+            `✅ Base FDJ CRÉÉE ! ${tableCount} tables, ${tiragesCount} tirages, ${gainsCount} gains, ${sourcesCount} sources, ${configCount} configs`
+          );
+          
+        } catch (error) {
+          console.error('Erreur création base FDJ:', error);
+          updateTestLED('test-database', 'error', `❌ Création base FDJ: ÉCHEC - ${error.message}`);
+        }
+      }
+      
+      // === FONCTIONS INSTALL FROM SCRATCH ===
+      
+      // Fonction pour ajouter logs d'installation
+      function addInstallLog(message, type = 'info') {
+        const logsContent = document.getElementById('install-logs-content');
+        const timestamp = new Date().toLocaleTimeString();
+        
+        const logEntry = document.createElement('div');
+        logEntry.style.marginBottom = '5px';
+        
+        switch(type) {
+          case 'success':
+            logEntry.style.color = '#22c55e';
+            break;
+          case 'error':
+            logEntry.style.color = '#ef4444';
+            break;
+          case 'warning':
+            logEntry.style.color = '#f59e0b';
+            break;
+          default:
+            logEntry.style.color = '#94a3b8';
+        }
+        
+        logEntry.textContent = `[${timestamp}] ${message}`;
+        logsContent.appendChild(logEntry);
+        
+        // Auto-scroll vers le bas
+        logsContent.scrollTop = logsContent.scrollHeight;
+      }
+      
+      // Fonction 1: Supprimer base
+      async function deleteDatabase() {
+        console.log('🗑️ Suppression base de données...');
+        addInstallLog('🗑️ Début suppression base de données...', 'warning');
+        
+        try {
+          if (!sqliteInitialized || !sqliteDatabase) {
+            addInstallLog('❌ SQLite non initialisé - rien à supprimer', 'error');
+            return;
+          }
+          
+          addInstallLog('📋 Suppression des tables...', 'info');
+          
+          // Supprimer toutes les tables
+          const tables = ['gains', 'tirages', 'sources', 'config'];
+          tables.forEach(table => {
+            try {
+              sqliteDatabase.run(`DROP TABLE IF EXISTS ${table}`);
+              addInstallLog(`✅ Table ${table} supprimée`, 'success');
+            } catch (error) {
+              addInstallLog(`⚠️ Erreur suppression ${table}: ${error.message}`, 'warning');
+            }
+          });
+          
+          // Supprimer les index
+          const indexes = ['idx_tirages_date', 'idx_tirages_created', 'idx_gains_tirage', 'idx_gains_rang', 'idx_sources_active'];
+          indexes.forEach(index => {
+            try {
+              sqliteDatabase.run(`DROP INDEX IF EXISTS ${index}`);
+            } catch (error) {
+              // Ignorer les erreurs d'index (normal si n'existe pas)
+            }
+          });
+          
+          addInstallLog('✅ Base de données supprimée avec succès !', 'success');
+          
+        } catch (error) {
+          console.error('Erreur suppression base:', error);
+          addInstallLog(`❌ Erreur suppression: ${error.message}`, 'error');
+        }
+      }
+      
+      // Fonction 2: Installation complète
+      async function installFreshDatabase() {
+        console.log('🏗️ Installation complète base FDJ...');
+        addInstallLog('🏗️ Début installation complète...', 'info');
+        
+        try {
+          // 1. Vérifier/Initialiser connexion SQLite
+          addInstallLog('🔗 Vérification connexion SQLite...', 'info');
+          if (!sqliteInitialized || !sqliteDatabase) {
+            addInstallLog('🔌 Initialisation connexion SQLite...', 'info');
+            await testSQLiteConnection();
+            
+            // Attendre un peu que la connexion soit établie
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            if (!sqliteInitialized || !sqliteDatabase) {
+              throw new Error('Impossible d\'initialiser la connexion SQLite');
+            }
+            addInstallLog('✅ Connexion SQLite établie', 'success');
+          } else {
+            addInstallLog('✅ Connexion SQLite déjà active', 'success');
+          }
+          
+          // 2. Supprimer base existante
+          addInstallLog('🗑️ Suppression base existante...', 'warning');
+          await deleteDatabase();
+          
+          await new Promise(resolve => setTimeout(resolve, 500)); // Pause visuelle
+          
+          // 3. Créer la base FDJ complète
+          addInstallLog('🏗️ Création nouvelle base FDJ...', 'info');
+          await createFDJDatabase();
+          
+          addInstallLog('🎉 Installation complète terminée avec succès !', 'success');
+          addInstallLog('📊 Vous pouvez maintenant utiliser les sections de monitoring', 'info');
+          
+        } catch (error) {
+          console.error('Erreur installation complète:', error);
+          addInstallLog(`❌ Erreur installation: ${error.message}`, 'error');
+        }
+      }
+      
+      // Fonction 3: Vérifier état de la base
+      async function checkDatabaseStatus() {
+        console.log('📊 Vérification état base...');
+        addInstallLog('📊 Vérification état de la base...', 'info');
+        
+        try {
+          if (!sqliteInitialized || !sqliteDatabase) {
+            addInstallLog('❌ SQLite non initialisé - Utilisez "Test Connexion" d\'abord', 'error');
+            addInstallLog('💡 Étapes: 1️⃣ Test Connexion → 2️⃣ Installation Complète', 'info');
+            return;
+          }
+          
+          addInstallLog('✅ SQLite initialisé et connecté', 'success');
+          
+          // Vérifier les tables existantes
+          const tablesResult = sqliteDatabase.exec("SELECT name FROM sqlite_master WHERE type='table'");
+          const tables = tablesResult.length > 0 ? tablesResult[0].values.flat() : [];
+          
+          addInstallLog(`📋 Tables trouvées: ${tables.length}`, 'info');
+          tables.forEach(table => {
+            addInstallLog(`  - ${table}`, 'info');
+          });
+          
+          // Compter les données dans chaque table
+          if (tables.includes('tirages')) {
+            const tiragesCount = sqliteDatabase.exec("SELECT COUNT(*) FROM tirages")[0].values[0][0];
+            addInstallLog(`📊 Tirages: ${tiragesCount} enregistrements`, 'success');
+          }
+          
+          if (tables.includes('gains')) {
+            const gainsCount = sqliteDatabase.exec("SELECT COUNT(*) FROM gains")[0].values[0][0];
+            addInstallLog(`💰 Gains: ${gainsCount} enregistrements`, 'success');
+          }
+          
+          if (tables.includes('sources')) {
+            const sourcesCount = sqliteDatabase.exec("SELECT COUNT(*) FROM sources")[0].values[0][0];
+            addInstallLog(`🔗 Sources: ${sourcesCount} enregistrements`, 'success');
+          }
+          
+          if (tables.includes('config')) {
+            const configCount = sqliteDatabase.exec("SELECT COUNT(*) FROM config")[0].values[0][0];
+            addInstallLog(`⚙️ Configuration: ${configCount} paramètres`, 'success');
+          }
+          
+          if (tables.length === 0) {
+            addInstallLog('⚠️ Aucune table trouvée - Base vide', 'warning');
+            addInstallLog('💡 Utilisez "Installation Complète" pour créer la base', 'info');
+          } else {
+            addInstallLog('✅ Base de données opérationnelle !', 'success');
+          }
+          
+          addInstallLog('ℹ️ INFO: Base SQLite en MÉMOIRE (volatile)', 'info');
+          addInstallLog('ℹ️ Les données sont perdues à la fermeture du navigateur', 'info');
+          
+        } catch (error) {
+          console.error('Erreur vérification état:', error);
+          addInstallLog(`❌ Erreur vérification: ${error.message}`, 'error');
+        }
+      }
 
     </script>
   </body>
