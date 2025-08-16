@@ -59,7 +59,7 @@
             <span class="menu-head">Tirages</span>
             <ul class="submenu">
               <li><a href="#" onclick="showSection('tirage')">Tirage</a></li>
-              <li><a href="#" onclick="showSection('demo')">Historique</a></li>
+              <li><a href="#" onclick="showHistorique()">Historique</a></li>
               <li><a href="#" onclick="showSection('demo')">Détails tirage</a></li>
             </ul>
           </li>
@@ -168,6 +168,7 @@
               </tr>
             </tbody>
           </table>
+          <button onclick="loadHistoriqueMock()">Charger Historique Mock</button>
           <button onclick="addRandomRow()">Ajouter Tirage</button>
         </div>
       </section>
@@ -220,25 +221,36 @@ style/ClaudS4/            # Styles CSS séparés
 
         <!-- Contrôles -->
         <div class="tirage-controls">
+          <!-- Ligne 1: Titres -->
+          <div class="controls-titles">
+            <div class="title-group">
+              <h4>Date de tirage</h4>
+            </div>
+            <div class="title-group">
+              <h4>Source de données</h4>
+            </div>
+          </div>
+          
+          <!-- Ligne 2: Contrôles -->
           <div class="controls-row">
-            <div class="date-picker">
-              <label for="drawDate">Date du tirage</label>
-              <input type="date" id="drawDate" value="2025-08-13">
+            <div class="date-load-group">
+              <div class="date-picker">
+                <input type="date" id="drawDate" value="2025-08-13">
+              </div>
+              
+              <button onclick="loadDraw()" class="load-btn">
+                📥 Charger
+              </button>
             </div>
             
-            <button onclick="loadDraw()" class="load-btn">
-              📥 Charger
-            </button>
-            
             <div class="toggle-switch">
-              <label>Source de données</label>
               <div class="switch-container">
                 <span class="switch-label-left">Scrap</span>
                 <div class="led">
                   <div class="led-indicator" id="scrapLed"></div>
                 </div>
-                <div class="switch mock">
-                  <input type="checkbox" id="dataToggle">
+                <div class="switch scrap">
+                  <input type="checkbox" id="dataToggle" checked>
                   <span class="slider"></span>
                 </div>
                 <div class="led">
@@ -246,6 +258,14 @@ style/ClaudS4/            # Styles CSS séparés
                 </div>
                 <span class="switch-label-right">Mock</span>
               </div>
+            </div>
+          </div>
+          
+          <!-- Ligne 3: Fil d'Ariane -->
+          <div class="breadcrumb active" id="dataBreadcrumb">
+            <div class="breadcrumb-content">
+              <span class="breadcrumb-icon">🌐</span>
+              <span class="breadcrumb-text">Source: Scrap (données réelles)</span>
             </div>
           </div>
         </div>
@@ -321,6 +341,9 @@ style/ClaudS4/            # Styles CSS séparés
       </section>
     </main>
 
+    <!-- Mock Data pour les tirages -->
+    <script src="./mock-data.js"></script>
+    
     <!-- JavaScript intégré pour éviter les problèmes de modules ES6 -->
     <script>
       // Navigation entre sections
@@ -421,6 +444,53 @@ style/ClaudS4/            # Styles CSS séparés
               'Toutes les règles de la bible.md sont respectées !');
       }
 
+      // Fonctions pour l'historique des tirages
+      function showHistorique() {
+        showSection('demo');
+        loadHistoriqueMock();
+      }
+
+      function loadHistoriqueMock() {
+        const tbody = document.getElementById('drawsTable');
+        const historique = window.mockEuroMillion.getHistorique();
+        
+        console.log('📊 Chargement historique Mock:', historique.length, 'tirages');
+        
+        // Vider le tableau
+        tbody.innerHTML = '';
+        
+        // Afficher les 10 derniers tirages
+        const recentDraws = historique.slice(-10).reverse(); // Les 10 plus récents, du plus récent au plus ancien
+        
+        recentDraws.forEach(draw => {
+          const row = document.createElement('tr');
+          
+          // Date
+          const dateCell = document.createElement('td');
+          dateCell.textContent = draw.date;
+          row.appendChild(dateCell);
+          
+          // Numéros
+          const numbersCell = document.createElement('td');
+          numbersCell.textContent = draw.numbers.join(', ');
+          row.appendChild(numbersCell);
+          
+          // Étoiles
+          const starsCell = document.createElement('td');
+          starsCell.innerHTML = `<span style="color: var(--accent);">${draw.stars.join(', ')}</span>`;
+          row.appendChild(starsCell);
+          
+          // Source
+          const sourceCell = document.createElement('td');
+          sourceCell.innerHTML = '<span style="color: #00e1ff;">Mock</span>';
+          row.appendChild(sourceCell);
+          
+          tbody.appendChild(row);
+        });
+        
+        console.log('✅ Historique Mock affiché:', recentDraws.length, 'tirages');
+      }
+
       // Diagnostic du système
       function runDiagnostic() {
         const diagnostic = document.getElementById('diagnostic');
@@ -511,7 +581,7 @@ style/ClaudS4/            # Styles CSS séparés
       }
 
       // Variables globales pour la page Tirage
-      let currentDataSource = 'mock'; // 'mock' ou 'scrap'
+      let currentDataSource = 'scrap'; // 'mock' ou 'scrap' - Scrap par défaut
       let gainsExpanded = true; // Ouvert par défaut
       let resultsExpanded = true; // Ouvert par défaut
 
@@ -540,6 +610,81 @@ style/ClaudS4/            # Styles CSS séparés
         
         // Mettre à jour les LEDs
         updateLeds();
+        
+        // Mettre à jour le fil d'Ariane
+        updateBreadcrumb('source-selected');
+      }
+
+      // Fonction pour vider le tableau des gains
+      function clearGainsTable() {
+        const gainsSection = document.getElementById('gainsSection');
+        const gainsTableBody = document.getElementById('gainsTableBody');
+        
+        if (gainsTableBody) {
+          gainsTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: rgba(255,255,255,0.5); font-style: italic;">Aucune donnée de gains disponible</td></tr>';
+        }
+        
+        // Masquer la section des gains si elle était visible
+        if (gainsSection) {
+          gainsSection.style.display = 'none';
+        }
+      }
+
+      // Fonction pour mettre à jour le fil d'Ariane
+      function updateBreadcrumb(step = 'init') {
+        const breadcrumb = document.getElementById('dataBreadcrumb');
+        const icon = breadcrumb.querySelector('.breadcrumb-icon');
+        const text = breadcrumb.querySelector('.breadcrumb-text');
+        
+        // Réinitialiser les classes
+        breadcrumb.className = 'breadcrumb';
+        
+        switch(step) {
+          case 'init':
+            icon.textContent = '🔄';
+            text.textContent = 'Sélectionnez une date et une source';
+            break;
+            
+          case 'source-selected':
+            breadcrumb.classList.add('active');
+            icon.textContent = currentDataSource === 'mock' ? '🎲' : '🌐';
+            text.textContent = `Source: ${currentDataSource === 'mock' ? 'Mock (données simulées)' : 'Scrap (données réelles)'}`;
+            break;
+            
+          case 'loading-mock':
+            breadcrumb.classList.add('active');
+            icon.textContent = '🎲';
+            text.textContent = 'Mock → Génération de données simulées...';
+            break;
+            
+          case 'loading-scrap':
+            breadcrumb.classList.add('active');
+            icon.textContent = '🌐';
+            text.textContent = 'Scrap → Validation date → Requête réseau → Parsing...';
+            break;
+            
+          case 'success':
+            breadcrumb.classList.add('success');
+            icon.textContent = '✅';
+            if (currentDataSource === 'mock') {
+              text.textContent = 'Mock → Données simulées générées avec succès';
+            } else {
+              text.textContent = 'Scrap → Date validée → Données récupérées → Parsing réussi';
+            }
+            break;
+            
+          case 'error':
+            breadcrumb.classList.add('error');
+            icon.textContent = '❌';
+            text.textContent = 'Erreur lors du chargement des données';
+            break;
+            
+          case 'no-draw':
+            breadcrumb.classList.add('success');
+            icon.textContent = '📅';
+            text.textContent = 'Pas de tirage pour cette date (date invalide ou future)';
+            break;
+        }
       }
       
       function updateSwitchLabels() {
@@ -587,7 +732,7 @@ style/ClaudS4/            # Styles CSS séparés
         }
       }
 
-      function loadDraw() {
+      async function loadDraw() {
         const dateInput = document.getElementById('drawDate');
         const selectedDate = dateInput.value;
         
@@ -596,13 +741,18 @@ style/ClaudS4/            # Styles CSS séparés
           return;
         }
 
-        console.log('Chargement du tirage pour:', selectedDate, 'Source:', currentDataSource);
+        console.log('🎲 Chargement du tirage pour:', selectedDate, 'Source:', currentDataSource);
         
-        // Simuler le chargement
-        setTimeout(() => {
+        if (currentDataSource === 'mock') {
+          // Mode Mock - affichage direct
+          updateBreadcrumb('loading-mock');
           displayDrawResult(selectedDate);
-          displayGainsData();
-        }, 500);
+        } else {
+          // Mode Scrap - faire du vrai scraping
+          updateBreadcrumb('loading-scrap');
+          console.log('🌐 Démarrage scraping pour:', selectedDate);
+          await performRealScraping(selectedDate);
+        }
       }
 
       function displayDrawResult(date) {
@@ -621,18 +771,18 @@ style/ClaudS4/            # Styles CSS séparés
 
         resultDate.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 
-        // Générer des numéros de tirage (mock ou réels selon la source)
-        let numbers, stars;
+        // Utiliser les vraies données Mock
+        const drawDate = dateObj.toLocaleDateString('fr-FR');
+        let drawData = window.mockEuroMillion.getDrawByDate(drawDate);
         
-        if (currentDataSource === 'mock') {
-          // Données simulées
-          numbers = [7, 14, 21, 28, 35];
-          stars = [3, 9];
-        } else {
-          // Simuler des données scrappées (en attendant l'implémentation réelle)
-          numbers = [5, 12, 18, 26, 49];
-          stars = [2, 11];
+        if (!drawData) {
+          console.log('📅 Génération nouveau tirage mock pour:', drawDate);
+          drawData = window.mockEuroMillion.generateSingleDraw(dateObj);
         }
+        
+        const numbers = drawData.numbers;
+        const stars = drawData.stars;
+        console.log('🎲 Données Mock chargées:', numbers, 'étoiles:', stars);
 
         // Créer les boules
         resultBalls.innerHTML = '';
@@ -654,28 +804,398 @@ style/ClaudS4/            # Styles CSS séparés
         });
 
         resultsSection.style.display = 'block';
+        
+        // Afficher les gains Mock
+        displayGainsData(drawData);
+        
+        // Mettre à jour le fil d'Ariane
+        updateBreadcrumb('success');
       }
 
-      function displayGainsData() {
+      // Fonction de scraping réel
+      async function performRealScraping(date) {
+        const resultsSection = document.getElementById('resultsSection');
+        const resultDate = document.getElementById('resultDate');
+        const resultBalls = document.getElementById('resultBalls');
+        
+        try {
+          // Formatter la date pour l'affichage
+          const dateObj = new Date(date + 'T00:00:00');
+          const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          
+          resultDate.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+          
+          // Afficher un indicateur de chargement
+          resultBalls.innerHTML = '<div class="loading">🔄 Scraping en cours...</div>';
+          resultsSection.style.display = 'block';
+          
+          // Convertir la date au format YYYY-MM-DD pour le scraping
+          const scrapDate = date;
+          console.log('🌐 Scraping pour la date:', scrapDate);
+          
+          // Appeler le service de scraping (proto)
+          const scrapedData = await scrapDrawFromLotteryExtreme(scrapDate);
+          
+          if (scrapedData && scrapedData.numbers && scrapedData.stars) {
+            console.log('✅ Scraping réussi:', scrapedData);
+            
+            // Mettre à jour le fil d'Ariane
+            updateBreadcrumb('success');
+            
+            // Afficher les boules scrapées
+            resultBalls.innerHTML = '';
+            
+            // Boules principales
+            scrapedData.numbers.forEach(num => {
+              const ball = document.createElement('div');
+              ball.className = 'ball';
+              ball.textContent = num;
+              resultBalls.appendChild(ball);
+            });
+            
+            // Étoiles
+            scrapedData.stars.forEach(star => {
+              const ball = document.createElement('div');
+              ball.className = 'ball star';
+              ball.textContent = star;
+              resultBalls.appendChild(ball);
+            });
+            
+            // Afficher les gains scrapés si disponibles
+            if (scrapedData.breakdown) {
+              displayScrapedGains(scrapedData.breakdown);
+            } else {
+              displayGainsData(); // Gains par défaut
+            }
+            
+          } else {
+            throw new Error('Aucune donnée trouvée pour cette date');
+          }
+          
+        } catch (error) {
+          console.error('❌ Erreur de scraping:', error);
+          
+          // Affichage différentié selon le type d'erreur
+          let messageIcon, messageTitle, messageContent, messageAdvice, isNoDraw = false;
+          
+          if (error.message.startsWith('NO_DRAW_FOR_DATE')) {
+            isNoDraw = true;
+            messageIcon = '📅';
+            messageTitle = 'Aucun tirage trouvé';
+            messageContent = `Pas de tirage EuroMillions disponible pour le ${date}`;
+            messageAdvice = '💡 Les tirages EuroMillions ont lieu les mardis et vendredis soir';
+          } else if (error.message.startsWith('NOT_DRAW_DAY')) {
+            isNoDraw = true;
+            const dateObj = new Date(date);
+            const dayName = dateObj.toLocaleDateString('fr-FR', { weekday: 'long' });
+            messageIcon = '📆';
+            messageTitle = 'Jour incorrect';
+            messageContent = `${dayName} n'est pas un jour de tirage EuroMillions`;
+            messageAdvice = '💡 Les tirages ont lieu uniquement les mardis et vendredis';
+          } else if (error.message.startsWith('FUTURE_DATE')) {
+            messageIcon = '🔮';
+            messageTitle = 'Date future';
+            messageContent = `Le tirage du ${date} n'a pas encore eu lieu`;
+            messageAdvice = '💡 Sélectionnez une date passée pour voir les résultats';
+          } else if (error.message.startsWith('PARSE_ERROR')) {
+            messageIcon = '🔍';
+            messageTitle = 'Erreur de parsing';
+            messageContent = 'Données incomplètes trouvées sur le site';
+            messageAdvice = '💡 Le format de la page a peut-être changé, réessayez plus tard';
+          } else if (error.message.startsWith('TECHNICAL_ERROR')) {
+            messageIcon = '⚠️';
+            messageTitle = 'Erreur technique';
+            messageContent = 'Problème de connexion ou de site web';
+            messageAdvice = '💡 Vérifiez votre connexion Internet et réessayez';
+          } else {
+            messageIcon = '❌';
+            messageTitle = 'Erreur inconnue';
+            messageContent = error.message;
+            messageAdvice = '💡 Veuillez réessayer ou contactez le support';
+          }
+          
+          // Choisir la classe CSS selon le type (vert pour "pas de tirage", rouge pour erreurs)
+          const messageClass = isNoDraw ? 'no-draw' : 'error';
+          const detailsClass = isNoDraw ? 'no-draw-details' : 'error-details';
+          
+          // Mettre à jour le fil d'Ariane
+          updateBreadcrumb(isNoDraw ? 'no-draw' : 'error');
+          
+          // Vider le tableau des gains en cas d'erreur
+          clearGainsTable();
+          
+          // Affichage immédiat d'un message court
+          resultBalls.innerHTML = `<div class="${messageClass}">${messageIcon} ${messageTitle}</div>`;
+          
+          // Affichage détaillé après un délai
+          setTimeout(() => {
+            resultBalls.innerHTML = `
+              <div class="${detailsClass}">
+                <p>${messageIcon} <strong>${messageTitle}</strong></p>
+                <p><strong>Date:</strong> ${date}</p>
+                <p><strong>Détail:</strong> ${messageContent}</p>
+                <p>${messageAdvice}</p>
+                ${isNoDraw ? 
+                  '<p><strong>💡 Suggestion:</strong> Essayez avec une date de mardi ou vendredi récente</p>' : ''}
+              </div>
+            `;
+          }, 1000);
+        }
+      }
+
+      // Fonction de scraping améliorée avec détection intelligente d'erreurs
+      async function scrapDrawFromLotteryExtreme(dateString) {
+        try {
+          // VALIDATION PRÉLIMINAIRE (avant requête réseau)
+          const dateObj = new Date(dateString);
+          const today = new Date();
+          
+          // Vérifier si c'est un jour de tirage (mardi=2, vendredi=5)
+          const dayOfWeek = dateObj.getDay();
+          if (dayOfWeek !== 2 && dayOfWeek !== 5) {
+            console.log('⚡ Détection rapide: Pas un jour de tirage ->', dateString, 'jour:', dayOfWeek);
+            throw new Error('NOT_DRAW_DAY');
+          }
+          
+          // Vérifier si c'est une date future (plus de 1 jour dans le futur pour éviter les problèmes de timezone)
+          const tomorrow = new Date(today);
+          tomorrow.setDate(today.getDate() + 1);
+          if (dateObj > tomorrow) {
+            console.log('⚡ Détection rapide: Date future ->', dateString);
+            throw new Error('FUTURE_DATE');
+          }
+          
+          console.log('✅ Date valide pour scraping ->', dateString, 'jour:', dayOfWeek);
+          
+          // Maintenant faire la requête réseau
+          const url = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://www.lotteryextreme.com/euromillions/prize_breakdown(${dateString})`)}`;
+          
+          console.log('🌐 URL de scraping:', url);
+          
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`, { cause: 'NETWORK_ERROR' });
+          }
+          
+          const data = await response.json();
+          const html = data.contents;
+          
+          // Vérifier si la page indique explicitement "pas de tirage"
+          if (html.includes('No data available') || 
+              html.includes('Draw not found') ||
+              html.includes('not yet available') ||
+              html.includes('Coming Soon') ||
+              html.toLowerCase().includes('no results')) {
+            throw new Error('NO_DRAW_FOR_DATE');
+          }
+          
+          // Parser le HTML avec une approche simplifiée
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          
+          // Vérifier si on est sur une page d'erreur 404 ou similaire
+          const pageTitle = doc.querySelector('title')?.textContent || '';
+          if (pageTitle.toLowerCase().includes('404') || 
+              pageTitle.toLowerCase().includes('not found') ||
+              pageTitle.toLowerCase().includes('error')) {
+            throw new Error('NO_DRAW_FOR_DATE');
+          }
+          
+          // Extraire les numéros depuis les éléments .displayball
+          const ballElements = doc.querySelectorAll('ul.displayball li');
+          const numbers = [];
+          
+          ballElements.forEach(el => {
+            const num = parseInt(el.textContent.trim(), 10);
+            if (!isNaN(num)) {
+              numbers.push(num);
+            }
+          });
+          
+          // Si aucun numéro trouvé après scraping d'une date valide
+          if (numbers.length === 0) {
+            throw new Error('NO_DRAW_FOR_DATE');
+          }
+          
+          if (numbers.length < 7) {
+            throw new Error(`PARSE_ERROR: expected 7 numbers, got ${numbers.length}`);
+          }
+          
+          const mainNumbers = numbers.slice(0, 5);
+          const stars = numbers.slice(5, 7);
+          
+          // Extraire le tableau des gains
+          const breakdown = [];
+          const gainRows = doc.querySelectorAll('table.tbsg tr.sg1, table.tbsg tr.sg2');
+          
+          gainRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 3) {
+              const rank = cells[0].textContent.replace(/\s+/g, '');
+              const winners = parseInt(cells[1].textContent.replace(/[^0-9]/g, ''), 10) || 0;
+              const amount = cells[2].textContent.trim();
+              
+              if (/^\d+\+\d+$/.test(rank)) {
+                breakdown.push({
+                  rankLabel: rank,
+                  winners: winners,
+                  amount: amount,
+                  currency: 'EUR'
+                });
+              }
+            }
+          });
+          
+          return {
+            date: dateString,
+            numbers: mainNumbers,
+            stars: stars,
+            breakdown: breakdown,
+            meta: {
+              provider: 'lotteryextreme',
+              scrapedAt: new Date().toISOString()
+            }
+          };
+          
+        } catch (error) {
+          console.error('Erreur de scraping:', error);
+          
+          // Re-lancer l'erreur avec le message original si c'est une erreur spécifique
+          if (error.message.startsWith('NO_DRAW_FOR_DATE') || 
+              error.message.startsWith('FUTURE_DATE') || 
+              error.message.startsWith('NOT_DRAW_DAY') ||
+              error.message.startsWith('PARSE_ERROR')) {
+            throw error;
+          }
+          
+          // Pour les autres erreurs, les marquer comme erreurs techniques
+          throw new Error(`TECHNICAL_ERROR: ${error.message}`);
+        }
+      }
+
+      // Fonction pour afficher les gains scrapés
+      function displayScrapedGains(breakdown) {
+        const gainsSection = document.getElementById('gainsSection');
+        const gainsTableBody = document.getElementById('gainsTableBody');
+        
+        if (!breakdown || breakdown.length === 0) {
+          gainsTableBody.innerHTML = '<tr><td colspan="4">Aucune donnée de gains disponible</td></tr>';
+          gainsSection.style.display = 'block';
+          return;
+        }
+        
+        gainsTableBody.innerHTML = '';
+        
+        breakdown.forEach((gain, index) => {
+          const row = document.createElement('tr');
+          
+          // Créer la cellule de combinaison avec icônes
+          const comboCell = document.createElement('td');
+          const comboDiv = document.createElement('div');
+          comboDiv.className = 'result-combo';
+          
+          // Mapper les rangs aux combinaisons EuroMillions
+          const combos = ['5+2', '5+1', '5+0', '4+2', '4+1', '3+2', '4+0', '2+2', '3+1', '3+0', '1+2', '2+1', '2+0'];
+          const comboText = combos[index] || gain.rankLabel;
+          
+          if (comboText.includes('+')) {
+            const [balls, starsCount] = comboText.split('+');
+            
+            // Ajouter la boule avec le chiffre (utilise les vraies classes de boules)
+            const ballIcon = document.createElement('span');
+            ballIcon.className = 'ball';
+            ballIcon.style.width = '28px';
+            ballIcon.style.height = '28px';
+            ballIcon.style.fontSize = '14px';
+            ballIcon.textContent = balls;
+            comboDiv.appendChild(ballIcon);
+            
+            // Ajouter le signe +
+            if (parseInt(starsCount) > 0) {
+              const plus = document.createElement('span');
+              plus.textContent = ' + ';
+              plus.style.margin = '0 4px';
+              comboDiv.appendChild(plus);
+              
+              // Ajouter l'étoile avec le chiffre (utilise les vraies classes d'étoiles)
+              const starIcon = document.createElement('span');
+              starIcon.className = 'ball star';
+              starIcon.style.width = '28px';
+              starIcon.style.height = '28px';
+              starIcon.style.fontSize = '12px';
+              starIcon.textContent = starsCount;
+              comboDiv.appendChild(starIcon);
+            }
+          } else {
+            comboDiv.textContent = gain.rankLabel;
+          }
+          
+          comboCell.appendChild(comboDiv);
+          
+          // Créer la cellule de gain
+          const gainCell = document.createElement('td');
+          const gainSpan = document.createElement('span');
+          gainSpan.className = 'gain-amount';
+          gainSpan.textContent = gain.amount;
+          gainCell.appendChild(gainSpan);
+          
+          row.innerHTML = `
+            <td>Rang ${index + 1}</td>
+            <td></td>
+            <td>${gain.winners.toLocaleString('fr-FR')}</td>
+            <td></td>
+          `;
+          
+          // Remplacer les cellules vides par nos éléments
+          row.cells[1].replaceWith(comboCell);
+          row.cells[3].replaceWith(gainCell);
+          
+          gainsTableBody.appendChild(row);
+        });
+        
+        gainsSection.style.display = 'block';
+        console.log('✅ Gains scrapés affichés:', breakdown.length, 'rangs');
+      }
+
+      function displayGainsData(mockDrawData = null) {
         const gainsSection = document.getElementById('gainsSection');
         const gainsTableBody = document.getElementById('gainsTableBody');
 
-        // Données de gains simulées
-        const gainsData = [
-          { rank: 1, combo: '5+2', winners: 0, gain: '220 000 000 €' },
-          { rank: 2, combo: '5+1', winners: 3, gain: '852 214 €' },
-          { rank: 3, combo: '5+0', winners: 8, gain: '45 628 €' },
-          { rank: 4, combo: '4+2', winners: 47, gain: '4 086 €' },
-          { rank: 5, combo: '4+1', winners: 892, gain: '215 €' },
-          { rank: 6, combo: '3+2', winners: 1653, gain: '118 €' },
-          { rank: 7, combo: '4+0', winners: 2107, gain: '91 €' },
-          { rank: 8, combo: '2+2', winners: 25847, gain: '25 €' },
-          { rank: 9, combo: '3+1', winners: 38526, gain: '18 €' },
-          { rank: 10, combo: '3+0', winners: 91204, gain: '15 €' },
-          { rank: 11, combo: '1+2', winners: 147852, gain: '8 €' },
-          { rank: 12, combo: '2+1', winners: 698471, gain: '6 €' },
-          { rank: 13, combo: '2+0', winners: 1654820, gain: '4 €' }
-        ];
+        let gainsData;
+        
+        if (currentDataSource === 'mock' && mockDrawData && mockDrawData.gains) {
+          // Utiliser les vrais données Mock
+          gainsData = mockDrawData.gains.map((gain, index) => ({
+            rank: index + 1,
+            combo: gain.rang,
+            winners: gain.gagnants,
+            gain: gain.gain
+          }));
+          console.log('🎲 Gains Mock chargés:', gainsData.length, 'rangs');
+        } else {
+          // Données de gains par défaut (Scrap simulé)
+          gainsData = [
+            { rank: 1, combo: '5+2', winners: 0, gain: '220 000 000 €' },
+            { rank: 2, combo: '5+1', winners: 3, gain: '852 214 €' },
+            { rank: 3, combo: '5+0', winners: 8, gain: '45 628 €' },
+            { rank: 4, combo: '4+2', winners: 47, gain: '4 086 €' },
+            { rank: 5, combo: '4+1', winners: 892, gain: '215 €' },
+            { rank: 6, combo: '3+2', winners: 1653, gain: '118 €' },
+            { rank: 7, combo: '4+0', winners: 2107, gain: '91 €' },
+            { rank: 8, combo: '2+2', winners: 25847, gain: '25 €' },
+            { rank: 9, combo: '3+1', winners: 38526, gain: '18 €' },
+            { rank: 10, combo: '3+0', winners: 91204, gain: '15 €' },
+            { rank: 11, combo: '1+2', winners: 147852, gain: '8 €' },
+            { rank: 12, combo: '2+1', winners: 698471, gain: '6 €' },
+            { rank: 13, combo: '2+0', winners: 1654820, gain: '4 €' }
+          ];
+          console.log('🌐 Gains Scrap simulés chargés');
+        }
 
         // Vider le tableau
         gainsTableBody.innerHTML = '';
@@ -691,9 +1211,12 @@ style/ClaudS4/            # Styles CSS séparés
           
           const [balls, starsCount] = data.combo.split('+');
           
-          // Ajouter la boule avec le chiffre
+          // Ajouter la boule avec le chiffre (utilise les vraies classes de boules)
           const ballIcon = document.createElement('span');
-          ballIcon.className = 'combo-icon ball-icon';
+          ballIcon.className = 'ball';
+          ballIcon.style.width = '28px';
+          ballIcon.style.height = '28px';
+          ballIcon.style.fontSize = '14px';
           ballIcon.textContent = balls;
           comboDiv.appendChild(ballIcon);
           
@@ -704,9 +1227,12 @@ style/ClaudS4/            # Styles CSS séparés
             plus.style.margin = '0 4px';
             comboDiv.appendChild(plus);
             
-            // Ajouter l'étoile avec le chiffre
+            // Ajouter l'étoile avec le chiffre (utilise les vraies classes d'étoiles)
             const starIcon = document.createElement('span');
-            starIcon.className = 'combo-icon star-icon';
+            starIcon.className = 'ball star';
+            starIcon.style.width = '28px';
+            starIcon.style.height = '28px';
+            starIcon.style.fontSize = '12px';
             starIcon.textContent = starsCount;
             comboDiv.appendChild(starIcon);
           }
@@ -802,7 +1328,12 @@ style/ClaudS4/            # Styles CSS séparés
             console.log(`📄 Feuille ${i}:`, sheet.href || 'INLINE');
           }
           
-          showSection('home');
+          // Afficher la section home SEULEMENT au premier chargement
+          // Si aucune section n'est visible, montrer home par défaut
+          const visibleSections = document.querySelectorAll('.section:not(.hidden)');
+          if (visibleSections.length === 0) {
+            showSection('home');
+          }
         
         // Dessiner le menu cylindrique
         drawCylMenu();

@@ -2,7 +2,7 @@
 setlocal
 
 echo ==========================================
-echo FDJ - VERSION V0.000G STABLE
+echo FDJ - VERSION V0.001E-SCRAPING READY
 echo SERVEUR + EDGE LOCALHOST:3010
 echo ==========================================
 
@@ -15,76 +15,57 @@ echo.
 
 echo 🔄 Arret processus existants...
 taskkill /F /IM node.exe 2>nul || echo ℹ️ Aucun node a arreter
-timeout /t 2 /nobreak >nul
+timeout /t 1 /nobreak >nul
 
 echo.
 echo 🚀 DEMARRAGE SERVEUR LIVE-SERVER...
 cd /d "%WEB_DIR%"
 
-start "SERVEUR FDJ" cmd /c "live-server --port=3010 --host=localhost --no-browser --entry-file=index.html"
+start "SERVEUR FDJ" /min cmd /c "live-server --port=3010 --host=localhost --no-browser --entry-file=index.html"
 
-echo ⏳ Attente demarrage serveur (10 secondes)...
-timeout /t 10 /nobreak >nul
+echo ⏳ Attente demarrage serveur (5 secondes)...
+timeout /t 5 /nobreak >nul
 
-echo.
-echo 🔥 LANCEMENT NAVIGATEUR SUR LOCALHOST:3010
-echo.
-
-echo 🔥 Tentative Microsoft Edge...
+echo 🔥 LANCEMENT NAVIGATEUR...
 start "" "msedge.exe" "http://localhost:3010" 2>nul && (
     echo ✅ Microsoft Edge lance avec succes !
-    goto :browser_opened
-)
-
-echo 🔥 Tentative Firefox (fallback)...
-start "" "firefox.exe" "http://localhost:3010" 2>nul && (
-    echo ✅ Firefox lance avec succes !
-    goto :browser_opened
-)
-
-echo 🔥 Tentative navigateur par defaut...
-start "" "http://localhost:3010" 2>nul && (
+    goto :success
+) || (
+    start "" "http://localhost:3010" 2>nul
     echo ✅ Navigateur par defaut lance !
-    goto :browser_opened
 )
 
-echo ❌ Aucun navigateur trouve - ouvrez manuellement http://localhost:3010
-
-:browser_opened
-
+:success
 echo.
 echo ==========================================
-echo ✅ SERVEUR + EDGE LANCES
+echo ✅ SERVEUR + NAVIGATEUR LANCES
 echo ==========================================
-echo.
 echo 🌐 URL: http://localhost:3010
 echo 📂 Repertoire: %WEB_DIR%
-echo.
 echo 📋 INSTRUCTIONS:
 echo - Microsoft Edge devrait s'ouvrir automatiquement
-echo - Fallback Firefox puis navigateur par defaut
 echo - Sinon ouvrez manuellement: http://localhost:3010
 echo - Pour arreter le serveur: fermez la fenetre "SERVEUR FDJ"
-echo.
-echo 🏷️ VERSION V0.001D-pro CARACTERISTIQUES:
+echo 🏷️ VERSION V0.001E-SCRAPING CARACTERISTIQUES:
 echo - CSS ENTIEREMENT EXTERNE - 100%% bible.md conforme
-echo - JavaScript integre (pas de dependances externes)
+echo - Scraping EuroMillions fonctionnel avec detection erreurs
+echo - Interrupteur Mock/Scrap avec indicateurs visuels
 echo - Architecture CSS modulaire complete:
 echo   * homepage-components.css (structure generale)
 echo   * lottery-components.css (boules et etoiles NEON ARRONDIES)
-echo   * tirage-components.css (page tirage)
+echo   * tirage-components.css (page tirage + messages couleur)
 echo   * tables-components.css (tableaux et selecteurs)
-echo   * switch-components.css (interrupteur)
-echo   * led-components.css (LEDs)
+echo   * switch-components.css (interrupteur position corrigee)
+echo   * led-components.css (fleches pliables)
 echo - Index.html totalement nettoye (ZERO CSS inline)
-echo - Etoiles neon arrondies cyan avec animations
-echo - SUPER STABLE - Pret pour integration Mock
+echo - Messages coherents: VERT (pas de tirage), ROUGE (erreurs)
 echo - Conforme bible.md regles 3, 7 et 8
-echo.
 echo ==========================================
 
 cd /d "%~dp0"
 
+REM Auto-fermeture après 3 secondes
 echo.
-echo Appuyez sur une touche pour fermer cette fenetre...
-pause >nul
+echo Fermeture automatique dans 3 secondes...
+timeout /t 3 /nobreak >nul
+exit

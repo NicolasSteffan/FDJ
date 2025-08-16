@@ -4,26 +4,142 @@
  * Copié depuis apps/web/index.html vers apps/web/ pour éviter problèmes MIME type live-server
  */
 
+/* Styles pour les indicateurs de chargement et erreurs */
+.loading {
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 18px;
+  color: var(--accent);
+  animation: pulse 1.5s infinite;
+}
+
+.error {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.error-details {
+  text-align: center;
+  padding: 20px;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.error-details p {
+  margin: 8px 0;
+  color: #ff6b6b;
+}
+
+.error-details strong {
+  color: #ff4757;
+}
+
+/* Message informatif pour "pas de tirage" (vert) */
+.no-draw {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #27ae60;
+  background: rgba(39, 174, 96, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(39, 174, 96, 0.3);
+  font-weight: bold;
+}
+
+.no-draw-details {
+  text-align: center;
+  padding: 20px;
+  background: rgba(39, 174, 96, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+.no-draw-details p {
+  margin: 8px 0;
+  color: #27ae60;
+}
+
+.no-draw-details strong {
+  color: #2ecc71;
+  font-weight: bold;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
 /* Page Tirage - Contrôles */
 .tirage-controls {
   background: rgba(255,255,255,0.04);
-  padding: 20px;
+  padding: 25px;
   border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.06);
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
+/* Ligne 1: Titres */
+.controls-titles {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.title-group {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+.title-group:first-child {
+  flex: 0 0 200px; /* largeur du date-picker seulement */
+  justify-content: center;
+}
+
+.title-group:last-child {
+  flex: 0 0 300px; /* largeur approximative du toggle-switch */
+  justify-content: center;
+}
+
+.title-group h4 {
+  margin: 0;
+  color: var(--accent);
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+/* Ligne 2: Contrôles */
 .controls-row {
   display: flex;
-  gap: 20px;
+  justify-content: space-between;
   align-items: center;
+  gap: 20px;
   flex-wrap: wrap;
 }
 
-.date-picker {
+.date-load-group {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  gap: 8px; /* Petit gap entre sélecteur et bouton */
+}
+
+.date-picker {
+  flex: 0 0 200px;
+  min-width: 200px;
 }
 
 .date-picker label {
@@ -33,12 +149,90 @@
 }
 
 .date-picker input {
-  padding: 8px 12px;
+  padding: 12px 16px;
   border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 6px;
+  border-radius: 8px;
   background: rgba(255,255,255,0.05);
   color: var(--fg);
   font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.date-picker input:hover {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.08);
+}
+
+.date-picker input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(63, 182, 255, 0.2);
+}
+
+.load-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--accent), #2980b9);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(63, 182, 255, 0.3);
+  flex-shrink: 0; /* Empêcher la compression du bouton */
+}
+
+.load-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(63, 182, 255, 0.4);
+}
+
+.load-btn:active {
+  transform: translateY(0);
+}
+
+/* Ligne 3: Fil d'Ariane */
+.breadcrumb {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 10px;
+}
+
+.breadcrumb-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.breadcrumb-icon {
+  font-size: 16px;
+  animation: spin 2s linear infinite;
+}
+
+.breadcrumb-text {
+  color: rgba(255,255,255,0.8);
+  font-weight: 500;
+}
+
+.breadcrumb.active .breadcrumb-text {
+  color: var(--accent);
+}
+
+.breadcrumb.success .breadcrumb-icon {
+  animation: none;
+}
+
+.breadcrumb.error .breadcrumb-text {
+  color: #ff6b6b;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Section Résultats */
@@ -133,6 +327,8 @@
   font-weight: 600;
   color: #27ae60;
 }
+
+
 
 /* Responsive pour la page tirage */
 @media (max-width: 768px) {
