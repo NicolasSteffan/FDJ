@@ -230,7 +230,7 @@ style/ClaudS4/            # Styles CSS séparés
         <div class="tirage-controls">
           <!-- Ligne 1: Titres -->
           <div class="controls-titles">
-            <div class="title-group">
+            <div class="date-title-section">
               <h4>Date de tirage</h4>
             </div>
             <div class="title-group">
@@ -241,7 +241,7 @@ style/ClaudS4/            # Styles CSS séparés
           <!-- Ligne 2: Contrôles -->
           <div class="controls-row">
             <div class="date-load-group">
-              <div class="date-picker">
+              <div class="date-controls-merged">
                 <button onclick="changeDate(-1)" class="date-arrow date-arrow-left">◀</button>
                 <input type="date" id="drawDate" value="2025-08-13">
                 <button onclick="changeDate(1)" class="date-arrow date-arrow-right">▶</button>
@@ -249,6 +249,10 @@ style/ClaudS4/            # Styles CSS séparés
               
               <button onclick="loadDraw()" class="load-btn">
                 📥 Charger
+              </button>
+              
+              <button onclick="loadDrawForced()" class="load-btn force-btn" title="Forcer un nouveau scraping même si en base">
+                🔄 Force
               </button>
             </div>
             
@@ -1107,10 +1111,271 @@ style/ClaudS4/            # Styles CSS séparés
           updateBreadcrumb('loading-mock');
           displayDrawResult(selectedDate);
         } else {
-          // Mode Scrap - faire du vrai scraping
-          updateBreadcrumb('loading-scrap');
-          console.log('🌐 Démarrage scraping pour:', selectedDate);
-          await performRealScraping(selectedDate);
+          // Mode Scrap - nouvelle stratégie avec vérification base
+          await loadDrawWithStrategy(selectedDate);
+        }
+      }
+
+      // Charger avec force refresh (ignorer la base)
+      async function loadDrawForced() {
+        console.log('🔄 FORCE REFRESH demandé');
+        
+        const dateInput = document.getElementById('drawDate');
+        const selectedDate = dateInput.value;
+        
+        if (!selectedDate) {
+          alert('Veuillez sélectionner une date');
+          return;
+        }
+
+        if (currentDataSource === 'mock') {
+          alert('Le mode Mock ne nécessite pas de force refresh');
+          return;
+        }
+
+        console.log('🎯 Force refresh pour:', selectedDate);
+        await loadDrawWithStrategy(selectedDate, true); // forceRefresh = true
+      }
+
+      // === NOUVELLE STRATÉGIE INTELLIGENTE ===
+      
+      // Stratégie: 1) Vérifier base 2) Si vide→message 3) Si absent→scraper+sauver
+      async function loadDrawWithStrategy(selectedDate, forceRefresh = false) {
+        console.log('🎯 Stratégie intelligente pour:', selectedDate, forceRefresh ? '(FORCE REFRESH)' : '');
+        
+        // 1. Regarder si la date existe dans la base (sauf si force refresh)
+        if (!forceRefresh) {
+          const existingDraw = localStorage.getItem(`draw_${selectedDate}`);
+          
+          if (existingDraw) {
+            const drawData = JSON.parse(existingDraw);
+            console.log('📅 Tirage trouvé en base:', drawData);
+            
+            // 2a. Si oui et tirage NON vide → afficher
+            if (!isEmptyDraw(drawData)) {
+              console.log('✅ Tirage valide trouvé en base, affichage direct');
+              updateBreadcrumb('loading-scrap');
+              displayDrawFromDatabase(drawData, selectedDate);
+              return;
+            }
+            
+            // 2b. Si oui et tirage VIDE → message "pas de tirage"
+            console.log('⭕ Tirage vide trouvé en base, affichage message');
+            displayNoDrawMessage(selectedDate);
+            return;
+          }
+        }
+        
+        // 3. Si non (ou force refresh) → scraper, afficher et mettre en base
+        console.log('🌐 Aucune donnée valide en base, scraping nécessaire');
+        updateBreadcrumb('loading-scrap');
+        await scrapSaveAndDisplay(selectedDate);
+      }
+      
+      // Vérifier si un tirage est vide (que des 0)
+      function isEmptyDraw(drawData) {
+        if (!drawData.numbers || !drawData.stars) {
+          console.log('🔍 Tirage invalide: pas de numbers/stars');
+          return true;
+        }
+        
+        // Vérifier si tous les numéros sont 0
+        const allNumbersZero = drawData.numbers.every(num => num === 0);
+        const allStarsZero = drawData.stars.every(star => star === 0);
+        
+        const isEmpty = allNumbersZero && allStarsZero;
+        console.log('🔍 Vérification tirage vide:', {
+          numbers: drawData.numbers,
+          stars: drawData.stars,
+          isEmpty: isEmpty
+        });
+        
+        return isEmpty;
+      }
+      
+      // Afficher un tirage depuis la base de données
+      function displayDrawFromDatabase(drawData, selectedDate) {
+        console.log('📊 Affichage depuis base:', drawData);
+        
+        const resultsSection = document.getElementById('resultsSection');
+        const resultDate = document.getElementById('resultDate');
+        const resultBalls = document.getElementById('resultBalls');
+        
+        // Formatter la date
+        const dateObj = new Date(selectedDate + 'T00:00:00');
+        const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        
+        resultDate.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+        
+        // Créer les boules
+        resultBalls.innerHTML = '';
+        
+        // Boules numéros
+        drawData.numbers.forEach((number, index) => {
+          const ball = document.createElement('span');
+          ball.className = 'ball';
+          ball.textContent = number;
+          resultBalls.appendChild(ball);
+        });
+        
+        // Boules étoiles
+        drawData.stars.forEach((star, index) => {
+          const starBall = document.createElement('span');
+          starBall.className = 'ball star';
+          starBall.textContent = star;
+          resultBalls.appendChild(starBall);
+        });
+        
+        resultsSection.style.display = 'block';
+        
+        // Afficher les gains si disponibles
+        if (drawData.gains && drawData.gains.length > 0) {
+          displayGainsFromData(drawData);
+        }
+        
+        updateBreadcrumb('success');
+        console.log('✅ Affichage base terminé');
+      }
+      
+      // Afficher le message "pas de tirage trouvé"
+      function displayNoDrawMessage(selectedDate) {
+        console.log('ℹ️ Affichage message pas de tirage pour:', selectedDate);
+        
+        const resultsSection = document.getElementById('resultsSection');
+        const resultDate = document.getElementById('resultDate');
+        const resultBalls = document.getElementById('resultBalls');
+        
+        // Formatter la date
+        const dateObj = new Date(selectedDate + 'T00:00:00');
+        const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        
+        resultDate.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+        
+        // Message informatif
+        resultBalls.innerHTML = `
+          <div style="text-align: center; padding: 30px; color: var(--accent);">
+            <div style="font-size: 48px; margin-bottom: 15px;">📅</div>
+            <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">Pas de tirage trouvé</div>
+            <div style="font-size: 14px; color: #888;">Aucun tirage EuroMillions pour cette date</div>
+          </div>
+        `;
+        
+        resultsSection.style.display = 'block';
+        updateBreadcrumb('info');
+        console.log('ℹ️ Message pas de tirage affiché');
+      }
+      
+      // Scraper, sauvegarder et afficher
+      async function scrapSaveAndDisplay(selectedDate) {
+        console.log('🌐 Début scraping + sauvegarde pour:', selectedDate);
+        
+        try {
+          // Utiliser la fonction de scraping existante
+          const scrapedData = await scrapDrawFromLotteryExtreme(selectedDate);
+          
+          if (scrapedData && scrapedData.numbers && scrapedData.stars) {
+            console.log('✅ Scraping réussi, sauvegarde en base');
+            
+            // Sauvegarder en base
+            const dataToSave = {
+              date: selectedDate,
+              numbers: scrapedData.numbers,
+              stars: scrapedData.stars,
+              gains: scrapedData.gains || [],
+              source: 'scraped',
+              timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`draw_${selectedDate}`, JSON.stringify(dataToSave));
+            console.log('💾 Données sauvegardées en base');
+            
+            // Afficher les résultats
+            displayDrawFromDatabase(dataToSave, selectedDate);
+            
+          } else {
+            console.log('⭕ Scraping retourné vide, sauvegarde tirage vide');
+            
+            // Sauvegarder un tirage vide
+            const emptyDraw = {
+              date: selectedDate,
+              numbers: [0, 0, 0, 0, 0],
+              stars: [0, 0],
+              gains: [],
+              source: 'scraped_empty',
+              timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`draw_${selectedDate}`, JSON.stringify(emptyDraw));
+            console.log('💾 Tirage vide sauvegardé');
+            
+            // Afficher le message
+            displayNoDrawMessage(selectedDate);
+          }
+          
+        } catch (error) {
+          console.error('❌ Erreur de scraping (ne sauvegarde pas):', error);
+          
+          // NE PAS sauvegarder en cas d'erreur technique
+          // Utiliser la gestion d'erreur existante
+          const resultsSection = document.getElementById('resultsSection');
+          const resultDate = document.getElementById('resultDate');
+          const resultBalls = document.getElementById('resultBalls');
+          
+          // Formatter la date
+          const dateObj = new Date(selectedDate + 'T00:00:00');
+          const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          
+          resultDate.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+          
+          // Affichage différentié selon le type d'erreur (reprendre la logique existante)
+          let messageIcon, messageTitle, messageContent, messageAdvice, isNoDraw = false;
+          
+          if (error.message.startsWith('NO_DRAW_FOR_DATE') || error.message.startsWith('NOT_DRAW_DAY')) {
+            isNoDraw = true;
+            messageIcon = '📅';
+            messageTitle = 'Aucun tirage trouvé';
+            messageContent = `Pas de tirage EuroMillions disponible pour le ${selectedDate}`;
+            messageAdvice = '💡 Les tirages EuroMillions ont lieu les mardis et vendredis soir';
+          } else if (error.message.startsWith('FUTURE_DATE')) {
+            messageIcon = '🔮';
+            messageTitle = 'Date future';
+            messageContent = `Le tirage du ${selectedDate} n'a pas encore eu lieu`;
+            messageAdvice = '💡 Sélectionnez une date passée pour voir les résultats';
+          } else {
+            messageIcon = '⚠️';
+            messageTitle = 'Erreur technique';
+            messageContent = 'Impossible de récupérer les données pour le moment';
+            messageAdvice = '💡 Vérifiez votre connexion internet et réessayez';
+          }
+          
+          const messageClass = isNoDraw ? 'info-message' : 'error-message';
+          
+          resultBalls.innerHTML = `
+            <div class="${messageClass}" style="padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+              <div style="font-size: 32px; margin-bottom: 10px;">${messageIcon}</div>
+              <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${messageTitle}</div>
+              <div style="font-size: 14px; margin-bottom: 12px;">${messageContent}</div>
+              <div style="font-size: 12px; font-style: italic;">${messageAdvice}</div>
+            </div>
+          `;
+          
+          resultsSection.style.display = 'block';
+          updateBreadcrumb(isNoDraw ? 'info' : 'error');
         }
       }
 
