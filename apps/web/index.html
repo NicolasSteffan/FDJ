@@ -63,13 +63,7 @@
             <ul class="submenu">
               <li><a href="#" onclick="showSection('tirage')">Tirage</a></li>
               <li><a href="#" onclick="showHistorique()">Historique</a></li>
-            </ul>
-          </li>
-          <li>
-            <span class="menu-head">Collecte</span>
-            <ul class="submenu">
               <li><a href="#" onclick="showSection('components')">Lancer scraping</a></li>
-              <li><a href="#" onclick="showSection('components')">Sources</a></li>
             </ul>
           </li>
           <li>
@@ -1313,40 +1307,174 @@ style/ClaudS4/            # Styles CSS séparés
 
       // === NOUVELLE STRATÉGIE INTELLIGENTE ===
       
-      // Stratégie: 1) Vérifier base 2) Si vide→message 3) Si absent→scraper+sauver
+      // Stratégie: 1) Vérifier base SQLite 2) Si vide→message 3) Si absent→scraper+sauver
       async function loadDrawWithStrategy(selectedDate, forceRefresh = false) {
-        console.log('🎯 Stratégie intelligente pour:', selectedDate, forceRefresh ? '(FORCE REFRESH)' : '');
+        console.log('🎯 Stratégie intelligente SQLite pour:', selectedDate, forceRefresh ? '(FORCE REFRESH)' : '');
         
-        // 1. Regarder si la date existe dans la base (sauf si force refresh)
+        // 1. Regarder si la date existe dans la base SQLite (sauf si force refresh)
         if (!forceRefresh) {
-          const existingDraw = localStorage.getItem(`draw_${selectedDate}`);
-          
-          if (existingDraw) {
-            const drawData = JSON.parse(existingDraw);
-            console.log('📅 Tirage trouvé en base:', drawData);
+          try {
+            const existingDraw = await checkDrawInSQLiteDatabase(selectedDate);
             
-            // 2a. Si oui et tirage NON vide → afficher
-            if (!isEmptyDraw(drawData)) {
-              console.log('✅ Tirage valide trouvé en base, affichage direct');
-              updateBreadcrumb('loading-scrap');
-              displayDrawFromDatabase(drawData, selectedDate);
+            if (existingDraw) {
+              console.log('📅 Tirage trouvé en base SQLite:', existingDraw);
+              
+              // 2a. Si oui et tirage NON vide → afficher
+              if (!isEmptyDrawSQLite(existingDraw)) {
+                console.log('✅ Tirage valide trouvé en base SQLite, affichage direct');
+                updateBreadcrumb('loading-scrap');
+                displayDrawFromSQLiteDatabase(existingDraw, selectedDate);
+                return;
+              }
+              
+              // 2b. Si oui et tirage VIDE → message "pas de tirage"
+              console.log('⭕ Tirage vide trouvé en base SQLite, affichage message');
+              displayNoDrawMessage(selectedDate);
               return;
             }
-            
-            // 2b. Si oui et tirage VIDE → message "pas de tirage"
-            console.log('⭕ Tirage vide trouvé en base, affichage message');
-            displayNoDrawMessage(selectedDate);
-            return;
+          } catch (error) {
+            console.warn('⚠️ Erreur vérification base SQLite:', error.message);
+            // Continuer avec le scraping en cas d'erreur de base
           }
         }
         
-        // 3. Si non (ou force refresh) → scraper, afficher et mettre en base
-        console.log('🌐 Aucune donnée valide en base, scraping nécessaire');
+        // 3. Si non (ou force refresh) → scraper, afficher et mettre en base SQLite
+        console.log('🌐 Aucune donnée valide en base SQLite, scraping nécessaire');
         updateBreadcrumb('loading-scrap');
-        await scrapSaveAndDisplay(selectedDate);
+        await scrapSaveAndDisplaySQLite(selectedDate);
       }
       
-      // Vérifier si un tirage est vide (que des 0)
+      // ========================================
+      // Fonctions SQLite pour scraping
+      // ========================================
+      
+      // Vérifier si un tirage existe dans la base SQLite
+      async function checkDrawInSQLiteDatabase(selectedDate) {
+        console.log('🔍 Vérification tirage SQLite pour date:', selectedDate);
+        
+        try {
+          // Utiliser l'API SQLite backend pour récupérer les tirages
+          const response = await fetch(`http://localhost:3001/api/tables/tirages`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          
+          if (result.success && result.data) {
+            // Chercher un tirage avec la date correspondante
+            const existingDraw = result.data.find(tirage => tirage.date === selectedDate);
+            
+            if (existingDraw) {
+              console.log('✅ Tirage trouvé dans SQLite:', existingDraw);
+              return existingDraw;
+            }
+          }
+          
+          console.log('ℹ️ Aucun tirage trouvé pour cette date dans SQLite');
+          return null;
+          
+        } catch (error) {
+          console.error('❌ Erreur vérification SQLite:', error);
+          throw error;
+        }
+      }
+      
+      // Vérifier si un tirage SQLite est vide (que des 0)
+      function isEmptyDrawSQLite(drawData) {
+        if (!drawData.numeros || !drawData.etoiles) {
+          console.log('🔍 Tirage SQLite invalide: pas de numeros/etoiles');
+          return true;
+        }
+        
+        // Convertir les chaînes en tableaux si nécessaire
+        let numbers = drawData.numeros;
+        let stars = drawData.etoiles;
+        
+        if (typeof numbers === 'string') {
+          numbers = numbers.split(',').map(n => parseInt(n.trim()));
+        }
+        if (typeof stars === 'string') {
+          stars = stars.split(',').map(s => parseInt(s.trim()));
+        }
+        
+        // Vérifier si tous les numéros sont 0
+        const allNumbersZero = numbers.every(num => num === 0);
+        const allStarsZero = stars.every(star => star === 0);
+        
+        const isEmpty = allNumbersZero && allStarsZero;
+        console.log('🔍 Vérification tirage SQLite vide:', {
+          numeros: numbers,
+          etoiles: stars,
+          isEmpty: isEmpty
+        });
+        
+        return isEmpty;
+      }
+      
+      // Afficher un tirage depuis la base SQLite
+      function displayDrawFromSQLiteDatabase(drawData, selectedDate) {
+        console.log('🎨 Affichage tirage depuis base SQLite:', drawData);
+        
+        // Convertir les données SQLite au format attendu par l'affichage
+        let numbers = drawData.numeros;
+        let stars = drawData.etoiles;
+        
+        if (typeof numbers === 'string') {
+          numbers = numbers.split(',').map(n => parseInt(n.trim()));
+        }
+        if (typeof stars === 'string') {
+          stars = stars.split(',').map(s => parseInt(s.trim()));
+        }
+        
+        // Formatter la date
+        const dateObj = new Date(selectedDate + 'T00:00:00');
+        const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        
+        // Afficher les résultats
+        const resultsSection = document.getElementById('resultsSection');
+        const resultDate = document.getElementById('resultDate');
+        const resultBalls = document.getElementById('resultBalls');
+        
+        resultDate.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+        
+        // Créer les boules
+        resultBalls.innerHTML = '';
+        
+        // Boules numéros
+        numbers.forEach(number => {
+          const ball = document.createElement('span');
+          ball.className = 'ball';
+          ball.textContent = number;
+          resultBalls.appendChild(ball);
+        });
+        
+        // Boules étoiles
+        stars.forEach(star => {
+          const starBall = document.createElement('span');
+          starBall.className = 'ball star';
+          starBall.textContent = star;
+          resultBalls.appendChild(starBall);
+        });
+        
+        resultsSection.style.display = 'block';
+        updateBreadcrumb('success');
+        
+        console.log('✅ Tirage SQLite affiché avec succès');
+      }
+
+      // Vérifier si un tirage est vide (que des 0) - Version legacy
       function isEmptyDraw(drawData) {
         if (!drawData.numbers || !drawData.stars) {
           console.log('🔍 Tirage invalide: pas de numbers/stars');
@@ -2306,8 +2434,8 @@ style/ClaudS4/            # Styles CSS séparés
       // === NOUVELLE PAGE HISTORIQUE ===
 
       // Fonction pour charger et afficher les tirages depuis la base
-      function loadHistoriqueFromDatabase() {
-        console.log('🔄 Chargement de l\'historique depuis la base de données...');
+      async function loadHistoriqueFromDatabase() {
+        console.log('🔄 Chargement de l\'historique depuis la base SQLite...');
         
         const container = document.getElementById('tiragesContainer');
         const paginationSelect = document.getElementById('historiquePagination');
@@ -2317,53 +2445,156 @@ style/ClaudS4/            # Styles CSS séparés
           return;
         }
 
-        // Récupérer tous les tirages depuis localStorage
-        const draws = [];
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && key.startsWith('draw_')) {
-            try {
-              const drawData = JSON.parse(localStorage.getItem(key));
-              if (drawData && drawData.date) {
-                draws.push(drawData);
+        // Afficher un indicateur de chargement
+        container.innerHTML = '<p class="loading-message">🔄 Chargement de l\'historique depuis la base SQLite...</p>';
+
+        try {
+          // Récupérer tous les tirages depuis l'API SQLite backend
+          console.log('🌐 Requête API SQLite pour l\'historique...');
+          const response = await fetch(`http://localhost:3001/api/tables/tirages`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          
+          if (!result.success || !result.data) {
+            throw new Error('Réponse API invalide ou données manquantes');
+          }
+
+          const sqliteDraws = result.data;
+          console.log(`📊 ${sqliteDraws.length} tirages récupérés depuis SQLite`);
+
+          if (sqliteDraws.length === 0) {
+            container.innerHTML = '<p class="no-data-message">Aucun tirage en base de données SQLite. Effectuez d\'abord un scraping depuis la page Tirage.</p>';
+            return;
+          }
+
+          // Convertir les données SQLite au format attendu par createTirageTag()
+          const draws = sqliteDraws.map(sqliteDraw => {
+            // Convertir les chaînes en tableaux d'entiers
+            let numbers = sqliteDraw.numeros;
+            let stars = sqliteDraw.etoiles;
+            
+            if (typeof numbers === 'string') {
+              numbers = numbers.split(',').map(n => parseInt(n.trim()));
+            }
+            if (typeof stars === 'string') {
+              stars = stars.split(',').map(s => parseInt(s.trim()));
+            }
+
+            return {
+              date: sqliteDraw.date,
+              numbers: numbers,
+              stars: stars,
+              gains: [], // TODO: Récupérer les gains depuis la table gains si nécessaire
+              source: sqliteDraw.source || 'SQLite'
+            };
+          });
+
+          // Trier par date (plus récent en premier)
+          draws.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+          // Appliquer la pagination
+          const pageSize = paginationSelect ? paginationSelect.value : '10';
+          let drawsToDisplay = draws;
+          
+          if (pageSize !== 'all') {
+            const limit = parseInt(pageSize);
+            drawsToDisplay = draws.slice(0, limit);
+            console.log(`📄 Affichage de ${drawsToDisplay.length}/${draws.length} tirages (limite: ${pageSize})`);
+          } else {
+            console.log(`📄 Affichage de tous les tirages (${draws.length})`);
+          }
+
+          // Générer le HTML des tags
+          container.innerHTML = drawsToDisplay.map(draw => createTirageTag(draw)).join('');
+          
+          // Ajouter info de pagination si nécessaire
+          if (pageSize !== 'all' && draws.length > parseInt(pageSize)) {
+            const infoDiv = document.createElement('div');
+            infoDiv.style.cssText = 'text-align: center; color: #888; margin-top: 20px; font-size: 14px;';
+            infoDiv.innerHTML = `Affichage de ${drawsToDisplay.length} sur ${draws.length} tirages - Modifiez la sélection pour voir plus`;
+            container.appendChild(infoDiv);
+          }
+
+          console.log('✅ Historique SQLite affiché avec succès');
+
+        } catch (error) {
+          console.error('❌ Erreur chargement historique SQLite:', error);
+          
+          // Fallback vers localStorage si API SQLite échoue
+          console.log('🔄 Fallback vers localStorage...');
+          await loadHistoriqueFromLocalStorage(container, paginationSelect);
+        }
+      }
+
+      // Fonction fallback pour charger depuis localStorage
+      async function loadHistoriqueFromLocalStorage(container, paginationSelect) {
+        console.log('📂 Chargement historique depuis localStorage (fallback)...');
+        
+        try {
+          // Récupérer tous les tirages depuis localStorage
+          const draws = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('draw_')) {
+              try {
+                const drawData = JSON.parse(localStorage.getItem(key));
+                if (drawData && drawData.date) {
+                  draws.push(drawData);
+                }
+              } catch (error) {
+                console.warn('⚠️ Erreur parsing draw:', key, error);
               }
-            } catch (error) {
-              console.warn('⚠️ Erreur parsing draw:', key, error);
             }
           }
-        }
 
-        console.log(`📊 ${draws.length} tirages trouvés en base`);
+          console.log(`📊 ${draws.length} tirages trouvés en localStorage`);
 
-        if (draws.length === 0) {
-          container.innerHTML = '<p class="no-data-message">Aucun tirage en base de données. Effectuez d\'abord un scraping depuis la page Tirage.</p>';
-          return;
-        }
+          if (draws.length === 0) {
+            container.innerHTML = '<p class="no-data-message">❌ Erreur de connexion SQLite et aucun tirage en localStorage. Vérifiez que le backend est démarré ou effectuez un scraping depuis la page Tirage.</p>';
+            return;
+          }
 
-        // Trier par date (plus récent en premier)
-        draws.sort((a, b) => new Date(b.date) - new Date(a.date));
+          // Trier par date (plus récent en premier)
+          draws.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        // Appliquer la pagination
-        const pageSize = paginationSelect ? paginationSelect.value : '10';
-        let drawsToDisplay = draws;
-        
-        if (pageSize !== 'all') {
-          const limit = parseInt(pageSize);
-          drawsToDisplay = draws.slice(0, limit);
-          console.log(`📄 Affichage de ${drawsToDisplay.length}/${draws.length} tirages (limite: ${pageSize})`);
-        } else {
-          console.log(`📄 Affichage de tous les tirages (${draws.length})`);
-        }
+          // Appliquer la pagination
+          const pageSize = paginationSelect ? paginationSelect.value : '10';
+          let drawsToDisplay = draws;
+          
+          if (pageSize !== 'all') {
+            const limit = parseInt(pageSize);
+            drawsToDisplay = draws.slice(0, limit);
+            console.log(`📄 Affichage de ${drawsToDisplay.length}/${draws.length} tirages (limite: ${pageSize})`);
+          } else {
+            console.log(`📄 Affichage de tous les tirages (${draws.length})`);
+          }
 
-        // Générer le HTML des tags
-        container.innerHTML = drawsToDisplay.map(draw => createTirageTag(draw)).join('');
-        
-        // Ajouter info de pagination si nécessaire
-        if (pageSize !== 'all' && draws.length > parseInt(pageSize)) {
-          const infoDiv = document.createElement('div');
-          infoDiv.style.cssText = 'text-align: center; color: #888; margin-top: 20px; font-size: 14px;';
-          infoDiv.innerHTML = `Affichage de ${drawsToDisplay.length} sur ${draws.length} tirages - Modifiez la sélection pour voir plus`;
-          container.appendChild(infoDiv);
+          // Générer le HTML des tags avec avertissement de fallback
+          const fallbackWarning = '<div style="background: rgba(255,165,0,0.1); border: 1px solid #ffa500; border-radius: 8px; padding: 10px; margin-bottom: 15px; color: #ffa500; text-align: center;"><strong>⚠️ Mode Fallback:</strong> Données chargées depuis localStorage (SQLite indisponible)</div>';
+          container.innerHTML = fallbackWarning + drawsToDisplay.map(draw => createTirageTag(draw)).join('');
+          
+          // Ajouter info de pagination si nécessaire
+          if (pageSize !== 'all' && draws.length > parseInt(pageSize)) {
+            const infoDiv = document.createElement('div');
+            infoDiv.style.cssText = 'text-align: center; color: #888; margin-top: 20px; font-size: 14px;';
+            infoDiv.innerHTML = `Affichage de ${drawsToDisplay.length} sur ${draws.length} tirages - Modifiez la sélection pour voir plus`;
+            container.appendChild(infoDiv);
+          }
+
+          console.log('✅ Historique localStorage affiché (fallback)');
+
+        } catch (fallbackError) {
+          console.error('❌ Erreur fallback localStorage:', fallbackError);
+          container.innerHTML = '<p class="no-data-message">❌ Erreur: Impossible de charger l\'historique depuis SQLite et localStorage. Vérifiez la connexion backend et effectuez un scraping.</p>';
         }
       }
 

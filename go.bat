@@ -2,7 +2,7 @@
 setlocal
 
 echo ==========================================
-echo FDJ - VERSION V0.002E-SQLITE BACKEND
+echo FDJ - VERSION V0.002F-HISTORIQUE-SQLITE
 echo SERVEUR BACKEND + FRONTEND LOCALHOST
 echo ==========================================
 
@@ -58,10 +58,13 @@ echo 📋 INSTRUCTIONS:
 echo - Microsoft Edge devrait s'ouvrir automatiquement
 echo - Sinon ouvrez manuellement: http://localhost:3010
 echo - Pour arreter: fermez les fenetres "BACKEND" et "SERVEUR"
-echo 🔧 VERSION V0.002E-SQLITE CARACTERISTIQUES:
+echo 🔧 VERSION V0.002F-HISTORIQUE-SQLITE CARACTERISTIQUES:
 echo - Backend SQLite file-based partage
 echo - API REST complete avec CORS
 echo - Base de donnees persistante SQLite
+echo - PAGE HISTORIQUE connectee a SQLite avec fallback localStorage
+echo - Page Tirage + Page Historique 100%% SQLite fonctionnelles
+echo - Pagination intelligente et gestion d'erreurs robuste
 echo - Monitoring autonome en temps reel
 echo - Compatible deploiement multi-utilisateurs
 echo - Interface Admin modernisee
