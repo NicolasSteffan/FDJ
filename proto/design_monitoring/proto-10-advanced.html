@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype 10 - Advanced Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .advanced-container {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "filters main sidebar"
+                "footer footer footer";
+            grid-template-rows: 60px 1fr 50px;
+            grid-template-columns: 300px 1fr 350px;
+            min-height: 100vh;
+            gap: 1px;
+            background: #1a1a1a;
+        }
+
+        /* Header */
+        .header {
+            grid-area: header;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: white;
+        }
+
+        .header-search {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 8px 16px;
+            color: white;
+            font-size: 0.9em;
+            width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            width: 350px;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Filters Panel */
+        .filters-panel {
+            grid-area: filters;
+            background: #111;
+            padding: 20px;
+            border-right: 1px solid #333;
+            overflow-y: auto;
+        }
+
+        .filter-section {
+            margin-bottom: 30px;
+        }
+
+        .filter-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-label {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+
+        .filter-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .filter-checkbox input {
+            accent-color: #667eea;
+        }
+
+        .filter-checkbox label {
+            font-size: 0.85em;
+            cursor: pointer;
+        }
+
+        .filter-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .range-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 6px 8px;
+            color: white;
+            font-size: 0.8em;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .filter-tag {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .filter-tag .remove {
+            cursor: pointer;
+            color: #ff6b6b;
+        }
+
+        .clear-filters {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .clear-filters:hover {
+            background: rgba(244, 67, 54, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-area: main;
+            background: #0a0a0a;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Advanced Data Table */
+        .table-container {
+            background: #111;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .table-header {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .table-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: white;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .table-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+        }
+
+        .table-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .advanced-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .advanced-table th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #fff;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .advanced-table th:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .advanced-table th.sortable::after {
+            content: ' ↕';
+            opacity: 0.5;
+        }
+
+        .advanced-table th.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+            color: #667eea;
+        }
+
+        .advanced-table th.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
+            color: #667eea;
+        }
+
+        .advanced-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #222;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+
+        .advanced-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .advanced-table tr.selected {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Data Types */
+        .data-number {
+            font-family: 'JetBrains Mono', monospace;
+            color: #4CAF50;
+            text-align: right;
+        }
+
+        .data-date {
+            color: #2196F3;
+        }
+
+        .data-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .status-warning {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+        }
+
+        .status-error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #111;
+            border-top: 1px solid #333;
+        }
+
+        .pagination-info {
+            font-size: 0.9em;
+            color: #ccc;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: #111;
+            padding: 20px;
+            border-left: 1px solid #333;
+            overflow-y: auto;
+        }
+
+        .widget {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .widget-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .metric-item:last-child {
+            border-bottom: none;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #ccc;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* Charts */
+        .chart-container {
+            height: 200px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .chart-placeholder {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .mini-chart {
+            display: flex;
+            height: 60px;
+            align-items: end;
+            gap: 3px;
+            padding: 10px;
+        }
+
+        .chart-bar {
+            background: linear-gradient(to top, #667eea, #764ba2);
+            border-radius: 2px;
+            min-height: 10px;
+            flex: 1;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .chart-bar:hover {
+            opacity: 1;
+        }
+
+        /* Footer */
+        .footer {
+            grid-area: footer;
+            background: #111;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            border-top: 1px solid #333;
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .footer-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Advanced Controls */
+        .bulk-actions {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid #667eea;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .bulk-actions.show {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bulk-info {
+            color: #667eea;
+            font-size: 0.9em;
+        }
+
+        .bulk-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .bulk-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+        }
+
+        .bulk-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .bulk-btn.danger {
+            background: rgba(244, 67, 54, 0.2);
+            border-color: #f44336;
+            color: #f44336;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .advanced-container {
+                grid-template-areas:
+                    "header header"
+                    "main sidebar"
+                    "footer footer";
+                grid-template-columns: 1fr 300px;
+            }
+            
+            .filters-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .advanced-container {
+                grid-template-areas:
+                    "header"
+                    "main"
+                    "footer";
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .header-search {
+                display: none;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="advanced-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-title">🚀 Advanced Monitoring</div>
+            <div class="header-search">
+                <input type="text" class="search-box" placeholder="Rechercher dans les données..." id="global-search">
+                <button class="header-btn">🔍</button>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn">📊 Export</button>
+                <button class="header-btn">⚙️ Config</button>
+                <button class="header-btn">👤 Admin</button>
+            </div>
+        </div>
+
+        <!-- Filters Panel -->
+        <div class="filters-panel">
+            <div class="filter-section">
+                <div class="filter-title">🔍 Filtres avancés</div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Période</label>
+                    <div class="filter-range">
+                        <input type="date" class="range-input" value="2025-01-01">
+                        <span>à</span>
+                        <input type="date" class="range-input" value="2025-01-31">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Tables</label>
+                    <div class="filter-checkbox">
+                        <input type="checkbox" id="table-tirages" checked>
+                        <label for="table-tirages">Tirages</label>
+                    </div>
+                    <div class="filter-checkbox">
+                        <input type="checkbox" id="table-gains" checked>
+                        <label for="table-gains">Gains</label>
+                    </div>
+                    <div class="filter-checkbox">
+                        <input type="checkbox" id="table-sources">
+                        <label for="table-sources">Sources</label>
+                    </div>
+                    <div class="filter-checkbox">
+                        <input type="checkbox" id="table-config">
+                        <label for="table-config">Configuration</label>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Montant des gains</label>
+                    <div class="filter-range">
+                        <input type="number" class="range-input" placeholder="Min €" min="0">
+                        <span>-</span>
+                        <input type="number" class="range-input" placeholder="Max €" min="0">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Source</label>
+                    <select class="filter-input">
+                        <option value="">Toutes les sources</option>
+                        <option value="demo">Demo</option>
+                        <option value="api">API</option>
+                        <option value="scraping">Scraping</option>
+                        <option value="manual">Manuel</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Statut</label>
+                    <div class="filter-checkbox">
+                        <input type="checkbox" id="status-success" checked>
+                        <label for="status-success">Succès</label>
+                    </div>
+                    <div class="filter-checkbox">
+                        <input type="checkbox" id="status-warning">
+                        <label for="status-warning">Avertissement</label>
+                    </div>
+                    <div class="filter-checkbox">
+                        <input type="checkbox" id="status-error">
+                        <label for="status-error">Erreur</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">🏷️ Filtres actifs</div>
+                <div class="filter-tags" id="active-filters">
+                    <div class="filter-tag">
+                        Date: 2025-01
+                        <span class="remove">×</span>
+                    </div>
+                    <div class="filter-tag">
+                        Tables: tirages, gains
+                        <span class="remove">×</span>
+                    </div>
+                </div>
+                <button class="clear-filters">🗑️ Effacer tous les filtres</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Bulk Actions -->
+            <div class="bulk-actions" id="bulk-actions">
+                <div class="bulk-info">
+                    <strong id="selected-count">0</strong> élément(s) sélectionné(s)
+                </div>
+                <div class="bulk-buttons">
+                    <button class="bulk-btn">📤 Exporter</button>
+                    <button class="bulk-btn">📊 Analyser</button>
+                    <button class="bulk-btn danger">🗑️ Supprimer</button>
+                </div>
+            </div>
+
+            <!-- Advanced Table -->
+            <div class="table-container fade-in">
+                <div class="table-header">
+                    <div class="table-title">📊 Données de monitoring (143 résultats)</div>
+                    <div class="table-controls">
+                        <button class="table-btn">🔄 Actualiser</button>
+                        <button class="table-btn">📤 Exporter</button>
+                        <button class="table-btn">⚙️ Colonnes</button>
+                    </div>
+                </div>
+
+                <table class="advanced-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="select-all">
+                            </th>
+                            <th class="sortable" data-column="date">Date</th>
+                            <th class="sortable" data-column="table">Table</th>
+                            <th class="sortable" data-column="operation">Opération</th>
+                            <th class="sortable" data-column="combinaison">Combinaison</th>
+                            <th class="sortable" data-column="gains">Gains</th>
+                            <th class="sortable" data-column="gagnants">Gagnants</th>
+                            <th class="sortable" data-column="source">Source</th>
+                            <th class="sortable" data-column="status">Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-table-body">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <div class="pagination-info">
+                        Affichage de <strong>1-20</strong> sur <strong>143</strong> résultats
+                    </div>
+                    <div class="pagination-controls">
+                        <button class="page-btn" disabled>‹ Précédent</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">...</button>
+                        <button class="page-btn">8</button>
+                        <button class="page-btn">Suivant ›</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Quick Stats -->
+            <div class="widget fade-in">
+                <div class="widget-title">📈 Statistiques temps réel</div>
+                <div class="metric-item">
+                    <span class="metric-label">Requêtes/min</span>
+                    <span class="metric-value" id="queries-per-min">247</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Latence moyenne</span>
+                    <span class="metric-value">0.24s</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Taux d'erreur</span>
+                    <span class="metric-value">0.02%</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Connexions actives</span>
+                    <span class="metric-value">12</span>
+                </div>
+            </div>
+
+            <!-- Mini Chart -->
+            <div class="widget fade-in">
+                <div class="widget-title">📊 Activité (24h)</div>
+                <div class="mini-chart">
+                    <div class="chart-bar" style="height: 30%;"></div>
+                    <div class="chart-bar" style="height: 60%;"></div>
+                    <div class="chart-bar" style="height: 45%;"></div>
+                    <div class="chart-bar" style="height: 80%;"></div>
+                    <div class="chart-bar" style="height: 35%;"></div>
+                    <div class="chart-bar" style="height: 90%;"></div>
+                    <div class="chart-bar" style="height: 55%;"></div>
+                    <div class="chart-bar" style="height: 70%;"></div>
+                    <div class="chart-bar" style="height: 40%;"></div>
+                    <div class="chart-bar" style="height: 85%;"></div>
+                    <div class="chart-bar" style="height: 65%;"></div>
+                    <div class="chart-bar" style="height: 95%;"></div>
+                </div>
+            </div>
+
+            <!-- System Health -->
+            <div class="widget fade-in">
+                <div class="widget-title">💚 Santé du système</div>
+                <div class="metric-item">
+                    <span class="metric-label">SQLite</span>
+                    <span class="metric-value" style="color: #4CAF50;">✓ Opérationnel</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">LocalStorage</span>
+                    <span class="metric-value" style="color: #4CAF50;">✓ Disponible</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Cache</span>
+                    <span class="metric-value" style="color: #FF9800;">⚠ Partiel</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-label">Monitoring</span>
+                    <span class="metric-value" style="color: #4CAF50;">✓ Actif</span>
+                </div>
+            </div>
+
+            <!-- Recent Events -->
+            <div class="widget fade-in">
+                <div class="widget-title">🔔 Événements récents</div>
+                <div style="font-size: 0.85em; line-height: 1.6;">
+                    <div style="margin-bottom: 10px; padding: 8px; background: rgba(76, 175, 80, 0.1); border-radius: 6px; border-left: 3px solid #4CAF50;">
+                        <strong>Installation complète</strong><br>
+                        <span style="color: #888;">Il y a 5 min</span>
+                    </div>
+                    <div style="margin-bottom: 10px; padding: 8px; background: rgba(33, 150, 243, 0.1); border-radius: 6px; border-left: 3px solid #2196F3;">
+                        <strong>Tests système</strong><br>
+                        <span style="color: #888;">Il y a 15 min</span>
+                    </div>
+                    <div style="margin-bottom: 10px; padding: 8px; background: rgba(255, 152, 0, 0.1); border-radius: 6px; border-left: 3px solid #FF9800;">
+                        <strong>Alerte stockage</strong><br>
+                        <span style="color: #888;">Il y a 1h</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-left">
+                <span>© 2025 FDJ Monitoring</span>
+                <span>Version 1.4.2</span>
+                <span>Build 2025.01.14</span>
+            </div>
+            <div class="footer-right">
+                <span>Connexions: 12</span>
+                <span>Uptime: 99.8%</span>
+                <span>Sync: 2 min</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const sampleData = [
+            { id: 1, date: '2025-01-14', table: 'gains', operation: 'INSERT', combinaison: '5+2', gains: 125000000, gagnants: 0, source: 'demo', status: 'success' },
+            { id: 2, date: '2025-01-14', table: 'gains', operation: 'INSERT', combinaison: '5+1', gains: 350000, gagnants: 2, source: 'demo', status: 'success' },
+            { id: 3, date: '2025-01-14', table: 'gains', operation: 'INSERT', combinaison: '5+0', gains: 35000, gagnants: 8, source: 'demo', status: 'success' },
+            { id: 4, date: '2025-01-14', table: 'tirages', operation: 'INSERT', combinaison: '7-14-21-28-35', gains: null, gagnants: null, source: 'demo', status: 'success' },
+            { id: 5, date: '2025-01-11', table: 'gains', operation: 'SELECT', combinaison: '5+2', gains: 95000000, gagnants: 1, source: 'api', status: 'warning' },
+            { id: 6, date: '2025-01-11', table: 'sources', operation: 'UPDATE', combinaison: null, gains: null, gagnants: null, source: 'system', status: 'success' },
+            { id: 7, date: '2025-01-10', table: 'config', operation: 'SELECT', combinaison: null, gains: null, gagnants: null, source: 'system', status: 'error' },
+            { id: 8, date: '2025-01-10', table: 'gains', operation: 'DELETE', combinaison: '4+1', gains: 150, gagnants: 287, source: 'manual', status: 'success' }
+        ];
+
+        let currentSort = null;
+        let sortDirection = 'asc';
+        let selectedRows = new Set();
+
+        // Populate table
+        function populateTable(data = sampleData) {
+            const tbody = document.getElementById('data-table-body');
+            tbody.innerHTML = '';
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.dataset.id = row.id;
+                
+                if (selectedRows.has(row.id)) {
+                    tr.classList.add('selected');
+                }
+
+                tr.innerHTML = `
+                    <td><input type="checkbox" ${selectedRows.has(row.id) ? 'checked' : ''} onchange="toggleRowSelection(${row.id})"></td>
+                    <td class="data-date">${row.date}</td>
+                    <td>${row.table}</td>
+                    <td>${row.operation}</td>
+                    <td>${row.combinaison || '-'}</td>
+                    <td class="data-number">${row.gains ? row.gains.toLocaleString() + '€' : '-'}</td>
+                    <td class="data-number">${row.gagnants !== null ? row.gagnants : '-'}</td>
+                    <td>${row.source}</td>
+                    <td><span class="data-status status-${row.status}">${row.status}</span></td>
+                    <td>
+                        <button class="table-btn" onclick="viewDetails(${row.id})">👁️</button>
+                        <button class="table-btn" onclick="editRow(${row.id})">✏️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Row selection
+        function toggleRowSelection(id) {
+            if (selectedRows.has(id)) {
+                selectedRows.delete(id);
+            } else {
+                selectedRows.add(id);
+            }
+            
+            updateBulkActions();
+            populateTable();
+        }
+
+        function updateBulkActions() {
+            const bulkActions = document.getElementById('bulk-actions');
+            const selectedCount = document.getElementById('selected-count');
+            
+            selectedCount.textContent = selectedRows.size;
+            
+            if (selectedRows.size > 0) {
+                bulkActions.classList.add('show');
+            } else {
+                bulkActions.classList.remove('show');
+            }
+        }
+
+        // Select all
+        document.getElementById('select-all').addEventListener('change', function() {
+            if (this.checked) {
+                sampleData.forEach(row => selectedRows.add(row.id));
+            } else {
+                selectedRows.clear();
+            }
+            updateBulkActions();
+            populateTable();
+        });
+
+        // Sorting
+        document.querySelectorAll('.sortable').forEach(th => {
+            th.addEventListener('click', function() {
+                const column = this.dataset.column;
+                
+                if (currentSort === column) {
+                    sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort = column;
+                    sortDirection = 'asc';
+                }
+                
+                // Update UI
+                document.querySelectorAll('.sortable').forEach(header => {
+                    header.classList.remove('sort-asc', 'sort-desc');
+                });
+                
+                this.classList.add(`sort-${sortDirection}`);
+                
+                // Sort data
+                const sortedData = [...sampleData].sort((a, b) => {
+                    let aVal = a[column];
+                    let bVal = b[column];
+                    
+                    if (aVal === null || aVal === undefined) aVal = '';
+                    if (bVal === null || bVal === undefined) bVal = '';
+                    
+                    if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+                    if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+                    
+                    if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+                    if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                });
+                
+                populateTable(sortedData);
+            });
+        });
+
+        // Search functionality
+        document.getElementById('global-search').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const filteredData = sampleData.filter(row => {
+                return Object.values(row).some(value => 
+                    value && value.toString().toLowerCase().includes(query)
+                );
+            });
+            populateTable(filteredData);
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-input, .filter-checkbox input').forEach(input => {
+            input.addEventListener('change', applyFilters);
+        });
+
+        function applyFilters() {
+            // This would normally apply complex filtering logic
+            console.log('Applying filters...');
+        }
+
+        // Clear filters
+        document.querySelector('.clear-filters').addEventListener('click', function() {
+            document.querySelectorAll('.filter-input').forEach(input => {
+                input.value = '';
+            });
+            document.querySelectorAll('.filter-checkbox input').forEach(input => {
+                input.checked = false;
+            });
+            document.getElementById('active-filters').innerHTML = '';
+            populateTable();
+        });
+
+        // Pagination
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.disabled) return;
+                
+                document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+                if (!this.textContent.includes('‹') && !this.textContent.includes('›') && this.textContent !== '...') {
+                    this.classList.add('active');
+                }
+                
+                console.log('Page changed to:', this.textContent);
+            });
+        });
+
+        // Row actions
+        function viewDetails(id) {
+            console.log('Viewing details for row:', id);
+        }
+
+        function editRow(id) {
+            console.log('Editing row:', id);
+        }
+
+        // Real-time updates
+        function updateRealtimeMetrics() {
+            const queriesEl = document.getElementById('queries-per-min');
+            const current = parseInt(queriesEl.textContent);
+            queriesEl.textContent = current + Math.floor(Math.random() * 10) - 5;
+        }
+
+        // Initialize
+        populateTable();
+        setInterval(updateRealtimeMetrics, 5000);
+
+        // Animation delays
+        document.querySelectorAll('.fade-in').forEach((element, index) => {
+            element.style.animationDelay = (index * 0.1) + 's';
+        });
+    </script>
+</body>
+</html>
+

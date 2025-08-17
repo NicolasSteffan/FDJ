@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype 3 - Sidebar Navigation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f23;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.3em;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .sidebar-header h2 {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-section-title {
+            padding: 0 20px 10px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .nav-section-title {
+            opacity: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            gap: 15px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: #667eea;
+        }
+
+        .nav-item.active {
+            background: rgba(102, 126, 234, 0.2);
+            border-left-color: #667eea;
+        }
+
+        .nav-icon {
+            font-size: 1.3em;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-text {
+            font-size: 1em;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .nav-text {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .nav-badge {
+            background: #f39c12;
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-left: auto;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .nav-badge {
+            opacity: 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .breadcrumb {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-button {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: #0f0f23;
+        }
+
+        /* Content Cards */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-menu {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .card-menu:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table th {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Status indicators */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status.online {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .status.warning {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+        }
+
+        .status.error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Quick stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .sidebar .nav-text,
+            .sidebar .nav-badge,
+            .sidebar .nav-section-title,
+            .sidebar .sidebar-header h2 {
+                opacity: 0;
+                pointer-events: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                z-index: 1000;
+                height: 100vh;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .main-content {
+                width: 100%;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .content-card {
+            animation: slideIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+                <h2>FDJ Admin</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Tableau de bord</div>
+                    <div class="nav-item active" data-page="overview">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Vue d'ensemble</span>
+                    </div>
+                    <div class="nav-item" data-page="analytics">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">Analytiques</span>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Base de données</div>
+                    <div class="nav-item" data-page="sqlite">
+                        <span class="nav-icon">🗄️</span>
+                        <span class="nav-text">SQLite</span>
+                        <span class="nav-badge">13</span>
+                    </div>
+                    <div class="nav-item" data-page="localstorage">
+                        <span class="nav-icon">💾</span>
+                        <span class="nav-text">LocalStorage</span>
+                        <span class="nav-badge">5</span>
+                    </div>
+                    <div class="nav-item" data-page="backup">
+                        <span class="nav-icon">📁</span>
+                        <span class="nav-text">Sauvegardes</span>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Maintenance</div>
+                    <div class="nav-item" data-page="installation">
+                        <span class="nav-icon">🛠️</span>
+                        <span class="nav-text">Installation</span>
+                    </div>
+                    <div class="nav-item" data-page="tests">
+                        <span class="nav-icon">🧪</span>
+                        <span class="nav-text">Tests système</span>
+                    </div>
+                    <div class="nav-item" data-page="logs">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">Logs</span>
+                        <span class="nav-badge">42</span>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Configuration</div>
+                    <div class="nav-item" data-page="settings">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">Paramètres</span>
+                    </div>
+                    <div class="nav-item" data-page="security">
+                        <span class="nav-icon">🔒</span>
+                        <span class="nav-text">Sécurité</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="topbar">
+                <div>
+                    <div class="page-title">
+                        <span>📊</span>
+                        <span id="page-title">Vue d'ensemble</span>
+                    </div>
+                    <div class="breadcrumb">Admin > Monitoring > <span id="breadcrumb">Vue d'ensemble</span></div>
+                </div>
+                <div class="topbar-actions">
+                    <button class="action-button">🔄 Actualiser</button>
+                    <button class="action-button">⚙️ Paramètres</button>
+                </div>
+            </div>
+
+            <div class="content-area" id="content-area">
+                <!-- Vue d'ensemble par défaut -->
+                <div id="overview-content">
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">4</div>
+                            <div class="stat-label">Tables SQLite</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">13</div>
+                            <div class="stat-label">Gains stockés</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">99.8%</div>
+                            <div class="stat-label">Disponibilité</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Tirages actifs</div>
+                        </div>
+                    </div>
+
+                    <div class="content-grid">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span>🗄️</span>
+                                    <span>État SQLite</span>
+                                </div>
+                                <button class="card-menu">⋮</button>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <div class="status online">
+                                    <div class="status-dot"></div>
+                                    Connecté et opérationnel
+                                </div>
+                            </div>
+                            <div style="font-size: 0.9em; line-height: 1.6; opacity: 0.8;">
+                                <div>• 4 tables créées</div>
+                                <div>• 13 gains enregistrés</div>
+                                <div>• 3 tirages stockés</div>
+                                <div>• Dernière sync: il y a 2 min</div>
+                            </div>
+                        </div>
+
+                        <div class="content-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span>💾</span>
+                                    <span>LocalStorage</span>
+                                </div>
+                                <button class="card-menu">⋮</button>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <div class="status online">
+                                    <div class="status-dot"></div>
+                                    Disponible (3.2/5 MB)
+                                </div>
+                            </div>
+                            <div style="font-size: 0.9em; line-height: 1.6; opacity: 0.8;">
+                                <div>• 5 clés actives</div>
+                                <div>• Cache à jour</div>
+                                <div>• Auto-nettoyage activé</div>
+                                <div>• Dernière purge: hier</div>
+                            </div>
+                        </div>
+
+                        <div class="content-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span>🧪</span>
+                                    <span>Tests système</span>
+                                </div>
+                                <button class="card-menu">⋮</button>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <div class="status online">
+                                    <div class="status-dot"></div>
+                                    Tous les tests réussis
+                                </div>
+                            </div>
+                            <div style="font-size: 0.9em; line-height: 1.6; opacity: 0.8;">
+                                <div>• Connexion: ✓ OK</div>
+                                <div>• Tables: ✓ OK</div>
+                                <div>• Insertion: ✓ OK</div>
+                                <div>• Sélection: ✓ OK</div>
+                            </div>
+                        </div>
+
+                        <div class="content-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span>📊</span>
+                                    <span>Derniers gains</span>
+                                </div>
+                                <button class="card-menu">⋮</button>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Combinaison</th>
+                                        <th>Gain</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2025-01-14</td>
+                                        <td>5+2</td>
+                                        <td>125M€</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2025-01-14</td>
+                                        <td>5+1</td>
+                                        <td>350K€</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2025-01-11</td>
+                                        <td>5+2</td>
+                                        <td>95M€</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Retirer active de tous les items
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                
+                // Ajouter active à l'item cliqué
+                this.classList.add('active');
+                
+                // Mettre à jour le titre
+                const icon = this.querySelector('.nav-icon').textContent;
+                const text = this.querySelector('.nav-text').textContent;
+                const page = this.getAttribute('data-page');
+                
+                document.getElementById('page-title').innerHTML = `${icon} ${text}`;
+                document.getElementById('breadcrumb').textContent = text;
+                
+                // Simuler le changement de contenu
+                const contentArea = document.getElementById('content-area');
+                contentArea.style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    // Ici vous pourriez charger le contenu spécifique à la page
+                    loadPageContent(page);
+                    contentArea.style.opacity = '1';
+                }, 200);
+            });
+        });
+
+        function loadPageContent(page) {
+            const contentArea = document.getElementById('content-area');
+            
+            // Exemple de contenu différent selon la page
+            switch(page) {
+                case 'sqlite':
+                    contentArea.innerHTML = `
+                        <div class="content-grid">
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <span>🗄️</span>
+                                        <span>Gestion SQLite</span>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                                    <button class="action-button">🔗 Tester connexion</button>
+                                    <button class="action-button">📊 Créer tables</button>
+                                    <button class="action-button">💾 Insérer données</button>
+                                    <button class="action-button">🔍 Sélectionner</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'tests':
+                    contentArea.innerHTML = `
+                        <div class="content-grid">
+                            <div class="content-card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <span>🧪</span>
+                                        <span>Suite de tests</span>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                                    <button class="action-button">🔗 Test connexion</button>
+                                    <button class="action-button">🗄️ Test base</button>
+                                    <button class="action-button">📊 Test tables</button>
+                                    <button class="action-button">💾 Test insertion</button>
+                                    <button class="action-button">🔍 Test sélection</button>
+                                    <button class="action-button">🚀 Tous les tests</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                default:
+                    // Garder le contenu par défaut pour les autres pages
+                    break;
+            }
+        }
+
+        // Gestion mobile
+        if (window.innerWidth <= 768) {
+            document.querySelector('.toggle-btn').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('open');
+            });
+        }
+    </script>
+</body>
+</html>
+

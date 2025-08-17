@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype 5 - Grid Layout Responsive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .grid-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-areas:
+                "header header header header"
+                "nav nav nav nav"
+                "main main main aside"
+                "footer footer footer footer";
+            grid-template-rows: auto auto 1fr auto;
+            grid-template-columns: 1fr 1fr 1fr 300px;
+            gap: 20px;
+            min-height: calc(100vh - 40px);
+        }
+
+        /* Header */
+        .header {
+            grid-area: header;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #e3f2fd);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        .navigation {
+            grid-area: nav;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .nav-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .nav-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .nav-label {
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-area: main;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            align-content: start;
+        }
+
+        .widget {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .widget:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .widget.large {
+            grid-column: span 2;
+        }
+
+        .widget.tall {
+            grid-row: span 2;
+        }
+
+        .widget-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .widget-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .widget-action {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .widget-action:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Statistiques */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Progress Rings */
+        .progress-ring {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        .progress-circle {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+
+        .progress-bg {
+            stroke: rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-fill {
+            stroke: #4CAF50;
+            stroke-dasharray: 314;
+            stroke-dashoffset: 157;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-area: aside;
+            display: grid;
+            gap: 20px;
+            align-content: start;
+        }
+
+        .sidebar-widget {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .activity-time {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+
+        /* Footer */
+        .footer {
+            grid-area: footer;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .footer-stat {
+            opacity: 0.8;
+        }
+
+        .footer-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .footer-label {
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Actions Grid */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-areas:
+                    "header header header"
+                    "nav nav nav"
+                    "main main aside"
+                    "footer footer footer";
+                grid-template-columns: 1fr 1fr 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-areas:
+                    "header"
+                    "nav"
+                    "main"
+                    "aside"
+                    "footer";
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .widget.large {
+                grid-column: span 1;
+            }
+
+            .nav-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        .widget {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .widget:nth-child(1) { animation-delay: 0.1s; }
+        .widget:nth-child(2) { animation-delay: 0.2s; }
+        .widget:nth-child(3) { animation-delay: 0.3s; }
+        .widget:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-online {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4CAF50;
+        }
+
+        .status-warning {
+            background: rgba(255, 152, 0, 0.3);
+            color: #FF9800;
+        }
+
+        .status-error {
+            background: rgba(244, 67, 54, 0.3);
+            color: #F44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Monitoring Grid Dashboard</h1>
+            <p>Interface modulaire et responsive - Prototype Design 5</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="navigation">
+            <div class="nav-grid">
+                <div class="nav-item active">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Accueil</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">🗄️</span>
+                    <span class="nav-label">SQLite</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">💾</span>
+                    <span class="nav-label">LocalStorage</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">🛠️</span>
+                    <span class="nav-label">Installation</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">🧪</span>
+                    <span class="nav-label">Tests</span>
+                </div>
+                <div class="nav-item">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Rapports</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Widget État du système -->
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">🔄 État du système</div>
+                    <button class="widget-action">Actualiser</button>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">99.8%</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">2ms</div>
+                        <div class="stat-label">Latence</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Tables</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">13</div>
+                        <div class="stat-label">Gains</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget Performance -->
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">📈 Performance</div>
+                    <button class="widget-action">Détails</button>
+                </div>
+                <div class="progress-ring">
+                    <svg class="progress-circle">
+                        <circle class="progress-bg" cx="60" cy="60" r="50"></circle>
+                        <circle class="progress-fill" cx="60" cy="60" r="50"></circle>
+                    </svg>
+                    <div class="progress-text">85%</div>
+                </div>
+                <div style="text-align: center; opacity: 0.8;">Santé générale</div>
+            </div>
+
+            <!-- Widget Actions rapides -->
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">⚡ Actions rapides</div>
+                </div>
+                <div class="actions-grid">
+                    <button class="action-btn">🔗 Test connexion</button>
+                    <button class="action-btn">🏗️ Installation</button>
+                    <button class="action-btn">🧪 Tests</button>
+                    <button class="action-btn">💾 Sauvegarde</button>
+                    <button class="action-btn">🔄 Sync</button>
+                    <button class="action-btn">🗑️ Nettoyage</button>
+                </div>
+            </div>
+
+            <!-- Widget Table des données -->
+            <div class="widget large">
+                <div class="widget-header">
+                    <div class="widget-title">📊 Données récentes</div>
+                    <button class="widget-action">Voir tout</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Combinaison</th>
+                            <th>Gagnants</th>
+                            <th>Gain</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2025-01-14</td>
+                            <td>5+2</td>
+                            <td>0</td>
+                            <td>125M€</td>
+                            <td><span class="status-badge status-online">Validé</span></td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-14</td>
+                            <td>5+1</td>
+                            <td>2</td>
+                            <td>350K€</td>
+                            <td><span class="status-badge status-online">Validé</span></td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-11</td>
+                            <td>5+2</td>
+                            <td>1</td>
+                            <td>95M€</td>
+                            <td><span class="status-badge status-warning">En cours</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Widget Métriques temps réel -->
+            <div class="widget">
+                <div class="widget-header">
+                    <div class="widget-title">⏱️ Temps réel</div>
+                </div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 2.5em; font-weight: bold; margin-bottom: 10px;" id="realtime-metric">1,247</div>
+                    <div style="opacity: 0.8;">Requêtes aujourd'hui</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 1.2em; color: #4CAF50; margin-bottom: 5px;">↗ +12%</div>
+                    <div style="opacity: 0.7; font-size: 0.8em;">vs hier</div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Widget Activité récente -->
+            <div class="sidebar-widget">
+                <h3 style="margin-bottom: 20px; font-size: 1.1em;">📋 Activité récente</h3>
+                <div class="activity-item">
+                    <div class="activity-icon">🔗</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Connexion SQLite</div>
+                        <div class="activity-time">Il y a 2 min</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">💾</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Sauvegarde auto</div>
+                        <div class="activity-time">Il y a 15 min</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🧪</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Tests système</div>
+                        <div class="activity-time">Il y a 1h</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">📊</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Rapport généré</div>
+                        <div class="activity-time">Il y a 3h</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget État des services -->
+            <div class="sidebar-widget">
+                <h3 style="margin-bottom: 20px; font-size: 1.1em;">🔧 Services</h3>
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span>SQLite</span>
+                        <span class="status-badge status-online">Online</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span>LocalStorage</span>
+                        <span class="status-badge status-online">Online</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Cache</span>
+                        <span class="status-badge status-warning">Partiel</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widget Stockage -->
+            <div class="sidebar-widget">
+                <h3 style="margin-bottom: 20px; font-size: 1.1em;">💽 Stockage</h3>
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="font-size: 0.9em; opacity: 0.8;">SQLite</span>
+                        <span style="font-size: 0.9em;">2.4 MB</span>
+                    </div>
+                    <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; margin-bottom: 15px;">
+                        <div style="width: 35%; height: 100%; background: #4CAF50; border-radius: 3px;"></div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="font-size: 0.9em; opacity: 0.8;">LocalStorage</span>
+                        <span style="font-size: 0.9em;">3.2 MB</span>
+                    </div>
+                    <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px;">
+                        <div style="width: 64%; height: 100%; background: #FF9800; border-radius: 3px;"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-stats">
+                <div class="footer-stat">
+                    <div class="footer-number">4</div>
+                    <div class="footer-label">Tables SQLite</div>
+                </div>
+                <div class="footer-stat">
+                    <div class="footer-number">23</div>
+                    <div class="footer-label">Enregistrements</div>
+                </div>
+                <div class="footer-stat">
+                    <div class="footer-number">99.8%</div>
+                    <div class="footer-label">Disponibilité</div>
+                </div>
+                <div class="footer-stat">
+                    <div class="footer-number">5.2 MB</div>
+                    <div class="footer-label">Données stockées</div>
+                </div>
+                <div class="footer-stat">
+                    <div class="footer-number">2min</div>
+                    <div class="footer-label">Dernière sync</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Animation des métriques en temps réel
+        function updateRealtimeMetric() {
+            const element = document.getElementById('realtime-metric');
+            const currentValue = parseInt(element.textContent.replace(',', ''));
+            const newValue = currentValue + Math.floor(Math.random() * 5);
+            element.textContent = newValue.toLocaleString();
+        }
+
+        // Mise à jour toutes les 3 secondes
+        setInterval(updateRealtimeMetric, 3000);
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Animation de feedback
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Boutons d'action
+        document.querySelectorAll('.action-btn, .widget-action').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Animation de clic
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+                
+                console.log('Action exécutée:', this.textContent);
+            });
+        });
+
+        // Animation de la progress ring
+        window.addEventListener('load', function() {
+            const progressFill = document.querySelector('.progress-fill');
+            const percentage = 85;
+            const offset = 314 - (314 * percentage) / 100;
+            
+            setTimeout(() => {
+                progressFill.style.strokeDashoffset = offset;
+            }, 500);
+        });
+
+        // Responsive: réorganisation automatique des widgets
+        function checkResponsive() {
+            const container = document.querySelector('.grid-container');
+            const width = window.innerWidth;
+            
+            if (width <= 768) {
+                // Mobile: stack tout verticalement
+                document.querySelectorAll('.widget.large').forEach(widget => {
+                    widget.style.gridColumn = 'span 1';
+                });
+            } else if (width <= 1200) {
+                // Tablet: ajustements intermédiaires
+                document.querySelectorAll('.widget.large').forEach(widget => {
+                    widget.style.gridColumn = 'span 2';
+                });
+            }
+        }
+
+        window.addEventListener('resize', checkResponsive);
+        checkResponsive(); // Initial check
+    </script>
+</body>
+</html>
+

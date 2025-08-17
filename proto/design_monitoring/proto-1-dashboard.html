@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype 1 - Dashboard Monitoring</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Métriques principales */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .metric-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        /* Actions rapides */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .action-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn.success {
+            background: linear-gradient(45deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .btn.warning {
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn.info {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        /* Données en temps réel */
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .data-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .data-panel h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+        }
+
+        .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online { background: #4CAF50; }
+        .status-warning { background: #FF9800; }
+        .status-error { background: #F44336; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation de chargement */
+        .loading-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 75%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔍 Monitoring Database FDJ</h1>
+            <p>Tableau de bord en temps réel - Prototype Design 1</p>
+        </div>
+
+        <!-- Métriques principales -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">🗄️</div>
+                <div class="metric-value">4</div>
+                <div class="metric-label">Tables SQLite</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">💰</div>
+                <div class="metric-value">13</div>
+                <div class="metric-label">Gains enregistrés</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">🎲</div>
+                <div class="metric-value">3</div>
+                <div class="metric-label">Tirages stockés</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">📊</div>
+                <div class="metric-value">2</div>
+                <div class="metric-label">Sources actives</div>
+            </div>
+        </div>
+
+        <!-- Actions rapides -->
+        <div class="quick-actions">
+            <div class="action-card">
+                <h3>🔗 Connexion SQLite</h3>
+                <div class="action-buttons">
+                    <button class="btn success">✓ Tester la connexion</button>
+                    <button class="btn info">🔍 Vérifier l'état</button>
+                    <button class="btn">📊 Statistiques DB</button>
+                </div>
+            </div>
+            
+            <div class="action-card">
+                <h3>🏗️ Installation & Maintenance</h3>
+                <div class="action-buttons">
+                    <button class="btn success">🚀 Installation complète</button>
+                    <button class="btn warning">🗑️ Supprimer la base</button>
+                    <button class="btn info">🔧 Réparation auto</button>
+                </div>
+            </div>
+
+            <div class="action-card">
+                <h3>📋 Tests & Validation</h3>
+                <div class="action-buttons">
+                    <button class="btn">🧪 Suite de tests</button>
+                    <button class="btn">💾 Test insertion</button>
+                    <button class="btn">🔍 Test sélection</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Données en temps réel -->
+        <div class="data-grid">
+            <div class="data-panel">
+                <h3>📊 Données SQLite</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Combinaison</th>
+                            <th>Gain</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2025-01-14</td>
+                            <td>5+2</td>
+                            <td>125M€</td>
+                            <td><span class="status-indicator status-online"></span>Validé</td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-14</td>
+                            <td>5+1</td>
+                            <td>350K€</td>
+                            <td><span class="status-indicator status-online"></span>Validé</td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-11</td>
+                            <td>5+2</td>
+                            <td>95M€</td>
+                            <td><span class="status-indicator status-online"></span>Validé</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="data-panel">
+                <h3>💾 Local Storage</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Clé</th>
+                            <th>Type</th>
+                            <th>Taille</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>draw_2025-01-14</td>
+                            <td>Tirage</td>
+                            <td>2.1KB</td>
+                            <td><span class="status-indicator status-online"></span>Actif</td>
+                        </tr>
+                        <tr>
+                            <td>settings</td>
+                            <td>Config</td>
+                            <td>0.5KB</td>
+                            <td><span class="status-indicator status-online"></span>Actif</td>
+                        </tr>
+                        <tr>
+                            <td>cache_data</td>
+                            <td>Cache</td>
+                            <td>1.8KB</td>
+                            <td><span class="status-indicator status-warning"></span>Expiré</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Barre de progression système -->
+        <div style="margin-top: 30px; text-align: center;">
+            <h4>Synchronisation en cours...</h4>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p style="opacity: 0.7; margin-top: 10px;">Dernière mise à jour: il y a 2 minutes</p>
+        </div>
+    </div>
+
+    <script>
+        // Simulation de mise à jour en temps réel
+        function updateMetrics() {
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics.forEach(metric => {
+                const currentValue = parseInt(metric.textContent);
+                // Simulation d'un changement occasionnel
+                if (Math.random() > 0.8) {
+                    metric.style.color = '#4CAF50';
+                    setTimeout(() => {
+                        metric.style.color = 'white';
+                    }, 1000);
+                }
+            });
+        }
+
+        // Mise à jour toutes les 5 secondes
+        setInterval(updateMetrics, 5000);
+
+        // Animation des boutons
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1.02)';
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>
+

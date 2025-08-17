@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index - Prototypes Design Monitoring FDJ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 300;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .prototypes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .prototype-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prototype-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .prototype-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4CAF50, #2196F3, #FF9800, #f44336);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .prototype-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-number {
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .card-icon {
+            font-size: 2.5em;
+            opacity: 0.8;
+        }
+
+        .card-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .card-subtitle {
+            font-size: 1em;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .card-description {
+            font-size: 0.95em;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .card-features {
+            margin-bottom: 25px;
+        }
+
+        .feature-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin: 2px 4px;
+            font-weight: 500;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .summary {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .summary h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4CAF50;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.8;
+        }
+
+        .navigation-help {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+        }
+
+        .navigation-help h3 {
+            margin-bottom: 15px;
+            color: #4CAF50;
+        }
+
+        .navigation-help ul {
+            list-style: none;
+            line-height: 1.8;
+        }
+
+        .navigation-help li {
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .navigation-help li::before {
+            content: '→ ';
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .prototypes-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .header p {
+                font-size: 1.1em;
+            }
+            
+            .prototype-card {
+                padding: 20px;
+            }
+        }
+
+        /* Animations */
+        .prototype-card {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .prototype-card:nth-child(1) { animation-delay: 0.1s; }
+        .prototype-card:nth-child(2) { animation-delay: 0.2s; }
+        .prototype-card:nth-child(3) { animation-delay: 0.3s; }
+        .prototype-card:nth-child(4) { animation-delay: 0.4s; }
+        .prototype-card:nth-child(5) { animation-delay: 0.5s; }
+        .prototype-card:nth-child(6) { animation-delay: 0.6s; }
+        .prototype-card:nth-child(7) { animation-delay: 0.7s; }
+        .prototype-card:nth-child(8) { animation-delay: 0.8s; }
+        .prototype-card:nth-child(9) { animation-delay: 0.9s; }
+        .prototype-card:nth-child(10) { animation-delay: 1s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .summary {
+            opacity: 0;
+            animation: fadeIn 1s ease 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Prototypes Design Monitoring</h1>
+            <p>Collection de 10 interfaces différentes pour améliorer l'ergonomie de la page "Admin - Monitoring Base de Données" de l'application FDJ. Chaque prototype explore une approche unique pour rendre la navigation et l'exploitation des données plus fluides et efficaces.</p>
+        </div>
+
+        <div class="summary">
+            <h2>📊 Vue d'ensemble des prototypes</h2>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Prototypes créés</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Approches UX différentes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Responsive design</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Technologies CSS/JS</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="prototypes-grid">
+            <!-- Prototype 1 -->
+            <div class="prototype-card" onclick="window.open('proto-1-dashboard.html', '_blank')">
+                <div class="card-header">
+                    <div class="card-number">1</div>
+                    <div class="card-icon">📊</div>
+                </div>
+                <div class="card-title">Dashboard avec Cards</div>
+                <div class="card-subtitle">Interface métrique visuelle</div>
+                <div class="card-description">
+                    Tableau de bord moderne avec des cartes métriques, graphiques en temps réel et actions rapides. Approche visuelle et intuitive pour le monitoring.
+                </div>
+                <div class="card-features">
+                    <span class="feature-tag">Metrics cards</span>
+                    <span class="feature-tag">Real-time data</span>
+                    <span class="feature-tag">Visual charts</span>
+                    <span class="feature-tag">Quick actions</span>
+                </div>
+                <div class="card-actions">
+                    <a href="proto-1-dashboard.html" class="btn btn-primary" target="_blank">🚀 Voir le prototype</a>
+                </div>
+            </div>
+
+            <!-- Prototype 2 -->
+            <div class="prototype-card" onclick="window.open('proto-2-tabs.html', '_blank')">
+                <div class="card-header">
+                    <div class="card-number">2</div>
+                    <div class="card-icon">🗂️</div>
+                </div>
+                <div class="card-title">Interface à Onglets</div>
+                <div class="card-subtitle">Navigation horizontale organisée</div>
+                <div class="card-description">
+                    Organisation par onglets thématiques avec navigation fluide. Chaque section (SQLite, LocalStorage, Tests) dans son propre onglet pour une navigation claire.
+                </div>
+                <div class="card-features">
+                    <span class="feature-tag">Tabbed navigation</span>
+                    <span class="feature-tag">Organized sections</span>
+                    <span class="feature-tag">Smooth transitions</span>
+                    <span class="feature-tag">Notifications</span>
+                </div>
+                <div class="card-actions">
+                    <a href="proto-2-tabs.html" class="btn btn-primary" target="_blank">🚀 Voir le prototype</a>
+                </div>
+            </div>
+
+            <!-- Prototype 3 -->
+            <div class="prototype-card" onclick="window.open('proto-3-sidebar.html', '_blank')">
+                <div class="card-header">
+                    <div class="card-number">3</div>
+                    <div class="card-icon">📱</div>
+                </div>
+                <div class="card-title">Sidebar Navigation</div>
+                <div class="card-subtitle">Panneau latéral avec contenu principal</div>
+                <div class="card-description">
+                    Interface avec sidebar de navigation structurée et panneau principal. Design familier avec navigation hiérarchique et sections organisées.
+                </div>
+                <div class="card-features">
+                    <span class="feature-tag">Collapsible sidebar</span>
+                    <span class="feature-tag">Hierarchical nav</span>
+                    <span class="feature-tag">Content panels</span>
+                    <span class="feature-tag">Mobile responsive</span>
+                </div>
+                <div class="card-actions">
+                    <a href="proto-3-sidebar.html" class="btn btn-primary" target="_blank">🚀 Voir le prototype</a>
+                </div>
+            </div>
+
+            <!-- Prototype 4 -->
+            <div class="prototype-card" onclick="window.open('proto-4-minimal.html', '_blank')">
+                <div class="card-header">
+                    <div class="card-number">4</div>
+                    <div class="card-icon">⚪</div>
+                </div>
+                <div class="card-title">Interface Minimaliste</div>
+                <div class="card-subtitle">Focus sur les données essentielles</div>
+                <div class="card-description">
+                    Design épuré centré sur l'essentiel. Interface claire et sans distraction pour une consultation rapide et efficace des données de monitoring.
+                </div>
+                <div class="card-features">
+                    <span class="feature-tag">Clean design</span>
+                    <span class="feature-tag">Data focused</span>
+                    <span class="feature-tag">Typography</span>
+                    <span class="feature-tag">Fast navigation</span>
+                </div>
+                <div class="card-actions">
+                    <a href="proto-4-minimal.html" class="btn btn-primary" target="_blank">🚀 Voir le prototype</a>
+                </div>
+            </div>
+
+            <!-- Prototype 5 -->
+            <div class="prototype-card" onclick="window.open('proto-5-grid.html', '_blank')">
+                <div class="card-header">
+                    <div class="card-number">5</div>
+                    <div class="card-icon">▦</div>
+                </div>
+                <div class="card-title">Grid Layout Responsive</div>
+                <div class="card-subtitle">Mise en page modulaire adaptative</div>
+                <div class="card-description">
+                    Interface en grille CSS avec widgets modulaires et redimensionnables. Adaptabilité maximale aux différentes tailles d'écran et besoins d'affichage.
+                </div>
+                <div class="card-features">
+                    <span class="feature-tag">CSS Grid</span>
+                    <span class="feature-tag">Modular widgets</span>
+                    <span class="feature-tag">Responsive</span>
+                    <span class="feature-tag">Customizable</span>
+                </div>
+                <div class="card-actions">
+                    <a href="proto-5-grid.html" class="btn btn-primary" target="_blank">🚀 Voir le prototype</a>
+                </div>
+            </div>
+
+            <!-- Prototype 6 -->
+            <div class="prototype-card" onclick="window.open('proto-6-wizard.html', '_blank')">
+                <div class="card-header">
+                    <div class="card-number">6</div>
+                    <div class="card-icon">🧙‍♂️</div>
+                </div>
+                <div class="card-title">Assistant Pas-à-Pas</div>
+                <div class="card-subtitle">Configuration guidée et progressive</div>
+                <div class="card-description">
+                    Interface wizard pour guider les utilisateurs dans la configuration et maintenance. Processus étape par étape avec validation et feedback continu.
+                </div>
+                <div class="card-features">
+                    <span class="feature-tag">Step-by-step</span>
+                    <span class="feature-tag">Progress tracking</span>
+                    <span class="feature-tag">Guided setup</span>
+                    <span class="feature-tag">Validation</span>
+                </div>
+                <div class="card-actions">
+                    <a href="proto-6-wizard.html" class="btn btn-primary" target="_blank">🚀 Voir le prototype</a>
+                </div>
+            </div>
+
+            <!-- Prototype 7 -->
+            <div class="prototype-card" onclick="window.open('proto-7-timeline.html', '_blank')">
+                <div class="card-header">
+                    <div class="card-number">7</div>
+                    <div class="card-icon">⏰</div>
+                </div>
+                <div class="card-title">Vue Chronologique</div>
+                <div class="card-subtitle">Timeline des opérations système</div>
+                <div class="card-description">
+                    Interface chronologique pour visualiser l'historique des opérations. Parfait pour le suivi des activités et le debugging avec contexte temporel.
+                </div>
+                <div class="card-features">
+                    <span class="feature-tag">Timeline view</span>
+                    <span class="feature-tag">Activity tracking</span>
+                    <span class="feature-tag">Live updates</span>
+                    <span class="feature-tag">Filtering</span>
+                </div>
+                <div class="card-actions">
+                    <a href="proto-7-timeline.html" class="btn btn-primary" target="_blank">🚀 Voir le prototype</a>
+                </div>
+            </div>
+
+            <!-- Prototype 8 -->
+            <div class="prototype-card" onclick="window.open('proto-8-split.html', '_blank')">
+                <div class="card-header">
+                    <div class="card-number">8</div>
+                    <div class="card-icon">⚍</div>
+                </div>
+                <div class="card-title">Split-Screen Interface</div>
+                <div class="card-subtitle">Double panneau redimensionnable</div>
+                <div class="card-description">
+                    Interface divisée avec monitoring temps réel d'un côté et contrôles de l'autre. Style terminal/IDE pour les utilisateurs techniques avancés.
+                </div>
+                <div class="card-features">
+                    <span class="feature-tag">Split panels</span>
+                    <span class="feature-tag">Resizable</span>
+                    <span class="feature-tag">Terminal style</span>
+                    <span class="feature-tag">Live data</span>
+                </div>
+                <div class="card-actions">
+                    <a href="proto-8-split.html" class="btn btn-primary" target="_blank">🚀 Voir le prototype</a>
+                </div>
+            </div>
+
+            <!-- Prototype 9 -->
+            <div class="prototype-card" onclick="window.open('proto-9-mobile.html', '_blank')">
+                <div class="card-header">
+                    <div class="card-number">9</div>
+                    <div class="card-icon">📱</div>
+                </div>
+                <div class="card-title">Mobile-First Design</div>
+                <div class="card-subtitle">Interface optimisée tactile</div>
+                <div class="card-description">
+                    Design pensé d'abord pour mobile avec navigation tactile, pull-to-refresh, drawer menu et interactions gestuelles pour une expérience mobile native.
+                </div>
+                <div class="card-features">
+                    <span class="feature-tag">Mobile first</span>
+                    <span class="feature-tag">Touch gestures</span>
+                    <span class="feature-tag">Drawer menu</span>
+                    <span class="feature-tag">Pull to refresh</span>
+                </div>
+                <div class="card-actions">
+                    <a href="proto-9-mobile.html" class="btn btn-primary" target="_blank">🚀 Voir le prototype</a>
+                </div>
+            </div>
+
+            <!-- Prototype 10 -->
+            <div class="prototype-card" onclick="window.open('proto-10-advanced.html', '_blank')">
+                <div class="card-header">
+                    <div class="card-number">10</div>
+                    <div class="card-icon">🚀</div>
+                </div>
+                <div class="card-title">Interface Avancée</div>
+                <div class="card-subtitle">Filtres, recherche et analytics</div>
+                <div class="card-description">
+                    Interface complète avec filtrage avancé, recherche globale, tri multi-colonnes, sélection en lot et analytics. Pour les utilisateurs power-user.
+                </div>
+                <div class="card-features">
+                    <span class="feature-tag">Advanced filters</span>
+                    <span class="feature-tag">Global search</span>
+                    <span class="feature-tag">Bulk actions</span>
+                    <span class="feature-tag">Analytics</span>
+                </div>
+                <div class="card-actions">
+                    <a href="proto-10-advanced.html" class="btn btn-primary" target="_blank">🚀 Voir le prototype</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-help">
+            <h3>💡 Guide d'utilisation</h3>
+            <ul>
+                <li>Cliquez sur une carte pour ouvrir le prototype dans un nouvel onglet</li>
+                <li>Chaque prototype est entièrement fonctionnel avec ses interactions spécifiques</li>
+                <li>Testez la responsivité en redimensionnant la fenêtre de votre navigateur</li>
+                <li>Les prototypes mobiles sont optimisés pour la consultation sur smartphone/tablette</li>
+                <li>Explorez les différentes approches UX pour identifier celle qui convient le mieux à vos besoins</li>
+                <li>Tous les prototypes utilisent les mêmes données de démonstration pour faciliter la comparaison</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Animation au scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.prototype-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Feedback au clic
+        document.querySelectorAll('.prototype-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'translateY(-10px) scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Stats animation
+        function animateStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                const finalValue = stat.textContent;
+                const isPercentage = finalValue.includes('%');
+                const numericValue = parseInt(finalValue);
+                
+                let currentValue = 0;
+                const increment = Math.ceil(numericValue / 50);
+                
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= numericValue) {
+                        currentValue = numericValue;
+                        clearInterval(timer);
+                    }
+                    stat.textContent = currentValue + (isPercentage ? '%' : '');
+                }, 30);
+            });
+        }
+
+        // Démarrer l'animation des stats après un délai
+        setTimeout(animateStats, 1000);
+
+        // Easter egg - Konami code
+        let konamiCode = [];
+        const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+
+        document.addEventListener('keydown', function(e) {
+            konamiCode.push(e.keyCode);
+            if (konamiCode.length > konami.length) {
+                konamiCode.shift();
+            }
+            
+            if (konamiCode.join(',') === konami.join(',')) {
+                document.body.style.filter = 'hue-rotate(180deg)';
+                setTimeout(() => {
+                    document.body.style.filter = '';
+                }, 2000);
+                konamiCode = [];
+            }
+        });
+    </script>
+</body>
+</html>
+

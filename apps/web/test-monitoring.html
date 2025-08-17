@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Monitoring SQLite</title>
+    <style>
+        body { font-family: monospace; background: #1a1a1a; color: #fff; padding: 20px; }
+        button { padding: 10px; margin: 5px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #444; }
+        #logs { background: #000; padding: 15px; border-radius: 8px; margin-top: 20px; max-height: 400px; overflow-y: auto; }
+        .log-line { margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Test Monitoring SQLite Backend</h1>
+    
+    <div>
+        <button onclick="testConnection()">🔗 Test Connexion</button>
+        <button onclick="testTableData()">📊 Test Données Tables</button>
+        <button onclick="testElements()">🔍 Test Éléments DOM</button>
+        <button onclick="clearLogs()">🗑️ Clear Logs</button>
+    </div>
+    
+    <div id="logs"></div>
+    
+    <script>
+        const API_BASE = 'http://localhost:3001/api';
+        
+        function log(message, color = '#00ff00') {
+            const logs = document.getElementById('logs');
+            const line = document.createElement('div');
+            line.className = 'log-line';
+            line.style.color = color;
+            line.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            logs.appendChild(line);
+            logs.scrollTop = logs.scrollHeight;
+        }
+        
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+        }
+        
+        async function testConnection() {
+            log('🔄 Test connexion backend...', '#ffff00');
+            
+            try {
+                const response = await fetch(`${API_BASE}/test-connection`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    log('✅ Connexion réussie', '#00ff00');
+                    log(`⏰ Heure serveur: ${result.server_time}`, '#00ff00');
+                } else {
+                    log(`❌ Erreur: ${result.error}`, '#ff0000');
+                }
+            } catch (error) {
+                log(`❌ Erreur connexion: ${error.message}`, '#ff0000');
+            }
+        }
+        
+        async function testTableData() {
+            log('📊 Test récupération données...', '#ffff00');
+            
+            const tables = ['tirages', 'gains', 'sources', 'config', 'all'];
+            
+            for (const table of tables) {
+                try {
+                    log(`🔍 Test table: ${table}`, '#00aaff');
+                    const response = await fetch(`${API_BASE}/tables/${table}`);
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        log(`✅ ${table}: ${result.count} enregistrements`, '#00ff00');
+                        if (result.data && result.data.length > 0) {
+                            const sample = result.data[0];
+                            log(`   └─ Échantillon: ${JSON.stringify(sample).substring(0, 100)}...`, '#00aaff');
+                        }
+                    } else {
+                        log(`❌ ${table}: ${result.error}`, '#ff0000');
+                    }
+                } catch (error) {
+                    log(`❌ ${table}: ${error.message}`, '#ff0000');
+                }
+            }
+        }
+        
+        function testElements() {
+            log('🔍 Test éléments DOM (depuis page principale)...', '#ffff00');
+            
+            // Test si on est dans la page principale
+            if (window.opener || window.parent !== window) {
+                log('⚠️ Test depuis popup/iframe - éléments peut-être non disponibles', '#ffaa00');
+            }
+            
+            // Test basique de l'environnement
+            log(`📋 Document ready: ${document.readyState}`, '#00aaff');
+            log(`🌐 URL: ${window.location.href}`, '#00aaff');
+            log(`📊 DOM éléments: ${document.querySelectorAll('*').length}`, '#00aaff');
+        }
+        
+        // Auto-test au chargement
+        window.addEventListener('load', () => {
+            log('🚀 Page de test chargée', '#00ff00');
+            log('📋 Cliquez sur les boutons pour tester chaque fonctionnalité', '#888');
+        });
+    </script>
+</body>
+</html>

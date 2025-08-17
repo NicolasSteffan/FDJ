@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype 4 - Interface Minimaliste</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fafafa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 300;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            font-weight: 300;
+        }
+
+        /* Navigation minimaliste */
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 50px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .nav-item {
+            padding: 15px 30px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            color: #7f8c8d;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+
+        /* Content sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards minimalistes */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .minimal-card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border: 1px solid #ecf0f1;
+            transition: all 0.3s ease;
+        }
+
+        .minimal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .card-title {
+            font-size: 1.2em;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-content {
+            color: #7f8c8d;
+            font-size: 0.95em;
+        }
+
+        /* Métriques */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .metric {
+            text-align: center;
+            padding: 25px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .metric-number {
+            font-size: 2.5em;
+            font-weight: 200;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tables épurées */
+        .clean-table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .clean-table thead {
+            background: #f8f9fa;
+        }
+
+        .clean-table th,
+        .clean-table td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .clean-table th {
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .clean-table td {
+            color: #5a6c7d;
+        }
+
+        .clean-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .clean-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Boutons minimalistes */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .minimal-btn {
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid #3498db;
+            color: #3498db;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .minimal-btn:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .minimal-btn.primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .minimal-btn.primary:hover {
+            background: #2980b9;
+        }
+
+        /* Status indicators */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status.online .status-dot { background: #27ae60; }
+        .status.warning .status-dot { background: #f39c12; }
+        .status.error .status-dot { background: #e74c3c; }
+
+        /* Sections spécifiques */
+        .data-overview {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .overview-main {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .overview-sidebar {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .sidebar-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #ecf0f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-item:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .sidebar-value {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        /* Progress bars */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #ecf0f1;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            transition: width 0.3s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .data-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        /* Animation subtile */
+        .minimal-card,
+        .metric,
+        .overview-main,
+        .overview-sidebar {
+            opacity: 0;
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        .minimal-card:nth-child(1) { animation-delay: 0.1s; }
+        .minimal-card:nth-child(2) { animation-delay: 0.2s; }
+        .minimal-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Monitoring Base de Données</h1>
+            <p>Interface épurée centrée sur les données essentielles</p>
+        </div>
+
+        <nav class="nav-bar">
+            <div class="nav-item active" data-section="overview">Vue d'ensemble</div>
+            <div class="nav-item" data-section="data">Données</div>
+            <div class="nav-item" data-section="maintenance">Maintenance</div>
+            <div class="nav-item" data-section="reports">Rapports</div>
+        </nav>
+
+        <!-- Section Vue d'ensemble -->
+        <div class="content-section active" id="overview">
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-number">4</div>
+                    <div class="metric-label">Tables</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-number">13</div>
+                    <div class="metric-label">Gains</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-number">3</div>
+                    <div class="metric-label">Tirages</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-number">99.8%</div>
+                    <div class="metric-label">Uptime</div>
+                </div>
+            </div>
+
+            <div class="data-overview">
+                <div class="overview-main">
+                    <h3 style="margin-bottom: 25px; color: #2c3e50; font-weight: 400;">État du système</h3>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="color: #7f8c8d;">SQLite Database</span>
+                            <span class="status online">
+                                <span class="status-dot"></span>
+                                Connecté
+                            </span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 95%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="color: #7f8c8d;">LocalStorage</span>
+                            <span class="status online">
+                                <span class="status-dot"></span>
+                                Disponible
+                            </span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 64%;"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="color: #7f8c8d;">Synchronisation</span>
+                            <span class="status online">
+                                <span class="status-dot"></span>
+                                À jour
+                            </span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overview-sidebar">
+                    <h3 style="margin-bottom: 25px; color: #2c3e50; font-weight: 400;">Informations</h3>
+                    
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Dernière sync</span>
+                        <span class="sidebar-value">Il y a 2 min</span>
+                    </div>
+                    
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Espace utilisé</span>
+                        <span class="sidebar-value">3.2 MB</span>
+                    </div>
+                    
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Connexions</span>
+                        <span class="sidebar-value">2 actives</span>
+                    </div>
+                    
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Version DB</span>
+                        <span class="sidebar-value">1.4.2</span>
+                    </div>
+                    
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Sauvegarde</span>
+                        <span class="sidebar-value">Automatique</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Données -->
+        <div class="content-section" id="data">
+            <div class="action-buttons">
+                <button class="minimal-btn primary">Actualiser les données</button>
+                <button class="minimal-btn">Exporter SQLite</button>
+                <button class="minimal-btn">Vider le cache</button>
+            </div>
+
+            <table class="clean-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Combinaison</th>
+                        <th>Gagnants</th>
+                        <th>Gain</th>
+                        <th>Source</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2025-01-14</td>
+                        <td>5+2</td>
+                        <td>0</td>
+                        <td>125,000,000 €</td>
+                        <td>demo</td>
+                        <td><span class="status online"><span class="status-dot"></span>Validé</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025-01-14</td>
+                        <td>5+1</td>
+                        <td>2</td>
+                        <td>350,000 €</td>
+                        <td>demo</td>
+                        <td><span class="status online"><span class="status-dot"></span>Validé</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025-01-14</td>
+                        <td>5+0</td>
+                        <td>8</td>
+                        <td>35,000 €</td>
+                        <td>demo</td>
+                        <td><span class="status online"><span class="status-dot"></span>Validé</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025-01-11</td>
+                        <td>5+2</td>
+                        <td>1</td>
+                        <td>95,000,000 €</td>
+                        <td>demo</td>
+                        <td><span class="status online"><span class="status-dot"></span>Validé</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025-01-11</td>
+                        <td>5+1</td>
+                        <td>3</td>
+                        <td>280,000 €</td>
+                        <td>demo</td>
+                        <td><span class="status warning"><span class="status-dot"></span>En attente</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section Maintenance -->
+        <div class="content-section" id="maintenance">
+            <div class="cards-grid">
+                <div class="minimal-card">
+                    <div class="card-title">
+                        <span>🔧</span>
+                        Installation
+                    </div>
+                    <div class="card-content">
+                        <p style="margin-bottom: 20px;">Gérer l'installation et la configuration de la base de données.</p>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="minimal-btn">Installation complète</button>
+                            <button class="minimal-btn">Vérifier l'état</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="minimal-card">
+                    <div class="card-title">
+                        <span>🧪</span>
+                        Tests
+                    </div>
+                    <div class="card-content">
+                        <p style="margin-bottom: 20px;">Exécuter la suite de tests pour valider le bon fonctionnement.</p>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="minimal-btn">Lancer les tests</button>
+                            <button class="minimal-btn">Rapport détaillé</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="minimal-card">
+                    <div class="card-title">
+                        <span>🗑️</span>
+                        Nettoyage
+                    </div>
+                    <div class="card-content">
+                        <p style="margin-bottom: 20px;">Nettoyer et optimiser l'espace de stockage utilisé.</p>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="minimal-btn">Nettoyer cache</button>
+                            <button class="minimal-btn">Optimiser DB</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Rapports -->
+        <div class="content-section" id="reports">
+            <div class="cards-grid">
+                <div class="minimal-card">
+                    <div class="card-title">
+                        <span>📊</span>
+                        Statistiques d'usage
+                    </div>
+                    <div class="card-content">
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Requêtes/jour</span>
+                                <span style="font-weight: 500;">1,247</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Temps de réponse moyen</span>
+                                <span style="font-weight: 500;">0.24s</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Erreurs</span>
+                                <span style="font-weight: 500; color: #27ae60;">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="minimal-card">
+                    <div class="card-title">
+                        <span>📈</span>
+                        Performance
+                    </div>
+                    <div class="card-content">
+                        <div style="margin-bottom: 15px;">
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span style="font-size: 0.9em; color: #7f8c8d;">CPU</span>
+                                    <span style="font-size: 0.9em;">12%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 12%;"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span style="font-size: 0.9em; color: #7f8c8d;">Mémoire</span>
+                                    <span style="font-size: 0.9em;">64%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 64%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation entre sections
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Désactiver tous les items et sections
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                
+                // Activer l'item cliqué
+                this.classList.add('active');
+                
+                // Afficher la section correspondante
+                const sectionId = this.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Animation des métriques au chargement
+        window.addEventListener('load', function() {
+            const metrics = document.querySelectorAll('.metric-number');
+            metrics.forEach(metric => {
+                const finalValue = metric.textContent;
+                let currentValue = 0;
+                const increment = finalValue.includes('%') ? 1 : Math.ceil(finalValue / 50);
+                
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= parseInt(finalValue)) {
+                        currentValue = finalValue;
+                        clearInterval(timer);
+                    }
+                    metric.textContent = currentValue + (finalValue.includes('%') ? '%' : '');
+                }, 30);
+            });
+        });
+
+        // Interaction avec les boutons
+        document.querySelectorAll('.minimal-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Animation de clic
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+                
+                // Simulation d'action
+                console.log('Action:', this.textContent);
+            });
+        });
+    </script>
+</body>
+</html>
+

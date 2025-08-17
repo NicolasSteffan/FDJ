@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype 8 - Split Screen Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .split-container {
+            display: flex;
+            height: 100vh;
+            background: #1a1a1a;
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 50%;
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+            border-right: 2px solid #333;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Right Panel */
+        .right-panel {
+            width: 50%;
+            background: linear-gradient(135deg, #2d2d44 0%, #1e1e2e 100%);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Panel Headers */
+        .panel-header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e0e0e0;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #667eea;
+        }
+
+        .control-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        /* Panel Content */
+        .panel-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Terminal Style */
+        .terminal {
+            background: #000;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+            margin-right: 15px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f57; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #28ca42; }
+
+        .terminal-title {
+            color: #888;
+            font-size: 0.8em;
+        }
+
+        .terminal-line {
+            margin-bottom: 5px;
+        }
+
+        .prompt {
+            color: #4CAF50;
+        }
+
+        .command {
+            color: #2196F3;
+        }
+
+        .output {
+            color: #e0e0e0;
+        }
+
+        .output.success {
+            color: #4CAF50;
+        }
+
+        .output.error {
+            color: #f44336;
+        }
+
+        .output.warning {
+            color: #FF9800;
+        }
+
+        /* Data Grid */
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .data-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .data-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #667eea;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .card-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .card-change {
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .card-change.positive {
+            color: #4CAF50;
+        }
+
+        .card-change.negative {
+            color: #f44336;
+        }
+
+        /* Live Data Table */
+        .live-table {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .live-table thead {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .live-table th,
+        .live-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8em;
+        }
+
+        .live-table th {
+            font-weight: 600;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .live-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .live-table .status {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status.online {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .status.warning {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+        }
+
+        .status.error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        /* Code Editor Style */
+        .code-editor {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            color: #e6edf3;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .code-editor::before {
+            content: 'SQL Query Editor';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #0d1117;
+            padding: 0 8px;
+            font-size: 0.7em;
+            color: #7d8590;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .code-line {
+            margin-bottom: 2px;
+        }
+
+        .line-number {
+            color: #7d8590;
+            margin-right: 15px;
+            user-select: none;
+        }
+
+        .keyword {
+            color: #ff7b72;
+        }
+
+        .string {
+            color: #a5d6ff;
+        }
+
+        .comment {
+            color: #8b949e;
+            font-style: italic;
+        }
+
+        /* Resize Handle */
+        .resize-handle {
+            position: absolute;
+            top: 0;
+            right: -1px;
+            width: 4px;
+            height: 100%;
+            background: #333;
+            cursor: col-resize;
+            transition: background 0.3s ease;
+        }
+
+        .resize-handle:hover {
+            background: #667eea;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .status-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .status-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid #667eea;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.8em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.danger {
+            background: rgba(244, 67, 54, 0.2);
+            border-color: #f44336;
+            color: #f44336;
+        }
+
+        .action-btn.success {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .split-container {
+                flex-direction: column;
+            }
+            
+            .left-panel,
+            .right-panel {
+                width: 100%;
+                height: 50vh;
+            }
+            
+            .left-panel {
+                border-right: none;
+                border-bottom: 2px solid #333;
+            }
+            
+            .resize-handle {
+                display: none;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 126, 234, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="split-container">
+        <!-- Left Panel: Real-time Monitoring -->
+        <div class="left-panel">
+            <div class="resize-handle"></div>
+            <div class="panel-header">
+                <div class="panel-title">
+                    📊 Monitoring Temps Réel
+                </div>
+                <div class="panel-controls">
+                    <button class="control-btn active">Live</button>
+                    <button class="control-btn">Pause</button>
+                    <button class="control-btn">Export</button>
+                </div>
+            </div>
+            
+            <div class="panel-content">
+                <!-- Data Grid -->
+                <div class="data-grid">
+                    <div class="data-card">
+                        <div class="card-header">
+                            <div class="card-title">🗄️ SQLite</div>
+                        </div>
+                        <div class="card-value" id="sqlite-connections">4</div>
+                        <div class="card-change positive">+2 connexions</div>
+                    </div>
+                    
+                    <div class="data-card">
+                        <div class="card-header">
+                            <div class="card-title">💾 LocalStorage</div>
+                        </div>
+                        <div class="card-value">3.2 MB</div>
+                        <div class="card-change negative">+0.1 MB</div>
+                    </div>
+                    
+                    <div class="data-card">
+                        <div class="card-header">
+                            <div class="card-title">🔄 Requêtes/min</div>
+                        </div>
+                        <div class="card-value" id="queries-per-min">247</div>
+                        <div class="card-change positive">+15%</div>
+                    </div>
+                    
+                    <div class="data-card">
+                        <div class="card-header">
+                            <div class="card-title">⚡ Latence</div>
+                        </div>
+                        <div class="card-value">0.24s</div>
+                        <div class="card-change positive">-0.02s</div>
+                    </div>
+                </div>
+
+                <!-- Live Data Table -->
+                <table class="live-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Table</th>
+                            <th>Opération</th>
+                            <th>Statut</th>
+                            <th>Durée</th>
+                        </tr>
+                    </thead>
+                    <tbody id="live-data">
+                        <tr>
+                            <td>14:32:15</td>
+                            <td>gains</td>
+                            <td>SELECT</td>
+                            <td><span class="status online">Success</span></td>
+                            <td>0.12s</td>
+                        </tr>
+                        <tr>
+                            <td>14:32:12</td>
+                            <td>tirages</td>
+                            <td>INSERT</td>
+                            <td><span class="status online">Success</span></td>
+                            <td>0.08s</td>
+                        </tr>
+                        <tr>
+                            <td>14:32:08</td>
+                            <td>sources</td>
+                            <td>UPDATE</td>
+                            <td><span class="status warning">Timeout</span></td>
+                            <td>2.34s</td>
+                        </tr>
+                        <tr>
+                            <td>14:32:05</td>
+                            <td>config</td>
+                            <td>SELECT</td>
+                            <td><span class="status online">Success</span></td>
+                            <td>0.05s</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Terminal for Live Logs -->
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="terminal-title">Live System Logs</div>
+                    </div>
+                    <div id="terminal-content">
+                        <div class="terminal-line">
+                            <span class="prompt">admin@fdj-monitoring:</span><span class="command">$ tail -f system.log</span>
+                        </div>
+                        <div class="terminal-line output success">[INFO] SQLite connection established successfully</div>
+                        <div class="terminal-line output">[INFO] Loading table schema: tirages, gains, sources, config</div>
+                        <div class="terminal-line output success">[SUCCESS] 13 gains records loaded</div>
+                        <div class="terminal-line output warning">[WARN] LocalStorage approaching 80% capacity</div>
+                        <div class="terminal-line output">[INFO] Auto-backup scheduled for 15:00</div>
+                        <div class="terminal-line output success">[SUCCESS] Index optimization completed (2.3s)</div>
+                        <div class="terminal-line">
+                            <span class="prompt">admin@fdj-monitoring:</span><span style="animation: blink 1s infinite;">█</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="status-bar">
+                <div class="status-left">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Connecté</span>
+                    </div>
+                    <span>4 tables actives</span>
+                    <span>13 enregistrements</span>
+                </div>
+                <div class="status-right">
+                    <span>Sync: 2 min</span>
+                    <span>CPU: 12%</span>
+                    <span>RAM: 64MB</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Control & Management -->
+        <div class="right-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    🛠️ Contrôle & Gestion
+                </div>
+                <div class="panel-controls">
+                    <button class="control-btn">Console</button>
+                    <button class="control-btn active">Actions</button>
+                    <button class="control-btn">Config</button>
+                </div>
+            </div>
+            
+            <div class="panel-content">
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="action-btn success">🚀 Installation complète</button>
+                    <button class="action-btn">🧪 Lancer tests</button>
+                    <button class="action-btn">🔍 Diagnostic</button>
+                    <button class="action-btn danger">🗑️ Purger cache</button>
+                </div>
+
+                <!-- SQL Query Editor -->
+                <div class="code-editor">
+                    <div class="code-line">
+                        <span class="line-number">1</span>
+                        <span class="keyword">SELECT</span> 
+                        <span>g.id, t.date, g.rang, g.combinaison,</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">2</span>
+                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g.gains, g.gagnants, t.source</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">3</span>
+                        <span class="keyword">FROM</span> <span>gains g</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">4</span>
+                        <span class="keyword">JOIN</span> <span>tirages t </span><span class="keyword">ON</span><span> g.tirage_id = t.id</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">5</span>
+                        <span class="keyword">WHERE</span> <span>t.date = </span><span class="string">'2025-01-14'</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">6</span>
+                        <span class="keyword">ORDER BY</span> <span>g.rang </span><span class="keyword">ASC</span><span>;</span>
+                    </div>
+                    <div class="code-line">
+                        <span class="line-number">7</span>
+                        <span class="comment">-- Récupération des gains pour le tirage du 14/01</span>
+                    </div>
+                </div>
+
+                <!-- Results Table -->
+                <table class="live-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Rang</th>
+                            <th>Combinaison</th>
+                            <th>Gain</th>
+                            <th>Gagnants</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2025-01-14</td>
+                            <td>1</td>
+                            <td>5+2</td>
+                            <td>125,000,000€</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-14</td>
+                            <td>2</td>
+                            <td>5+1</td>
+                            <td>350,000€</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-14</td>
+                            <td>3</td>
+                            <td>5+0</td>
+                            <td>35,000€</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-14</td>
+                            <td>4</td>
+                            <td>4+2</td>
+                            <td>2,500€</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td>2025-01-14</td>
+                            <td>5</td>
+                            <td>4+1</td>
+                            <td>150€</td>
+                            <td>287</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- System Information -->
+                <div class="data-grid">
+                    <div class="data-card">
+                        <div class="card-header">
+                            <div class="card-title">📊 Base de données</div>
+                        </div>
+                        <div style="font-size: 0.8em; color: #ccc;">
+                            <div style="margin-bottom: 8px;">Tables: 4 actives</div>
+                            <div style="margin-bottom: 8px;">Enregistrements: 23 total</div>
+                            <div style="margin-bottom: 8px;">Index: 5 optimisés</div>
+                            <div>Taille: 2.4 MB</div>
+                        </div>
+                    </div>
+                    
+                    <div class="data-card">
+                        <div class="card-header">
+                            <div class="card-title">🔧 Maintenance</div>
+                        </div>
+                        <div style="font-size: 0.8em; color: #ccc;">
+                            <div style="margin-bottom: 8px;">Dernière sauvegarde: 14:15</div>
+                            <div style="margin-bottom: 8px;">Optimisation: Quotidienne</div>
+                            <div style="margin-bottom: 8px;">Nettoyage auto: Activé</div>
+                            <div>Monitoring: 24/7</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Terminal -->
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="terminal-title">Database Stats</div>
+                    </div>
+                    <div>
+                        <div class="terminal-line">
+                            <span class="prompt">sqlite></span><span class="command"> .tables</span>
+                        </div>
+                        <div class="terminal-line output">tirages  gains  sources  config</div>
+                        <div class="terminal-line">
+                            <span class="prompt">sqlite></span><span class="command"> SELECT COUNT(*) FROM gains;</span>
+                        </div>
+                        <div class="terminal-line output success">13</div>
+                        <div class="terminal-line">
+                            <span class="prompt">sqlite></span><span class="command"> SELECT COUNT(*) FROM tirages;</span>
+                        </div>
+                        <div class="terminal-line output success">3</div>
+                        <div class="terminal-line">
+                            <span class="prompt">sqlite></span><span style="animation: blink 1s infinite;">█</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="status-bar">
+                <div class="status-left">
+                    <span>Mode: Production</span>
+                    <span>Auto-sync: ON</span>
+                </div>
+                <div class="status-right">
+                    <span>Version: 1.4.2</span>
+                    <span>Build: 2025.01.14</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Resize functionality
+        let isResizing = false;
+        const resizeHandle = document.querySelector('.resize-handle');
+        const leftPanel = document.querySelector('.left-panel');
+        const rightPanel = document.querySelector('.right-panel');
+
+        resizeHandle.addEventListener('mousedown', function(e) {
+            isResizing = true;
+            document.addEventListener('mousemove', resize);
+            document.addEventListener('mouseup', stopResize);
+        });
+
+        function resize(e) {
+            if (!isResizing) return;
+            
+            const containerWidth = document.querySelector('.split-container').offsetWidth;
+            const newLeftWidth = (e.clientX / containerWidth) * 100;
+            
+            if (newLeftWidth > 20 && newLeftWidth < 80) {
+                leftPanel.style.width = newLeftWidth + '%';
+                rightPanel.style.width = (100 - newLeftWidth) + '%';
+            }
+        }
+
+        function stopResize() {
+            isResizing = false;
+            document.removeEventListener('mousemove', resize);
+            document.removeEventListener('mouseup', stopResize);
+        }
+
+        // Live data simulation
+        function addLiveData() {
+            const tbody = document.getElementById('live-data');
+            const operations = ['SELECT', 'INSERT', 'UPDATE', 'DELETE'];
+            const tables = ['gains', 'tirages', 'sources', 'config'];
+            const statuses = [
+                { class: 'online', text: 'Success' },
+                { class: 'warning', text: 'Timeout' },
+                { class: 'error', text: 'Error' }
+            ];
+            
+            const now = new Date();
+            const timestamp = now.getHours().toString().padStart(2, '0') + ':' + 
+                            now.getMinutes().toString().padStart(2, '0') + ':' + 
+                            now.getSeconds().toString().padStart(2, '0');
+            
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            const table = tables[Math.floor(Math.random() * tables.length)];
+            const status = statuses[Math.floor(Math.random() * statuses.length)];
+            const duration = (Math.random() * 2).toFixed(2) + 's';
+            
+            const newRow = `
+                <tr class="fade-in">
+                    <td>${timestamp}</td>
+                    <td>${table}</td>
+                    <td>${operation}</td>
+                    <td><span class="status ${status.class}">${status.text}</span></td>
+                    <td>${duration}</td>
+                </tr>
+            `;
+            
+            tbody.insertAdjacentHTML('afterbegin', newRow);
+            
+            // Keep only last 10 rows
+            const rows = tbody.querySelectorAll('tr');
+            if (rows.length > 10) {
+                tbody.removeChild(rows[rows.length - 1]);
+            }
+        }
+
+        // Update metrics
+        function updateMetrics() {
+            const connectionsEl = document.getElementById('sqlite-connections');
+            const queriesEl = document.getElementById('queries-per-min');
+            
+            const connections = parseInt(connectionsEl.textContent);
+            const queries = parseInt(queriesEl.textContent);
+            
+            connectionsEl.textContent = connections + Math.floor(Math.random() * 3) - 1;
+            queriesEl.textContent = queries + Math.floor(Math.random() * 20) - 10;
+        }
+
+        // Add terminal log
+        function addTerminalLog() {
+            const terminal = document.getElementById('terminal-content');
+            const logs = [
+                '[INFO] Database backup completed successfully',
+                '[INFO] Index optimization started',
+                '[SUCCESS] Query cache updated',
+                '[WARN] High memory usage detected (78%)',
+                '[INFO] Auto-cleanup scheduled',
+                '[SUCCESS] Connection pool refreshed'
+            ];
+            
+            const logEntry = logs[Math.floor(Math.random() * logs.length)];
+            const logClass = logEntry.includes('[SUCCESS]') ? 'success' : 
+                           logEntry.includes('[WARN]') ? 'warning' : '';
+            
+            const newLog = `<div class="terminal-line output ${logClass}">${logEntry}</div>`;
+            
+            // Insert before the cursor line
+            const cursorLine = terminal.querySelector('.terminal-line:last-child');
+            cursorLine.insertAdjacentHTML('beforebegin', newLog);
+            
+            // Keep only last 10 logs
+            const logs_elements = terminal.querySelectorAll('.terminal-line:not(:first-child):not(:last-child)');
+            if (logs_elements.length > 10) {
+                terminal.removeChild(logs_elements[0]);
+            }
+            
+            // Auto-scroll
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // Control buttons
+        document.querySelectorAll('.control-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const siblings = this.parentElement.querySelectorAll('.control-btn');
+                siblings.forEach(s => s.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Action buttons
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                console.log('Action:', this.textContent);
+                
+                // Visual feedback
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Start live updates
+        setInterval(addLiveData, 3000);
+        setInterval(updateMetrics, 5000);
+        setInterval(addTerminalLog, 4000);
+
+        // Blink animation for cursor
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes blink {
+                0%, 50% { opacity: 1; }
+                51%, 100% { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
+
