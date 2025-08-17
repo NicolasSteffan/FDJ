@@ -2,7 +2,7 @@
 setlocal
 
 echo ==========================================
-echo FDJ - VERSION V0.002F-HISTORIQUE-SQLITE
+echo FDJ - VERSION V0.003B-CSV-IMPORT-PAGINATION
 echo SERVEUR BACKEND + FRONTEND LOCALHOST
 echo ==========================================
 
@@ -58,13 +58,18 @@ echo 📋 INSTRUCTIONS:
 echo - Microsoft Edge devrait s'ouvrir automatiquement
 echo - Sinon ouvrez manuellement: http://localhost:3010
 echo - Pour arreter: fermez les fenetres "BACKEND" et "SERVEUR"
-echo 🔧 VERSION V0.002F-HISTORIQUE-SQLITE CARACTERISTIQUES:
+echo 🔧 VERSION V0.003B-CSV-IMPORT-PAGINATION CARACTERISTIQUES:
 echo - Backend SQLite file-based partage
 echo - API REST complete avec CORS
 echo - Base de donnees persistante SQLite
 echo - PAGE HISTORIQUE connectee a SQLite avec fallback localStorage
 echo - Page Tirage + Page Historique 100%% SQLite fonctionnelles
-echo - Pagination intelligente et gestion d'erreurs robuste
+echo - IMPORT CSV EUROMILLIONS automatique avec mapping intelligent
+echo - Navigation par fleches dans page Historique (premiere/precedente/suivante/derniere)
+echo - Module csv-import.js pour fichiers CSV officiels FDJ
+echo - Pagination avancee avec controles navigation et statistiques
+echo - Detection automatique fichiers .csv avec confirmation import
+echo - Mapping CSV vers SQLite memorise pour reutilisation
 echo - Monitoring autonome en temps reel
 echo - Compatible deploiement multi-utilisateurs
 echo - Interface Admin modernisee

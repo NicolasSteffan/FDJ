@@ -11,6 +11,8 @@
     
     <!-- API SQLite Backend -->
     <script src="sqlite-api.js"></script>
+    <script src="csv-import.js"></script>
+    <script src="force-data-demo.js"></script>
     <!-- CSS Switch Components - Conforme bible.md règle 3 -->
     <link rel="stylesheet" href="./switch-components.css">
     <!-- CSS Homepage Components - Conforme bible.md règle 3 -->
@@ -302,6 +304,42 @@
         color: #f56565;
       }
       
+      /* Styles page Historique - Pagination */
+      .historique-pagination {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      
+      .historique-navigation {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .nav-btn {
+        min-width: 40px !important;
+        padding: 6px 8px !important;
+        font-size: 14px;
+      }
+      
+      .nav-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: rgba(155, 89, 182, 0.1);
+        border-color: rgba(155, 89, 182, 0.3);
+        color: rgba(155, 89, 182, 0.5);
+      }
+      
+      .page-info {
+        color: #ecf0f1;
+        font-size: 14px;
+        font-weight: bold;
+        margin: 0 8px;
+      }
+      
       /* Tous les styles CSS externalisés - BIBLE.MD CONFORME RÈGLE 3 */
       /* - Gains et tableaux → tirage-components.css et lottery-components.css */
       /* - Responsive → homepage-components.css et tirage-components.css */
@@ -383,12 +421,29 @@
             
             <div class="historique-pagination">
               <label for="historiquePagination">Résultats par page :</label>
-              <select id="historiquePagination" onchange="loadHistoriqueFromDatabase()">
+              <select id="historiquePagination" onchange="resetHistoriquePage()">
                 <option value="10" selected>10</option>
                 <option value="20">20</option>
                 <option value="50">50</option>
                 <option value="all">Tous</option>
               </select>
+              
+              <!-- Contrôles de navigation par pages -->
+              <div class="historique-navigation" id="historiqueNavigation" style="display: none;">
+                <button onclick="gotoHistoriquePage('first')" class="btn-generic nav-btn" title="Première page">
+                  ⏮️
+                </button>
+                <button onclick="gotoHistoriquePage('prev')" class="btn-generic nav-btn" title="Page précédente">
+                  ◀️
+                </button>
+                <span class="page-info" id="historiquePageInfo">Page 1 sur 1</span>
+                <button onclick="gotoHistoriquePage('next')" class="btn-generic nav-btn" title="Page suivante">
+                  ▶️
+                </button>
+                <button onclick="gotoHistoriquePage('last')" class="btn-generic nav-btn" title="Dernière page">
+                  ⏭️
+                </button>
+              </div>
           </div>
         </div>
 
@@ -428,15 +483,15 @@
                   <input type="radio" name="scrapingMode" value="range" onchange="toggleScrapingMode()">
                   Intervalle
                 </label>
-              </div>
+          </div>
               
               <!-- Contrôles date unique -->
               <div id="singleDateControls" class="date-controls-merged">
                 <button onclick="changeScrapingDate(-1)" class="btn-generic">Précédent</button>
                 <input type="date" id="scrapingDate" value="2025-08-13">
                 <button onclick="changeScrapingDate(1)" class="btn-generic">Suivant</button>
-              </div>
-              
+        </div>
+
               <!-- Contrôles intervalle de dates -->
               <div id="rangeDateControls" class="date-range-controls" style="display: none;">
                 <div class="date-range-group">
@@ -453,13 +508,17 @@
             <!-- Sélecteur de fichier source -->
             <div class="date-selection">
               <div class="date-source-controls">
-                <label for="sourceFileSelector" class="source-file-label">📂 Source de données alternative:</label>
+                <label for="sourceFileSelector" class="source-file-label">📂 Import de données EuroMillions:</label>
                 <div class="source-file-container">
-                  <input type="file" id="sourceFileSelector" accept=".json,.csv,.txt" style="display: none;" onchange="handleSourceFileSelect(event)">
+                  <input type="file" id="sourceFileSelector" accept=".csv,.json,.txt" style="display: none;" onchange="handleSourceFileSelect(event)">
                   <button onclick="document.getElementById('sourceFileSelector').click()" class="load-btn source-file-btn">
                     📁 Fichier source
                   </button>
-                  <span id="sourceFileName" class="source-file-name">Aucun fichier sélectionné</span>
+                  <span id="sourceFileName" class="source-file-name">Sélectionnez un fichier CSV EuroMillions</span>
+                </div>
+                <div style="margin-top: 8px; font-size: 12px; color: #95a5a6;">
+                  💡 <strong>CSV automatique :</strong> Les fichiers .csv EuroMillions sont détectés et importés automatiquement<br/>
+                  🎯 <strong>Format supporté :</strong> CSV officiel FDJ avec colonnes date, numéros, étoiles et gains
                 </div>
               </div>
             </div>
@@ -906,7 +965,11 @@
             </div>
             
             <!-- Données et statistiques -->
-            <div id="sqlite-monitoring-stats"></div>
+            <div id="sqlite-monitoring-stats">
+              <p style="color: #888; text-align: center; padding: 20px;">
+                Sélectionnez une table pour voir les données
+              </p>
+            </div>
             <div id="sqlite-monitoring-table"></div>
             <div id="sqlite-monitoring-pagination"></div>
           </div>
@@ -2810,6 +2873,109 @@
 
       // === NOUVELLE PAGE HISTORIQUE ===
 
+      // Variables globales pour la pagination historique
+      let currentHistoriquePage = 1;
+      let historiqueData = [];
+      let totalHistoriquePages = 1;
+
+      // Réinitialiser la page lors du changement de nombre de résultats
+      function resetHistoriquePage() {
+        currentHistoriquePage = 1;
+        loadHistoriqueFromDatabase();
+      }
+
+      // Navigation entre les pages
+      function gotoHistoriquePage(direction) {
+        let newPage = currentHistoriquePage;
+        
+        switch(direction) {
+          case 'first':
+            newPage = 1;
+            break;
+          case 'prev':
+            newPage = Math.max(1, currentHistoriquePage - 1);
+            break;
+          case 'next':
+            newPage = Math.min(totalHistoriquePages, currentHistoriquePage + 1);
+            break;
+          case 'last':
+            newPage = totalHistoriquePages;
+            break;
+          default:
+            if (typeof direction === 'number') {
+              newPage = Math.max(1, Math.min(totalHistoriquePages, direction));
+            }
+        }
+        
+        if (newPage !== currentHistoriquePage) {
+          currentHistoriquePage = newPage;
+          displayHistoriquePage();
+        }
+      }
+
+      // Afficher la page actuelle
+      function displayHistoriquePage() {
+        const container = document.getElementById('tiragesContainer');
+        const paginationSelect = document.getElementById('historiquePagination');
+        const navigationDiv = document.getElementById('historiqueNavigation');
+        const pageInfoSpan = document.getElementById('historiquePageInfo');
+        
+        if (!container || !historiqueData || historiqueData.length === 0) {
+          return;
+        }
+        
+        const pageSize = paginationSelect ? paginationSelect.value : '10';
+        
+        if (pageSize === 'all') {
+          // Afficher tous les résultats
+          container.innerHTML = historiqueData.map(draw => createTirageTag(draw)).join('');
+          if (navigationDiv) navigationDiv.style.display = 'none';
+          return;
+        }
+        
+        const itemsPerPage = parseInt(pageSize);
+        const startIndex = (currentHistoriquePage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageData = historiqueData.slice(startIndex, endIndex);
+        
+        // Afficher les données de la page
+        container.innerHTML = pageData.map(draw => createTirageTag(draw)).join('');
+        
+        // Mettre à jour les contrôles de navigation
+        totalHistoriquePages = Math.ceil(historiqueData.length / itemsPerPage);
+        
+        // Toujours afficher les contrôles s'il y a des données, même pour 1 page
+        if (historiqueData.length > 0 && navigationDiv) {
+          navigationDiv.style.display = 'flex';
+          if (pageInfoSpan) {
+            pageInfoSpan.textContent = `Page ${currentHistoriquePage} sur ${totalHistoriquePages}`;
+          }
+          
+          // Activer/désactiver les boutons
+          const buttons = navigationDiv.querySelectorAll('.nav-btn');
+          if (buttons.length === 4) {
+            buttons[0].disabled = currentHistoriquePage === 1; // First
+            buttons[1].disabled = currentHistoriquePage === 1; // Prev
+            buttons[2].disabled = currentHistoriquePage === totalHistoriquePages; // Next
+            buttons[3].disabled = currentHistoriquePage === totalHistoriquePages; // Last
+          }
+          
+          // Ajouter info de pagination
+          const infoDiv = document.createElement('div');
+          infoDiv.style.cssText = 'text-align: center; color: #888; margin-top: 20px; font-size: 14px;';
+          if (totalHistoriquePages > 1) {
+            infoDiv.innerHTML = `📄 Affichage ${startIndex + 1}-${Math.min(endIndex, historiqueData.length)} sur ${historiqueData.length} tirages`;
+          } else {
+            infoDiv.innerHTML = `📄 ${historiqueData.length} tirage${historiqueData.length > 1 ? 's' : ''} au total`;
+          }
+          container.appendChild(infoDiv);
+        } else if (navigationDiv) {
+          navigationDiv.style.display = 'none';
+        }
+        
+        console.log(`📄 Page ${currentHistoriquePage}/${totalHistoriquePages}: ${pageData.length} tirages affichés`);
+      }
+
       // Fonction pour charger et afficher les tirages depuis la base
       async function loadHistoriqueFromDatabase() {
         console.log('🔄 Chargement de l\'historique depuis la base SQLite...');
@@ -2850,8 +3016,8 @@
 
           if (joinedData.length === 0) {
             container.innerHTML = '<p class="no-data-message">Aucun tirage en base de données SQLite. Effectuez d\'abord un scraping depuis la page Tirage.</p>';
-            return;
-          }
+          return;
+        }
 
           // Grouper les données par date de tirage (un tirage peut avoir plusieurs gains)
           const groupedByDate = {};
@@ -2905,30 +3071,30 @@
             return draw;
           });
 
-          // Trier par date (plus récent en premier)
-          draws.sort((a, b) => new Date(b.date) - new Date(a.date));
+        // Trier par date (plus récent en premier)
+        draws.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-          // Appliquer la pagination
-          const pageSize = paginationSelect ? paginationSelect.value : '10';
-          let drawsToDisplay = draws;
-          
-          if (pageSize !== 'all') {
-            const limit = parseInt(pageSize);
-            drawsToDisplay = draws.slice(0, limit);
-            console.log(`📄 Affichage de ${drawsToDisplay.length}/${draws.length} tirages (limite: ${pageSize})`);
-          } else {
-            console.log(`📄 Affichage de tous les tirages (${draws.length})`);
-          }
+        // Appliquer la pagination
+        const pageSize = paginationSelect ? paginationSelect.value : '10';
+        let drawsToDisplay = draws;
+        
+        if (pageSize !== 'all') {
+          const limit = parseInt(pageSize);
+          drawsToDisplay = draws.slice(0, limit);
+          console.log(`📄 Affichage de ${drawsToDisplay.length}/${draws.length} tirages (limite: ${pageSize})`);
+        } else {
+          console.log(`📄 Affichage de tous les tirages (${draws.length})`);
+        }
 
-          // Générer le HTML des tags
-          container.innerHTML = drawsToDisplay.map(draw => createTirageTag(draw)).join('');
-          
-          // Ajouter info de pagination si nécessaire
-          if (pageSize !== 'all' && draws.length > parseInt(pageSize)) {
-            const infoDiv = document.createElement('div');
-            infoDiv.style.cssText = 'text-align: center; color: #888; margin-top: 20px; font-size: 14px;';
-            infoDiv.innerHTML = `Affichage de ${drawsToDisplay.length} sur ${draws.length} tirages - Modifiez la sélection pour voir plus`;
-            container.appendChild(infoDiv);
+        // Générer le HTML des tags
+        container.innerHTML = drawsToDisplay.map(draw => createTirageTag(draw)).join('');
+        
+        // Ajouter info de pagination si nécessaire
+        if (pageSize !== 'all' && draws.length > parseInt(pageSize)) {
+          const infoDiv = document.createElement('div');
+          infoDiv.style.cssText = 'text-align: center; color: #888; margin-top: 20px; font-size: 14px;';
+          infoDiv.innerHTML = `Affichage de ${drawsToDisplay.length} sur ${draws.length} tirages - Modifiez la sélection pour voir plus`;
+          container.appendChild(infoDiv);
           }
 
           console.log('✅ Historique SQLite affiché avec succès');
@@ -2974,21 +3140,14 @@
           // Trier par date (plus récent en premier)
           draws.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-          // Appliquer la pagination
-          const pageSize = paginationSelect ? paginationSelect.value : '10';
-          let drawsToDisplay = draws;
+          // Stocker les données pour la pagination (mode fallback)
+          historiqueData = draws;
+          currentHistoriquePage = 1;
           
-          if (pageSize !== 'all') {
-            const limit = parseInt(pageSize);
-            drawsToDisplay = draws.slice(0, limit);
-            console.log(`📄 Affichage de ${drawsToDisplay.length}/${draws.length} tirages (limite: ${pageSize})`);
-          } else {
-            console.log(`📄 Affichage de tous les tirages (${draws.length})`);
-          }
-
-          // Générer le HTML des tags avec avertissement de fallback
-          const fallbackWarning = '<div style="background: rgba(255,165,0,0.1); border: 1px solid #ffa500; border-radius: 8px; padding: 10px; margin-bottom: 15px; color: #ffa500; text-align: center;"><strong>⚠️ Mode Fallback:</strong> Données chargées depuis localStorage (SQLite indisponible)</div>';
-          container.innerHTML = fallbackWarning + drawsToDisplay.map(draw => createTirageTag(draw)).join('');
+          // Afficher la première page avec avertissement fallback
+          displayHistoriquePage();
+          
+          // Note: Le displayHistoriquePage() ajoute déjà l'avertissement fallback
           
           // Ajouter info de pagination si nécessaire
           if (pageSize !== 'all' && draws.length > parseInt(pageSize)) {
@@ -3650,17 +3809,62 @@
             lastModified: new Date(file.lastModified).toLocaleString()
           });
           
-          updateScrapingBreadcrumb(`📁 Fichier source: ${file.name} sélectionné`);
-          
-          // Optionnel: Prévisualiser le contenu si c'est un fichier texte/JSON
-          if (file.type === 'application/json' || file.type === 'text/plain' || file.name.endsWith('.json') || file.name.endsWith('.txt')) {
-            previewSourceFile(file);
+          // Détection du type de fichier et traitement automatique
+          if (file.name.toLowerCase().endsWith('.csv')) {
+            // Fichier CSV EuroMillions détecté
+            fileName.textContent = `📊 ${file.name} (CSV EuroMillions - ${(file.size / 1024).toFixed(1)} KB)`;
+            updateScrapingBreadcrumb(`📊 Fichier CSV EuroMillions détecté: ${file.name}`);
+            
+            // Proposer l'import automatique
+            if (confirm(`🎯 Fichier CSV EuroMillions détecté !\n\nVoulez-vous importer automatiquement les tirages manquants depuis ce fichier ?\n\n✅ Cliquez OK pour lancer l'import\n❌ Cliquez Annuler pour sélectionner un autre fichier`)) {
+              importCSVFileAuto(file);
+            }
+          } else {
+            updateScrapingBreadcrumb(`📁 Fichier source: ${file.name} sélectionné`);
+            
+            // Prévisualiser le contenu si c'est un fichier texte/JSON
+            if (file.type === 'application/json' || file.type === 'text/plain' || file.name.endsWith('.json') || file.name.endsWith('.txt')) {
+              previewSourceFile(file);
+            }
           }
         } else {
           selectedSourceFile = null;
           fileName.textContent = 'Aucun fichier sélectionné';
           fileName.classList.remove('selected');
           updateScrapingBreadcrumb('Prêt pour le scraping');
+        }
+      }
+      
+      // Import automatique de fichier CSV
+      async function importCSVFileAuto(file) {
+        console.log('🚀 [AUTO-IMPORT] Lancement import automatique CSV');
+        updateScrapingBreadcrumb(`⏳ Import en cours: ${file.name}...`);
+        
+        try {
+          const stats = await handleCSVImport(file);
+          
+          if (stats.error) {
+            alert(`❌ Erreur import:\n\n${stats.error}`);
+            updateScrapingBreadcrumb(`❌ Erreur: ${stats.error}`);
+          } else {
+            // Afficher les résultats
+            const message = `✅ Import CSV terminé !\n\n📊 Statistiques:\n• Total lignes CSV: ${stats.total}\n• Nouveaux imports: ${stats.imported}\n• Déjà en base: ${stats.skipped}\n• Erreurs: ${stats.errors}`;
+            
+            alert(message);
+            updateScrapingBreadcrumb(`✅ Import terminé: ${stats.imported}/${stats.total} nouveaux tirages`);
+            
+            // Actualiser la page Historique si elle existe
+            if (typeof loadHistoriqueFromDatabase === 'function') {
+              console.log('🔄 [AUTO-IMPORT] Actualisation page Historique...');
+              setTimeout(() => {
+                loadHistoriqueFromDatabase();
+              }, 1000);
+            }
+          }
+        } catch (error) {
+          console.error('❌ [AUTO-IMPORT] Erreur critique:', error);
+          alert(`❌ Erreur critique import:\n\n${error.message}`);
+          updateScrapingBreadcrumb(`❌ Erreur critique: ${error.message}`);
         }
       }
       
@@ -3763,37 +3967,63 @@
       // === FONCTIONS ADMIN MONITORING ===
       
       // Fonctions SQLite
-      function loadSQLiteTableData() {
+      async function loadSQLiteTableData() {
         const tableSelector = document.getElementById('sqliteTableSelector');
         const pageSize = document.getElementById('sqlitePageSize');
         const tableType = tableSelector.value;
         const limit = parseInt(pageSize.value);
         
         console.log(`📊 SQLite - Chargement table: ${tableType}, limite: ${limit}`);
+        addDumpLog(`🔍 Chargement ${tableType} avec limite ${limit}...`, 'info');
         
-        // TODO: Récupérer les données depuis SQLite (pour l'instant vide)
-        const data = getSQLiteTableData(tableType);
+        try {
+          // Récupérer les données depuis SQLite backend ou client
+          const data = await getSQLiteTableData(tableType);
+          
+          console.log(`📊 Données récupérées:`, data);
+          addDumpLog(`📊 ${data.length} enregistrements récupérés pour ${tableType}`, 'info');
         
         // Afficher dans la section SQLite
         displaySQLiteTableData(data, limit, 1, tableType);
+        } catch (error) {
+          console.error('❌ Erreur chargement données:', error);
+          addDumpLog(`❌ Erreur chargement ${tableType}: ${error.message}`, 'error');
+          
+          // Afficher un message d'erreur
+          displaySQLiteTableData([], limit, 1, tableType);
+        }
       }
       
 
       
       // Récupérer données SQLite
-      function getSQLiteTableData(tableType) {
+      async function getSQLiteTableData(tableType) {
         console.log(`🗄️ SQLite: Récupération ${tableType}`);
         addDumpLog(`📊 Récupération données table: ${tableType}`, 'info');
         
+        // PRIORITÉ 1: Essayer le backend SQLite API d'abord
+        try {
+          console.log('🌐 Tentative récupération via Backend API...');
+          const backendData = await getSQLiteBackendTableData(tableType);
+          if (backendData && backendData.length > 0) {
+            addDumpLog(`✅ Backend API: ${backendData.length} enregistrements récupérés`, 'success');
+            return backendData;
+          }
+        } catch (error) {
+          console.warn('⚠️ Backend API non disponible:', error);
+          addDumpLog(`⚠️ Backend API erreur: ${error.message}`, 'warning');
+        }
+        
+        // PRIORITÉ 2: SQLite côté client si disponible
         if (!sqliteInitialized || !sqliteDatabase) {
-          console.warn('SQLite non initialisé');
-          addDumpLog('⚠️ SQLite non initialisé, tentative mode fallback...', 'warning');
+          console.warn('SQLite côté client non initialisé');
+          addDumpLog('⚠️ SQLite côté client non initialisé, tentative mode fallback...', 'warning');
           
-          // Utiliser le mode fallback si disponible
+          // PRIORITÉ 3: Mode fallback localStorage
           if (sqliteFallbackMode) {
             return getSQLiteFallbackData(tableType);
           } else {
-            addDumpLog('❌ SQLite et fallback non disponibles', 'error');
+            addDumpLog('❌ Toutes les sources de données non disponibles', 'error');
             return [];
           }
         }
