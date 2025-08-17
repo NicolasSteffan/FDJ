@@ -382,25 +382,44 @@ app.post('/api/tirages', (req, res) => {
         
         // Si des gains sont fournis, les insérer
         if (gains && Array.isArray(gains) && gains.length > 0) {
+          console.log(`💰 [BACKEND] Insertion de ${gains.length} gains pour tirage ID ${tirageId}`);
           let gainsInserted = 0;
-          gains.forEach((gain) => {
+          let gainsErrors = 0;
+          
+          gains.forEach((gain, index) => {
+            console.log(`💰 [BACKEND] Insertion gain ${index + 1}:`, gain);
             db.run(
               "INSERT INTO gains (tirage_id, rang, combinaison, nombre_gagnants, gain_unitaire, source) VALUES (?, ?, ?, ?, ?, ?)",
               [tirageId, gain.rang, gain.combinaison, gain.nombre_gagnants, gain.gain_unitaire, source],
               (err) => {
                 if (err) {
-                  console.error('❌ Erreur insertion gain:', err.message);
+                  console.error(`❌ [BACKEND] Erreur insertion gain ${index + 1}:`, err.message);
+                  gainsErrors++;
+                } else {
+                  console.log(`✅ [BACKEND] Gain ${index + 1} inséré avec succès`);
                 }
                 gainsInserted++;
+                
+                // Log final quand tous les gains sont traités
+                if (gainsInserted === gains.length) {
+                  console.log(`💰 [BACKEND] === BILAN GAINS ===`);
+                  console.log(`💰 [BACKEND] Total gains traités: ${gainsInserted}/${gains.length}`);
+                  console.log(`💰 [BACKEND] Erreurs: ${gainsErrors}`);
+                  console.log(`💰 [BACKEND] Succès: ${gainsInserted - gainsErrors}`);
+                }
               }
             );
           });
+        } else {
+          console.log(`⚠️ [BACKEND] Aucun gain à insérer pour tirage ID ${tirageId}`);
         }
 
+        const gainsCount = (gains && Array.isArray(gains)) ? gains.length : 0;
         res.json({
           success: true,
-          message: 'Tirage créé avec succès',
+          message: `Tirage créé avec succès (${gainsCount} gains associés)`,
           tirageId: tirageId,
+          gainsCount: gainsCount,
           timestamp: new Date().toISOString()
         });
       }

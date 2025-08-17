@@ -43,6 +43,265 @@
       
       /* Sections résultats et boules externalisées vers tirage-components.css et lottery-components.css - bible.md conforme */
       
+      /* Page Scraping - Styles spécifiques */
+      .scraping-mode-selector {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 10px;
+      }
+      
+      .scraping-mode-selector label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #e6f0ff;
+        cursor: pointer;
+      }
+      
+      .date-range-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      
+      .date-range-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .date-range-group label {
+        color: #e6f0ff;
+        font-size: 12px;
+      }
+      
+      .scraping-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      
+
+      
+      /* Styles pour le sélecteur de fichier source */
+      .date-source-controls {
+        margin-top: 15px;
+        padding: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.1);
+      }
+      
+      .source-file-label {
+        display: block;
+        margin-bottom: 10px;
+        color: #ecf0f1;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      
+      .source-file-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      /* Bouton générique - Style unifié pour toute l'application */
+      .btn-generic {
+        background: rgba(155, 89, 182, 0.2);
+        border: 1px solid #9b59b6;
+        color: #9b59b6;
+        padding: 8px 16px;
+        font-size: 14px;
+        min-width: 140px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+      }
+      
+      .btn-generic:hover {
+        background: rgba(155, 89, 182, 0.3);
+        border-color: #8e44ad;
+        color: #8e44ad;
+      }
+      
+      .btn-generic:active {
+        background: rgba(155, 89, 182, 0.4);
+        transform: translateY(1px);
+      }
+      
+      .btn-generic:disabled {
+        background: rgba(100, 100, 100, 0.2);
+        border-color: #666;
+        color: #666;
+        cursor: not-allowed;
+      }
+      
+      /* Style spécial pour le bouton fichier source (garde son icône) */
+      .source-file-btn {
+        background: rgba(155, 89, 182, 0.2);
+        border-color: #9b59b6;
+        color: #9b59b6;
+        padding: 8px 16px;
+        font-size: 14px;
+        min-width: 140px;
+      }
+      
+      .source-file-btn:hover {
+        background: rgba(155, 89, 182, 0.3);
+        border-color: #8e44ad;
+        color: #8e44ad;
+      }
+      
+      .source-file-name {
+        color: #95a5a6;
+        font-size: 13px;
+        font-style: italic;
+        flex: 1;
+      }
+      
+      .source-file-name.selected {
+        color: #2ecc71;
+        font-style: normal;
+        font-weight: 500;
+      }
+      
+      .scraping-config {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .config-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: space-between;
+      }
+      
+      .config-row label {
+        color: #e6f0ff;
+        min-width: 180px;
+      }
+      
+      .config-row input[type="number"] {
+        width: 100px;
+        padding: 5px;
+        border: 1px solid #3fb6ff;
+        border-radius: 4px;
+        background: rgba(0,0,0,0.3);
+        color: #e6f0ff;
+      }
+      
+      .config-row input[type="checkbox"] {
+        margin-right: 8px;
+      }
+      
+      .preview-stats, .progress-stats, .results-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+      
+      .preview-stat, .stat-item, .result-stat {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .stat-label {
+        color: #888;
+        font-size: 12px;
+      }
+      
+      .stat-value {
+        color: #e6f0ff;
+        font-weight: bold;
+      }
+      
+      .stat-value.success {
+        color: #48bb78;
+      }
+      
+      .stat-value.error {
+        color: #f56565;
+      }
+      
+      .dates-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      
+      .date-tag {
+        background: rgba(63, 182, 255, 0.2);
+        border: 1px solid #3fb6ff;
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 12px;
+        color: #e6f0ff;
+      }
+      
+      .date-tag.more {
+        background: rgba(255, 165, 0, 0.2);
+        border-color: #ffa500;
+        color: #ffa500;
+      }
+      
+      .progress-bar {
+        width: 100%;
+        height: 20px;
+        background: rgba(0,0,0,0.3);
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+      
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3fb6ff, #48bb78);
+        transition: width 0.3s ease;
+      }
+      
+      .progress-log {
+        max-height: 200px;
+        overflow-y: auto;
+        background: rgba(0,0,0,0.3);
+        border-radius: 4px;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 12px;
+      }
+      
+      .log-entry {
+        margin-bottom: 5px;
+        display: flex;
+        gap: 8px;
+      }
+      
+      .log-time {
+        color: #888;
+        min-width: 80px;
+      }
+      
+      .log-info {
+        color: #e6f0ff;
+      }
+      
+      .log-success {
+        color: #48bb78;
+      }
+      
+      .log-warning {
+        color: #ffa500;
+      }
+      
+      .log-error {
+        color: #f56565;
+      }
+      
       /* Tous les styles CSS externalisés - BIBLE.MD CONFORME RÈGLE 3 */
       /* - Gains et tableaux → tirage-components.css et lottery-components.css */
       /* - Responsive → homepage-components.css et tirage-components.css */
@@ -63,7 +322,7 @@
             <ul class="submenu">
               <li><a href="#" onclick="showSection('tirage')">Tirage</a></li>
               <li><a href="#" onclick="showHistorique()">Historique</a></li>
-              <li><a href="#" onclick="showSection('components')">Lancer scraping</a></li>
+              <li><a href="#" onclick="showSection('scraping')">Scrapping</a></li>
             </ul>
           </li>
           <li>
@@ -109,9 +368,9 @@
 
         <div class="demo-card">
           <h2>🔧 Fonctionnalités Disponibles</h2>
-          <button onclick="showSection('demo')">Tester les Composants</button>
-          <button onclick="showSection('components')">Voir les Éléments UI</button>
-          <button onclick="testArchitecture()">Test Architecture</button>
+          <button onclick="showSection('demo')" class="btn-generic">Tester les Composants</button>
+          <button onclick="showSection('components')" class="btn-generic">Voir les Éléments UI</button>
+          <button onclick="testArchitecture()" class="btn-generic">Test Architecture</button>
         </div>
       </section>
 
@@ -140,59 +399,177 @@
         </div>
       </section>
 
-      <!-- Section Composants -->
-      <section id="components" class="section hidden">
-        <h1>Architecture - Documentation</h1>
+      <!-- Section Scraping -->
+      <section id="scraping" class="section hidden">
+        <h1><span class="tirage-led"></span> Scrapping</h1>
 
-        <!-- Section Structure OOP (pliable) -->
-        <div class="demo-card">
-          <h2 onclick="toggleArchitectureSection('structure')" class="architecture-section-title">
-            <span class="led_generique_petite" id="structure-led"></span>
-            Structure des Fichiers OOP
-            <span class="architecture-arrow" id="structure-arrow"></span>
-          </h2>
-          <div id="structure-content" class="architecture-section-content">
-            <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto;">
-src/
-├── models/                 # Modèles de données
-│   ├── Draw.js            # Modèle de tirage
-│   ├── Prediction.js      # Modèle de prédiction IA  
-│   └── DataSource.js      # Modèle de source de données
-├── services/              # Services métier
-│   ├── ScrapingService.js # Service de collecte
-│   └── DataService.js     # Service de données
-├── controllers/           # Contrôleurs MVC
-│   ├── DrawController.js  # Logique métier des tirages
-│   └── UIController.js    # Gestion de l'interface
-├── components/            # Composants UI réutilisables
-│   ├── LotteryBallComponent.js
-│   ├── DataSourceSelectorComponent.js
-│   └── PaginationComponent.js
-└── index.js              # Point d'entrée principal
-
-style/ClaudS4/            # Styles CSS séparés
-├── main.css             # Styles principaux
-├── components.css       # Styles des composants
-└── scraper-theme.css    # Thème scraper
-            </pre>
+        <!-- Contrôles de Scraping -->
+        <div class="tirage-controls">
+          <!-- Ligne 1: Titres -->
+          <div class="controls-titles">
+            <div class="date-title-section">
+              <h4>Mode de scraping</h4>
+            </div>
+            <div class="title-group">
+              <h4>Configuration</h4>
+            </div>
+          </div>
+          
+          <!-- Ligne 2: Contrôles -->
+          <div class="controls-row">
+            <div class="date-load-group">
+              <!-- Sélecteur de mode -->
+              <div class="scraping-mode-selector">
+                <label>
+                  <input type="radio" name="scrapingMode" value="single" checked onchange="toggleScrapingMode()">
+                  Date unique
+                </label>
+                <label>
+                  <input type="radio" name="scrapingMode" value="range" onchange="toggleScrapingMode()">
+                  Intervalle
+                </label>
+              </div>
+              
+              <!-- Contrôles date unique -->
+              <div id="singleDateControls" class="date-controls-merged">
+                <button onclick="changeScrapingDate(-1)" class="btn-generic">Précédent</button>
+                <input type="date" id="scrapingDate" value="2025-08-13">
+                <button onclick="changeScrapingDate(1)" class="btn-generic">Suivant</button>
+              </div>
+              
+              <!-- Contrôles intervalle de dates -->
+              <div id="rangeDateControls" class="date-range-controls" style="display: none;">
+                <div class="date-range-group">
+                  <label>De:</label>
+                  <input type="date" id="scrapingDateFrom" value="2025-07-01" min="2004-01-01">
+                </div>
+                <div class="date-range-group">
+                  <label>À:</label>
+                  <input type="date" id="scrapingDateTo" value="2025-08-13">
+                </div>
+              </div>
+            </div>
+            
+            <!-- Sélecteur de fichier source -->
+            <div class="date-selection">
+              <div class="date-source-controls">
+                <label for="sourceFileSelector" class="source-file-label">📂 Source de données alternative:</label>
+                <div class="source-file-container">
+                  <input type="file" id="sourceFileSelector" accept=".json,.csv,.txt" style="display: none;" onchange="handleSourceFileSelect(event)">
+                  <button onclick="document.getElementById('sourceFileSelector').click()" class="load-btn source-file-btn">
+                    📁 Fichier source
+                  </button>
+                  <span id="sourceFileName" class="source-file-name">Aucun fichier sélectionné</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Actions de scraping -->
+            <div class="toggle-switch">
+              <div class="switch-container scraping-actions">
+                <button onclick="startScraping()" class="btn-generic">
+                  Lancer Scraping
+                </button>
+                
+                <button onclick="stopScraping()" class="btn-generic" title="Arrêter le scraping en cours" style="display: none;" id="stopScrapingBtn">
+                  Arrêter
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Ligne 3: Fil d'Ariane -->
+          <div class="breadcrumb active" id="scrapingBreadcrumb">
+            <div class="breadcrumb-content">
+              <span class="breadcrumb-icon">🌐</span>
+              <span class="breadcrumb-text" id="scrapingBreadcrumbText">Prêt pour le scraping</span>
+            </div>
           </div>
         </div>
 
-        <!-- Section Documentation (pliable) -->
-        <div class="demo-card">
-          <h2 onclick="toggleArchitectureSection('documentation')" class="architecture-section-title">
-            <span class="led_generique_petite" id="documentation-led"></span>
-            Documentation
-            <span class="architecture-arrow" id="documentation-arrow"></span>
-          </h2>
-          <div id="documentation-content" class="architecture-section-content">
-            <ul>
-              <li><strong>bible.md</strong> - Règles fondamentales du projet</li>
-              <li><strong>MIGRATION_GUIDE.md</strong> - Guide de migration</li>
-              <li><strong>REFACTORING_SUMMARY.md</strong> - Résumé technique</li>
-              <li><strong>tests/compatibility-test.js</strong> - Tests de compatibilité</li>
-              <li><strong>go.bat</strong> - Script de lancement robuste</li>
-            </ul>
+        <!-- Section Configuration (pliable) -->
+        <div class="gains-section" id="scrapingConfigSection">
+          <div class="gains-header" onclick="toggleScrapingConfig()">
+            <h3><span class="led_generique_petite expanded" id="config-led"></span>Configuration avancée</h3>
+            <span class="gains-toggle expanded" id="configToggle">▲</span>
+          </div>
+          <div class="gains-content expanded" id="configContent">
+            <div class="scraping-config">
+              <div class="config-row">
+                <label for="scrapingDelay">Délai entre requests (ms):</label>
+                <input type="number" id="scrapingDelay" value="1000" min="500" max="5000" step="100">
+              </div>
+              <div class="config-row">
+                <label for="scrapingRetries">Nombre de tentatives:</label>
+                <input type="number" id="scrapingRetries" value="3" min="1" max="10">
+              </div>
+              <div class="config-row">
+                <label for="scrapingBatch">Taille des lots:</label>
+                <input type="number" id="scrapingBatch" value="10" min="1" max="50">
+              </div>
+              <div class="config-row">
+                <label>
+                  <input type="checkbox" id="skipExisting" checked>
+                  Ignorer les tirages déjà en base
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Section Progrès (pliable) -->
+        <div class="gains-section" id="scrapingProgressSection" style="display: none;">
+          <div class="gains-header" onclick="toggleScrapingProgress()">
+            <h3><span class="led_generique_petite expanded" id="progress-led"></span>Progrès du scraping</h3>
+            <span class="gains-toggle expanded" id="progressToggle">▲</span>
+          </div>
+          <div class="gains-content expanded" id="progressContent">
+            <div class="scraping-progress">
+              <div class="progress-stats">
+                <div class="stat-item">
+                  <span class="stat-label">Progression:</span>
+                  <span class="stat-value" id="progressPercent">0%</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Traités:</span>
+                  <span class="stat-value" id="progressProcessed">0</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Réussis:</span>
+                  <span class="stat-value" id="progressSuccess">0</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Erreurs:</span>
+                  <span class="stat-value" id="progressErrors">0</span>
+                </div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
+              </div>
+              <div class="progress-log" id="progressLog">
+                <!-- Logs de progression -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Résultats (pliable) -->
+        <div class="gains-section" id="scrapingResultsSection" style="display: none;">
+          <div class="gains-header" onclick="toggleScrapingResults()">
+            <h3><span class="led_generique_petite expanded" id="results-led"></span>Résultats du scraping</h3>
+            <span class="gains-toggle expanded" id="resultsToggle">▲</span>
+          </div>
+          <div class="gains-content expanded" id="resultsContent">
+            <div class="scraping-results">
+              <div id="scrapingResultsStats" class="results-stats">
+                <!-- Statistiques des résultats -->
+              </div>
+              <div id="scrapingResultsList" class="results-list">
+                <!-- Liste des tirages scrapés -->
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -217,17 +594,17 @@ style/ClaudS4/            # Styles CSS séparés
           <div class="controls-row">
             <div class="date-load-group">
               <div class="date-controls-merged">
-                <button onclick="changeDate(-1)" class="date-arrow date-arrow-left">◀</button>
+                <button onclick="changeDate(-1)" class="btn-generic">Précédent</button>
                 <input type="date" id="drawDate" value="2025-08-13">
-                <button onclick="changeDate(1)" class="date-arrow date-arrow-right">▶</button>
+                <button onclick="changeDate(1)" class="btn-generic">Suivant</button>
               </div>
               
-              <button onclick="loadDraw()" class="load-btn">
-                📥 Charger
+              <button onclick="loadDraw()" class="btn-generic">
+                Charger
               </button>
               
-              <button onclick="loadDrawForced()" class="load-btn force-btn" title="Forcer un nouveau scraping même si en base">
-                🔄 Force
+              <button onclick="loadDrawForced()" class="btn-generic" title="Forcer un nouveau scraping même si en base">
+                Force
               </button>
             </div>
             
@@ -327,7 +704,7 @@ style/ClaudS4/            # Styles CSS séparés
         <div class="demo-card">
           <h2>📊 Vue d'ensemble</h2>
           <div id="diagnostic-stats"></div>
-          <button onclick="loadDatabaseDiagnostic()">🔄 Actualiser</button>
+          <button onclick="loadDatabaseDiagnostic()" class="btn-generic">Actualiser</button>
         </div>
 
         <div class="demo-card">
@@ -337,11 +714,11 @@ style/ClaudS4/            # Styles CSS séparés
 
         <div class="demo-card">
           <h2>🛠️ Actions</h2>
-          <button onclick="clearDatabase()">
-            🗑️ Vider la Base
+          <button onclick="clearDatabase()" class="btn-generic">
+            Vider la Base
           </button>
-          <button onclick="exportDatabase()">
-            📤 Exporter
+          <button onclick="exportDatabase()" class="btn-generic">
+            Exporter
           </button>
         </div>
       </section>
@@ -361,7 +738,7 @@ style/ClaudS4/            # Styles CSS séparés
           </div>
           <div class="tirage-tag-content">
             <div style="margin-bottom: 10px;">
-              <button onclick="clearDumpLog()" style="background: rgba(255, 69, 0, 0.2); border: 1px solid #ff4500; color: #ff4500; padding: 5px 10px; border-radius: 3px; font-size: 10px;">🗑️ Clear</button>
+              <button onclick="clearDumpLog()" class="btn-generic" style="font-size: 10px;">Clear</button>
             </div>
             <div id="sqlite-dump-content" style="background: #1a1a1a; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 12px; color: #00ff00; height: 200px; overflow-y: auto;">
               <div style="color: #ffff00; margin-bottom: 10px;">📡 SQLite Backend Connection Tracer</div>
@@ -407,14 +784,14 @@ style/ClaudS4/            # Styles CSS séparés
                 </div>
                 
                 <div class="install-actions">
-                  <button class="install-button delete" onclick="deleteDatabase()">
-                    🗑️ Supprimer Base
+                  <button class="btn-generic" onclick="clearAllDatabaseData()">
+                    effacer le données
                   </button>
-                  <button class="install-button install" onclick="installFreshDatabase()">
-                    🏗️ Installation Complète
+                  <button class="btn-generic" onclick="installFreshDatabase()">
+                    Installation Complète
                   </button>
-                  <button class="install-button status" onclick="checkDatabaseStatus()">
-                    📊 Vérifier État
+                  <button class="btn-generic" onclick="checkDatabaseStatus()">
+                    Vérifier État
                   </button>
                 </div>
                 
@@ -445,43 +822,43 @@ style/ClaudS4/            # Styles CSS séparés
                 <div class="test-tag" id="test-connection-tag">
                   <span class="led_generique_petite collapsed" id="test-connection-led"></span>
                   <span class="test-label">Connexion SQLite</span>
-                  <button class="test-button" onclick="testSQLiteBackendConnectionUI()">🔗 Tester</button>
+                  <button class="btn-generic" onclick="testSQLiteBackendConnectionUI()">Tester</button>
                 </div>
                 
                 <!-- Tag: Test Base -->
                 <div class="test-tag" id="test-database-tag">
                   <span class="led_generique_petite collapsed" id="test-database-led"></span>
                   <span class="test-label">Base de données</span>
-                  <button class="test-button" onclick="testSQLiteBackendDatabase()">🗄️ Tester</button>
-                  <button class="test-button" onclick="createDatabaseUI()" style="background: rgba(34, 197, 94, 0.2); border-color: #22c55e; color: #22c55e;">🏗️ Installation Complète</button>
+                  <button class="btn-generic" onclick="testSQLiteBackendDatabase()">Tester</button>
+                  <button class="btn-generic" onclick="createDatabaseUI()">Installation Complète</button>
                 </div>
                 
                 <!-- Tag: Test Tables -->
                 <div class="test-tag" id="test-tables-tag">
                   <span class="led_generique_petite collapsed" id="test-tables-led"></span>
                   <span class="test-label">Tables (tirages)</span>
-                  <button class="test-button" onclick="testSQLiteBackendTables()">📊 Tester</button>
+                  <button class="btn-generic" onclick="testSQLiteBackendTables()">Tester</button>
                 </div>
                 
                 <!-- Tag: Test Insert -->
                 <div class="test-tag" id="test-insert-tag">
                   <span class="led_generique_petite collapsed" id="test-insert-led"></span>
                   <span class="test-label">Insert données</span>
-                  <button class="test-button" onclick="testSQLiteBackendInsert()">📝 Tester</button>
+                  <button class="btn-generic" onclick="testSQLiteBackendInsert()">Tester</button>
                 </div>
                 
                 <!-- Tag: Test Select -->
                 <div class="test-tag" id="test-select-tag">
                   <span class="led_generique_petite collapsed" id="test-select-led"></span>
                   <span class="test-label">Select données</span>
-                  <button class="test-button" onclick="testSQLiteBackendSelect()">📋 Tester</button>
+                  <button class="btn-generic" onclick="testSQLiteBackendSelect()">Tester</button>
                 </div>
                 
                 <!-- Tag: Effacer données -->
                 <div class="test-tag" id="test-clear-data-tag">
                   <span class="led_generique_petite collapsed" id="test-clear-data-led"></span>
                   <span class="test-label">Effacer données</span>
-                  <button class="test-button" onclick="clearAllDatabaseData()" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444;">🗑️ Effacer tout</button>
+                  <button class="btn-generic" onclick="clearAllDatabaseData()">Effacer tout</button>
                 </div>
                 
               </div>
@@ -890,13 +1267,13 @@ style/ClaudS4/            # Styles CSS séparés
           paginationHtml += '<div style="display: flex; gap: 10px; align-items: center; justify-content: center;">';
           
           if (page > 1) {
-            paginationHtml += `<button onclick="changePage(${page - 1})" style="padding: 5px 10px; background: var(--accent); color: var(--dark); border: none; border-radius: 3px; cursor: pointer;">← Précédent</button>`;
+            paginationHtml += `<button onclick="changePage(${page - 1})" class="btn-generic">Précédent</button>`;
           }
           
           paginationHtml += `<span>Page ${page} sur ${totalPages}</span>`;
           
           if (page < totalPages) {
-            paginationHtml += `<button onclick="changePage(${page + 1})" style="padding: 5px 10px; background: var(--accent); color: var(--dark); border: none; border-radius: 3px; cursor: pointer;">Suivant →</button>`;
+            paginationHtml += `<button onclick="changePage(${page + 1})" class="btn-generic">Suivant</button>`;
           }
           
           paginationHtml += '</div>';
@@ -1341,7 +1718,7 @@ style/ClaudS4/            # Styles CSS séparés
         // 3. Si non (ou force refresh) → scraper, afficher et mettre en base SQLite
         console.log('🌐 Aucune donnée valide en base SQLite, scraping nécessaire');
         updateBreadcrumb('loading-scrap');
-        await scrapSaveAndDisplaySQLite(selectedDate);
+        await scrapSaveAndDisplay(selectedDate);
       }
       
       // ========================================
@@ -2449,9 +2826,9 @@ style/ClaudS4/            # Styles CSS séparés
         container.innerHTML = '<p class="loading-message">🔄 Chargement de l\'historique depuis la base SQLite...</p>';
 
         try {
-          // Récupérer tous les tirages depuis l'API SQLite backend
-          console.log('🌐 Requête API SQLite pour l\'historique...');
-          const response = await fetch(`http://localhost:3001/api/tables/tirages`, {
+          // Récupérer tous les tirages AVEC LES GAINS depuis l'API SQLite backend
+          console.log('🌐 Requête API SQLite pour l\'historique avec gains...');
+          const response = await fetch(`http://localhost:3001/api/tables/all`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -2468,34 +2845,64 @@ style/ClaudS4/            # Styles CSS séparés
             throw new Error('Réponse API invalide ou données manquantes');
           }
 
-          const sqliteDraws = result.data;
-          console.log(`📊 ${sqliteDraws.length} tirages récupérés depuis SQLite`);
+          const joinedData = result.data;
+          console.log(`📊 ${joinedData.length} lignes tirages+gains récupérées depuis SQLite`);
 
-          if (sqliteDraws.length === 0) {
+          if (joinedData.length === 0) {
             container.innerHTML = '<p class="no-data-message">Aucun tirage en base de données SQLite. Effectuez d\'abord un scraping depuis la page Tirage.</p>';
             return;
           }
 
-          // Convertir les données SQLite au format attendu par createTirageTag()
-          const draws = sqliteDraws.map(sqliteDraw => {
-            // Convertir les chaînes en tableaux d'entiers
-            let numbers = sqliteDraw.numeros;
-            let stars = sqliteDraw.etoiles;
+          // Grouper les données par date de tirage (un tirage peut avoir plusieurs gains)
+          const groupedByDate = {};
+          
+          joinedData.forEach(row => {
+            const date = row.date;
             
-            if (typeof numbers === 'string') {
-              numbers = numbers.split(',').map(n => parseInt(n.trim()));
-            }
-            if (typeof stars === 'string') {
-              stars = stars.split(',').map(s => parseInt(s.trim()));
-            }
+            if (!groupedByDate[date]) {
+              groupedByDate[date] = {
+                date: date,
+                source: row.tirage_source || 'SQLite',
+                numbers: [],
+                stars: [],
+                gains: []
+              };
+              
+              // Traitement des numéros
+              if (row.numeros && typeof row.numeros === 'string' && row.numeros.trim() !== '') {
+                groupedByDate[date].numbers = row.numeros.split(',').map(num => parseInt(num.trim(), 10)).filter(num => !isNaN(num));
+              }
 
-            return {
-              date: sqliteDraw.date,
-              numbers: numbers,
-              stars: stars,
-              gains: [], // TODO: Récupérer les gains depuis la table gains si nécessaire
-              source: sqliteDraw.source || 'SQLite'
-            };
+              // Traitement des étoiles
+              if (row.etoiles && typeof row.etoiles === 'string' && row.etoiles.trim() !== '') {
+                groupedByDate[date].stars = row.etoiles.split(',').map(star => parseInt(star.trim(), 10)).filter(star => !isNaN(star));
+              }
+            }
+            
+            // Ajouter le gain s'il existe (peut être null pour les tirages sans gains)
+            if (row.rang && row.combinaison) {
+              groupedByDate[date].gains.push({
+                rang: row.combinaison,
+                gagnants: row.nombre_gagnants || 0,
+                gain: row.gain_unitaire || 'N/A',
+                rankLabel: row.combinaison,
+                winners: row.nombre_gagnants || 0,
+                amount: row.gain_unitaire || 'N/A'
+              });
+            }
+          });
+
+          console.log('🔧 Données groupées par date:', Object.keys(groupedByDate).length, 'tirages uniques');
+          
+          // Convertir en tableau et ajouter les logs de gains
+          const draws = Object.values(groupedByDate).map(draw => {
+            console.log(`💰 Tirage ${draw.date}: ${draw.numbers.length} numéros, ${draw.stars.length} étoiles, ${draw.gains.length} gains`);
+            if (draw.gains.length > 0) {
+              console.log(`   💰 Gains détectés:`, draw.gains.map(g => `${g.rang}: ${g.gain}`).join(', '));
+            } else {
+              console.log(`   ⚠️ Aucun gain trouvé pour ce tirage`);
+            }
+            return draw;
           });
 
           // Trier par date (plus récent en premier)
@@ -2525,6 +2932,7 @@ style/ClaudS4/            # Styles CSS séparés
           }
 
           console.log('✅ Historique SQLite affiché avec succès');
+          console.log('💰 Total gains chargés:', drawsToDisplay.reduce((total, draw) => total + draw.gains.length, 0));
 
         } catch (error) {
           console.error('❌ Erreur chargement historique SQLite:', error);
@@ -2733,6 +3141,548 @@ style/ClaudS4/            # Styles CSS séparés
         setTimeout(() => {
           loadHistoriqueFromDatabase();
         }, 100);
+      }
+
+      // === PAGE SCRAPING ===
+      
+      // Variables globales pour le scraping
+      let scrapingInProgress = false;
+      let scrapingAborted = false;
+      let scrapingStats = {
+        total: 0,
+        processed: 0,
+        success: 0,
+        errors: 0
+      };
+      let selectedSourceFile = null;
+      
+      // Basculer entre mode date unique et intervalle
+      function toggleScrapingMode() {
+        const mode = document.querySelector('input[name="scrapingMode"]:checked').value;
+        const singleControls = document.getElementById('singleDateControls');
+        const rangeControls = document.getElementById('rangeDateControls');
+        
+        if (mode === 'single') {
+          singleControls.style.display = 'flex';
+          rangeControls.style.display = 'none';
+          updateScrapingBreadcrumb('Mode: Date unique');
+        } else {
+          singleControls.style.display = 'none';
+          rangeControls.style.display = 'flex';
+          updateScrapingBreadcrumb('Mode: Intervalle de dates');
+        }
+      }
+      
+      // Changer la date de scraping (mode date unique)
+      function changeScrapingDate(delta) {
+        const dateInput = document.getElementById('scrapingDate');
+        const currentDate = new Date(dateInput.value);
+        currentDate.setDate(currentDate.getDate() + delta);
+        
+        // Limiter entre 2004-01-01 et aujourd'hui
+        const minDate = new Date('2004-01-01');
+        const maxDate = new Date();
+        
+        if (currentDate >= minDate && currentDate <= maxDate) {
+          dateInput.value = currentDate.toISOString().split('T')[0];
+          updateScrapingBreadcrumb(`Date sélectionnée: ${dateInput.value}`);
+        }
+      }
+      
+      // Mettre à jour le fil d'Ariane
+      function updateScrapingBreadcrumb(text) {
+        const breadcrumbText = document.getElementById('scrapingBreadcrumbText');
+        if (breadcrumbText) {
+          breadcrumbText.textContent = text;
+        }
+      }
+      
+
+      
+      // Lancer le scraping
+      async function startScraping() {
+        console.log('🎯 [MAIN] === DÉBUT startScraping() ===');
+        
+        if (scrapingInProgress) {
+          console.log('⚠️ [MAIN] Scraping déjà en cours, abandon');
+          alert('Un scraping est déjà en cours');
+          return;
+        }
+        
+        const mode = document.querySelector('input[name="scrapingMode"]:checked').value;
+        let dates = [];
+        
+        if (mode === 'single') {
+          dates = [document.getElementById('scrapingDate').value];
+        } else {
+          const fromDate = new Date(document.getElementById('scrapingDateFrom').value);
+          const toDate = new Date(document.getElementById('scrapingDateTo').value);
+          
+          const current = new Date(fromDate);
+          while (current <= toDate) {
+            const dayOfWeek = current.getDay();
+            if (dayOfWeek === 2 || dayOfWeek === 5) {
+              dates.push(current.toISOString().split('T')[0]);
+            }
+            current.setDate(current.getDate() + 1);
+          }
+        }
+        
+        console.log('📊 [MAIN] Dates générées:', dates);
+        console.log('📊 [MAIN] Nombre de dates:', dates.length);
+        
+        if (dates.length === 0) {
+          console.log('❌ [MAIN] Aucune date valide, abandon');
+          alert('Aucune date valide à scraper');
+          return;
+        }
+        
+        // Confirmer le lancement
+        console.log('❓ [MAIN] Demande confirmation utilisateur');
+        const confirm = window.confirm(`Lancer le scraping de ${dates.length} date(s) ?\nCela peut prendre du temps.`);
+        if (!confirm) {
+          console.log('❌ [MAIN] Utilisateur a annulé');
+          return;
+        }
+        console.log('✅ [MAIN] Utilisateur a confirmé');
+        
+        // Initialiser le scraping
+        scrapingInProgress = true;
+        scrapingAborted = false;
+        scrapingStats = {
+          total: dates.length,
+          processed: 0,
+          success: 0,
+          errors: 0
+        };
+        
+        // Afficher les sections de progression et résultats
+        document.getElementById('scrapingProgressSection').style.display = 'block';
+        document.getElementById('scrapingResultsSection').style.display = 'block';
+        
+        // Mettre à jour l'interface
+        document.getElementById('stopScrapingBtn').style.display = 'inline-block';
+        updateScrapingBreadcrumb(`Scraping en cours: 0/${dates.length}`);
+        
+        // Configuration
+        const delay = parseInt(document.getElementById('scrapingDelay').value);
+        const skipExisting = document.getElementById('skipExisting').checked;
+        
+        // Lancer le scraping
+        console.log(`🎯 [BATCH] === DÉBUT BOUCLE SCRAPPING ===`);
+        console.log(`🎯 [BATCH] Nombre de dates à traiter: ${dates.length}`);
+        console.log(`🎯 [BATCH] Configuration - Délai: ${delay}ms, Skip existing: ${skipExisting}`);
+        
+        for (let i = 0; i < dates.length && !scrapingAborted; i++) {
+          const date = dates[i];
+          console.log(`🔄 [BATCH] --- Traitement ${i+1}/${dates.length}: ${date} ---`);
+          
+          try {
+            addProgressLog(`📅 Scraping ${date}...`, 'info');
+            console.log(`🎯 [BATCH] === DÉBUT TRAITEMENT DATE ${date} (${i+1}/${dates.length}) ===`);
+            
+            // Vérifier si existe déjà (si option activée)
+            if (skipExisting) {
+              console.log(`🔍 [BATCH] Vérification existence en base pour ${date}`);
+              const existing = await checkDrawInSQLiteDatabase(date);
+              console.log(`📊 [BATCH] Résultat vérification:`, existing);
+              
+              if (existing && !isEmptyDrawSQLite(existing)) {
+                console.log(`⏭️ [BATCH] ${date} déjà en base, ignoré`);
+                addProgressLog(`⏭️ ${date} déjà en base, ignoré`, 'warning');
+                scrapingStats.processed++;
+                updateScrapingProgress();
+                continue;
+              } else {
+                console.log(`✅ [BATCH] ${date} pas en base ou vide, scrapping nécessaire`);
+              }
+            } else {
+              console.log(`🔄 [BATCH] Option skipExisting désactivée, scrapping direct pour ${date}`);
+            }
+            
+            // Effectuer le scraping (utiliser la stratégie Force de la page tirage)
+            console.log(`🚀 [BATCH] Lancement scrapForScrappingPage pour ${date}`);
+            const result = await scrapForScrappingPage(date);
+            console.log(`📊 [BATCH] Résultat scrapForScrappingPage:`, result);
+            
+            if (result.noDrawDate) {
+              console.log(`⭕ [BATCH] Date ${date} marquée comme "pas de tirage"`);
+              addProgressLog(`⭕ ${date} marqué comme "pas de tirage"`, 'warning');
+            } else {
+              console.log(`✅ [BATCH] Date ${date} scrapée avec succès`);
+              addProgressLog(`✅ ${date} scrapé avec succès`, 'success');
+            }
+            
+            scrapingStats.success++;
+            console.log(`📈 [BATCH] Stats mis à jour - Success: ${scrapingStats.success}`);
+            
+          } catch (error) {
+            console.error(`❌ [BATCH] === ERREUR POUR DATE ${date} ===`);
+            console.error(`❌ [BATCH] Message:`, error.message);
+            console.error(`❌ [BATCH] Stack:`, error.stack);
+            
+            scrapingStats.errors++;
+            addProgressLog(`❌ Erreur pour ${date}: ${error.message}`, 'error');
+            console.log(`📉 [BATCH] Stats mis à jour - Errors: ${scrapingStats.errors}`);
+          }
+          
+          scrapingStats.processed++;
+          updateScrapingProgress();
+          
+          // Délai entre les requêtes
+          if (i < dates.length - 1 && !scrapingAborted) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+          }
+        }
+        
+        // Finaliser
+        scrapingInProgress = false;
+        document.getElementById('stopScrapingBtn').style.display = 'none';
+        
+        if (scrapingAborted) {
+          updateScrapingBreadcrumb('Scraping interrompu');
+          addProgressLog('🛑 Scraping interrompu par l\'utilisateur', 'warning');
+        } else {
+          updateScrapingBreadcrumb(`Scraping terminé: ${scrapingStats.success}/${scrapingStats.total} réussis`);
+          addProgressLog('🎉 Scraping terminé avec succès', 'success');
+        }
+        
+        // Mettre à jour les résultats finaux
+        updateScrapingResults();
+      }
+      
+      // Arrêter le scraping
+      function stopScraping() {
+        scrapingAborted = true;
+        updateScrapingBreadcrumb('Arrêt du scraping...');
+      }
+      
+      // Mettre à jour la progression
+      function updateScrapingProgress() {
+        const percent = Math.round((scrapingStats.processed / scrapingStats.total) * 100);
+        
+        document.getElementById('progressPercent').textContent = `${percent}%`;
+        document.getElementById('progressProcessed').textContent = scrapingStats.processed;
+        document.getElementById('progressSuccess').textContent = scrapingStats.success;
+        document.getElementById('progressErrors').textContent = scrapingStats.errors;
+        document.getElementById('progressBar').style.width = `${percent}%`;
+        
+        updateScrapingBreadcrumb(`Scraping: ${scrapingStats.processed}/${scrapingStats.total} (${percent}%)`);
+      }
+      
+      // Ajouter un log de progression
+      function addProgressLog(message, type = 'info') {
+        const progressLog = document.getElementById('progressLog');
+        const timestamp = new Date().toLocaleTimeString();
+        
+        let className = '';
+        switch(type) {
+          case 'error': className = 'log-error'; break;
+          case 'success': className = 'log-success'; break;
+          case 'warning': className = 'log-warning'; break;
+          default: className = 'log-info'; break;
+        }
+        
+        const logEntry = document.createElement('div');
+        logEntry.className = `log-entry ${className}`;
+        logEntry.innerHTML = `<span class="log-time">[${timestamp}]</span> ${message}`;
+        
+        progressLog.appendChild(logEntry);
+        progressLog.scrollTop = progressLog.scrollHeight;
+      }
+      
+      // Mettre à jour les résultats finaux
+      function updateScrapingResults() {
+        const resultsStats = document.getElementById('scrapingResultsStats');
+        const successRate = Math.round((scrapingStats.success / scrapingStats.total) * 100);
+        
+        resultsStats.innerHTML = `
+          <div class="result-stat">
+            <span class="stat-label">Total traité:</span>
+            <span class="stat-value">${scrapingStats.processed}/${scrapingStats.total}</span>
+          </div>
+          <div class="result-stat">
+            <span class="stat-label">Réussis:</span>
+            <span class="stat-value success">${scrapingStats.success}</span>
+          </div>
+          <div class="result-stat">
+            <span class="stat-label">Erreurs:</span>
+            <span class="stat-value error">${scrapingStats.errors}</span>
+          </div>
+          <div class="result-stat">
+            <span class="stat-label">Taux de réussite:</span>
+            <span class="stat-value">${successRate}%</span>
+          </div>
+        `;
+      }
+      
+      // Fonctions de bascule des sections
+      function toggleScrapingConfig() {
+        toggleSection('configContent', 'configToggle', 'config-led');
+      }
+      
+
+      
+      function toggleScrapingProgress() {
+        toggleSection('progressContent', 'progressToggle', 'progress-led');
+      }
+      
+      function toggleScrapingResults() {
+        toggleSection('resultsContent', 'resultsToggle', 'results-led');
+      }
+      
+      // Fonction spécifique pour scraper et sauvegarder en SQLite (pour la page scrapping)
+      async function scrapForScrappingPage(selectedDate) {
+        console.log('🎯 [SCRAPPING] === DÉBUT SCRAPPING POUR:', selectedDate, '===');
+        
+        try {
+          // ÉTAPE 1: Scraping des données
+          console.log('🌐 [SCRAPPING] Étape 1: Lancement scraping pour', selectedDate);
+          const scrapedData = await scrapDrawFromLotteryExtreme(selectedDate);
+          console.log('📊 [SCRAPPING] Données scrappées reçues:', scrapedData);
+          
+          if (scrapedData && scrapedData.numbers && scrapedData.stars) {
+            console.log('✅ [SCRAPPING] Données valides détectées:');
+            console.log('   - Numéros:', scrapedData.numbers);
+            console.log('   - Étoiles:', scrapedData.stars);
+            console.log('   - Breakdown:', scrapedData.breakdown);
+            
+            // ÉTAPE 2: Préparation des données SQLite (tirages + gains)
+            console.log('🔧 [SCRAPPING] Étape 2: Préparation données pour SQLite');
+            
+            // Traitement des gains depuis breakdown
+            let gainsForSQLite = [];
+            if (scrapedData.breakdown && Array.isArray(scrapedData.breakdown)) {
+              console.log('💰 [SCRAPPING] Traitement des gains, breakdown trouvé:', scrapedData.breakdown.length, 'entrées');
+              gainsForSQLite = scrapedData.breakdown.map((item, index) => {
+                const gain = {
+                  rang: item.rankLabel || `Rang ${index + 1}`,
+                  combinaison: item.rankLabel || `${item.match || 'Inconnu'}`,
+                  nombre_gagnants: item.winners || 0,
+                  gain_unitaire: item.amount || '0 €'
+                };
+                console.log(`💰 [SCRAPPING] Gain ${index + 1}:`, gain);
+                return gain;
+              });
+              console.log('💰 [SCRAPPING] Total gains formatés:', gainsForSQLite.length);
+            } else {
+              console.log('⚠️ [SCRAPPING] Aucun breakdown trouvé, pas de gains à sauvegarder');
+            }
+            
+            const dataForSQLite = {
+              date: selectedDate,
+              numeros: scrapedData.numbers.join(','),
+              etoiles: scrapedData.stars.join(','),
+              source: 'scraped-bulk',
+              gains: gainsForSQLite
+            };
+            console.log('📋 [SCRAPPING] Données préparées pour SQLite:');
+            console.log('   - Date:', dataForSQLite.date);
+            console.log('   - Numéros:', dataForSQLite.numeros);
+            console.log('   - Étoiles:', dataForSQLite.etoiles);
+            console.log('   - Source:', dataForSQLite.source);
+            console.log('   - Gains:', dataForSQLite.gains.length, 'entrées');
+            console.log('   - Détail gains:', dataForSQLite.gains);
+            
+            // ÉTAPE 3: Test de connectivité API
+            console.log('🔍 [SCRAPPING] Étape 3: Test connectivité API backend...');
+            try {
+              const pingResponse = await fetch('http://localhost:3001/api/test-connection', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+              });
+              console.log('📡 [SCRAPPING] Test connectivité - Status:', pingResponse.status, pingResponse.statusText);
+            } catch (connectError) {
+              console.error('❌ [SCRAPPING] ERREUR CONNECTIVITÉ:', connectError.message);
+              throw new Error(`Backend inaccessible: ${connectError.message}`);
+            }
+            
+            // ÉTAPE 4: Sauvegarde en SQLite via API backend
+            console.log('💾 [SCRAPPING] Étape 4: Sauvegarde en SQLite via API POST');
+            console.log('📤 [SCRAPPING] URL:', 'http://localhost:3001/api/tirages');
+            console.log('📤 [SCRAPPING] Method: POST');
+            console.log('📤 [SCRAPPING] Headers:', { 'Content-Type': 'application/json' });
+            console.log('📤 [SCRAPPING] Body:', JSON.stringify(dataForSQLite));
+            
+            const response = await fetch('http://localhost:3001/api/tirages', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(dataForSQLite)
+            });
+            
+            console.log('📥 [SCRAPPING] Réponse API reçue:');
+            console.log('   - Status:', response.status);
+            console.log('   - StatusText:', response.statusText);
+            console.log('   - OK:', response.ok);
+            console.log('   - Headers:', [...response.headers.entries()]);
+            
+            if (!response.ok) {
+              const errorText = await response.text();
+              console.error('❌ [SCRAPPING] Erreur réponse API:', errorText);
+              throw new Error(`Erreur sauvegarde SQLite: ${response.status} ${response.statusText} - ${errorText}`);
+            }
+            
+            // ÉTAPE 5: Traitement de la réponse
+            console.log('🔍 [SCRAPPING] Étape 5: Traitement réponse API');
+            const responseText = await response.text();
+            console.log('📄 [SCRAPPING] Réponse brute:', responseText);
+            
+            let result;
+            try {
+              result = JSON.parse(responseText);
+              console.log('📊 [SCRAPPING] Réponse parsée:', result);
+            } catch (parseError) {
+              console.error('❌ [SCRAPPING] Erreur parsing réponse:', parseError.message);
+              throw new Error(`Réponse API invalide: ${responseText}`);
+            }
+            
+            if (!result.success) {
+              console.error('❌ [SCRAPPING] API retourne échec:', result);
+              throw new Error(`Erreur API SQLite: ${result.error || 'Inconnue'}`);
+            }
+            
+            console.log('🎉 [SCRAPPING] === SUCCÈS COMPLET ===');
+            console.log('💾 [SCRAPPING] Données sauvegardées en SQLite pour', selectedDate);
+            console.log('💾 [SCRAPPING] Tirage + ', gainsForSQLite.length, 'gains sauvegardés');
+            console.log('📊 [SCRAPPING] Résultat final:', result);
+            
+            return { success: true, data: scrapedData };
+            
+          } else {
+            console.error('❌ [SCRAPPING] Données invalides reçues:', scrapedData);
+            throw new Error(`Aucune donnée valide récupérée pour ${selectedDate}`);
+          }
+          
+        } catch (error) {
+          console.error('❌ [SCRAPPING] === ERREUR GLOBALE ===');
+          console.error('❌ [SCRAPPING] Date:', selectedDate);
+          console.error('❌ [SCRAPPING] Message:', error.message);
+          console.error('❌ [SCRAPPING] Stack:', error.stack);
+          
+          // Gestion spéciale des erreurs de validation
+          if (error.message === 'NOT_DRAW_DAY') {
+            console.log('⚠️ [SCRAPPING] Gestion: Pas un jour de tirage');
+            throw new Error(`${selectedDate} n'est pas un jour de tirage (mardi/vendredi)`);
+          } else if (error.message === 'FUTURE_DATE') {
+            console.log('⚠️ [SCRAPPING] Gestion: Date future');
+            throw new Error(`${selectedDate} est une date future`);
+          } else if (error.message === 'NO_DRAW_THIS_DATE') {
+            console.log('⚠️ [SCRAPPING] Gestion: Pas de tirage cette date');
+            
+            // Sauvegarder un tirage vide en SQLite pour marquer la date comme "pas de tirage"
+            try {
+              console.log('📝 [SCRAPPING] Tentative marquage "pas de tirage" en SQLite');
+              const emptyData = {
+                date: selectedDate,
+                numeros: '',
+                etoiles: '',
+                source: 'no-draw',
+                gains: []
+              };
+              console.log('📝 [SCRAPPING] Données vides pour SQLite:', emptyData);
+              
+              const response = await fetch('http://localhost:3001/api/tirages', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(emptyData)
+              });
+              
+              console.log('📝 [SCRAPPING] Réponse marquage vide:', response.status, response.statusText);
+              
+              if (response.ok) {
+                console.log('✅ [SCRAPPING] Marqué comme "pas de tirage" en SQLite pour', selectedDate);
+                return { success: true, noDrawDate: true };
+              } else {
+                const errorText = await response.text();
+                console.error('❌ [SCRAPPING] Erreur marquage vide:', errorText);
+              }
+            } catch (saveError) {
+              console.error('❌ [SCRAPPING] Exception marquage vide:', saveError.message);
+            }
+            
+            throw new Error(`Pas de tirage le ${selectedDate}`);
+          } else {
+            console.log('🔄 [SCRAPPING] Re-lancement erreur original');
+            throw error;
+          }
+        }
+      }
+      
+      // Fonction générique pour basculer les sections
+      function toggleSection(contentId, toggleId, ledId) {
+        const content = document.getElementById(contentId);
+        const toggle = document.getElementById(toggleId);
+        const led = document.getElementById(ledId);
+        
+        if (content.classList.contains('expanded')) {
+          content.classList.remove('expanded');
+          toggle.textContent = '▼';
+          toggle.classList.remove('expanded');
+          led.classList.remove('expanded');
+          led.classList.add('collapsed');
+        } else {
+          content.classList.add('expanded');
+          toggle.textContent = '▲';
+          toggle.classList.add('expanded');
+          led.classList.remove('collapsed');
+          led.classList.add('expanded');
+        }
+      }
+      
+      // Gestion du sélecteur de fichier source
+      function handleSourceFileSelect(event) {
+        const file = event.target.files[0];
+        const fileName = document.getElementById('sourceFileName');
+        
+        if (file) {
+          selectedSourceFile = file;
+          fileName.textContent = `📄 ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+          fileName.classList.add('selected');
+          
+          console.log('📁 [FICHIER] Fichier source sélectionné:', {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            lastModified: new Date(file.lastModified).toLocaleString()
+          });
+          
+          updateScrapingBreadcrumb(`📁 Fichier source: ${file.name} sélectionné`);
+          
+          // Optionnel: Prévisualiser le contenu si c'est un fichier texte/JSON
+          if (file.type === 'application/json' || file.type === 'text/plain' || file.name.endsWith('.json') || file.name.endsWith('.txt')) {
+            previewSourceFile(file);
+          }
+        } else {
+          selectedSourceFile = null;
+          fileName.textContent = 'Aucun fichier sélectionné';
+          fileName.classList.remove('selected');
+          updateScrapingBreadcrumb('Prêt pour le scraping');
+        }
+      }
+      
+      // Prévisualisation optionnelle du fichier source
+      function previewSourceFile(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            const content = e.target.result;
+            console.log('📄 [FICHIER] Aperçu du contenu (premiers 500 caractères):');
+            console.log(content.substring(0, 500) + (content.length > 500 ? '...' : ''));
+            
+            // Si c'est du JSON, valider la structure
+            if (file.name.endsWith('.json')) {
+              const jsonData = JSON.parse(content);
+              console.log('✅ [FICHIER] JSON valide détecté, structure:', Object.keys(jsonData));
+            }
+          } catch (error) {
+            console.warn('⚠️ [FICHIER] Erreur lecture fichier:', error.message);
+          }
+        };
+        reader.readAsText(file);
       }
 
       // === ARCHITECTURE - DOCUMENTATION PAGE ===
@@ -3055,8 +4005,12 @@ style/ClaudS4/            # Styles CSS séparés
       const originalShowSection = showSection;
       showSection = function(sectionName) {
         originalShowSection(sectionName);
-        if (sectionName === 'components') {
-          setTimeout(initializeArchitectureLEDs, 100);
+        if (sectionName === 'scraping') {
+          setTimeout(() => {
+            // Initialiser la page scraping
+            toggleScrapingMode(); // Configurer l'affichage initial
+            updateScrapingBreadcrumb('Mode: Date unique');
+          }, 100);
         }
         if (sectionName === 'admin-monitoring') {
           // Effacer le dump au chargement de la page monitoring

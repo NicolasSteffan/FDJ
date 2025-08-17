@@ -1,0 +1,5 @@
+---
+description: toujours mettre a jour go.bat si necessaire et toujours lancer go.bat en fin de reponse si necessaire 
+globs:
+alwaysApply: true
+---
