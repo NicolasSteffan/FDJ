@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic IA - FDJ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #ecf0f1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(44, 62, 80, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ecf0f1;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .test-section {
+            background: rgba(52, 73, 94, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #9b59b6;
+        }
+        
+        .test-section h3 {
+            color: #9b59b6;
+            margin-top: 0;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
+        }
+        
+        .result-box {
+            background: rgba(52, 73, 94, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            border: 1px solid #7f8c8d;
+        }
+        
+        .success { border-left: 4px solid #2ecc71; }
+        .error { border-left: 4px solid #e74c3c; }
+        .info { border-left: 4px solid #3498db; }
+        .warning { border-left: 4px solid #f39c12; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .logs-container {
+            background: rgba(26, 32, 44, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 2px solid #4a5568;
+        }
+        
+        .clear-logs {
+            background: #e74c3c;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 Diagnostic Réseau IA - Analyse des Erreurs</h1>
+        
+        <div class="grid">
+            <!-- Tests de connectivité -->
+            <div class="test-section">
+                <h3>🌐 Tests de Connectivité</h3>
+                <button onclick="testInternetConnection()">Test Internet</button>
+                <button onclick="testCORSPolicy()">Test CORS</button>
+                <button onclick="testDNSResolution()">Test DNS</button>
+                <button onclick="testHTTPSConnection()">Test HTTPS</button>
+                <div id="connectivity-result" class="result-box"></div>
+            </div>
+            
+            <!-- Tests API IA -->
+            <div class="test-section">
+                <h3>🤖 Tests API IA</h3>
+                <button onclick="testOpenAIAdvanced()">OpenAI Avancé</button>
+                <button onclick="testClaudeAdvanced()">Claude Avancé</button>
+                <button onclick="testMistralAdvanced()">Mistral Avancé</button>
+                <button onclick="testAllAPIs()">Test Toutes les APIs</button>
+                <div id="api-result" class="result-box"></div>
+            </div>
+            
+            <!-- Diagnostic environnement -->
+            <div class="test-section">
+                <h3>💻 Diagnostic Environnement</h3>
+                <button onclick="analyzeEnvironment()">Analyser Environnement</button>
+                <button onclick="testNetworkSpeed()">Test Vitesse Réseau</button>
+                <button onclick="checkBrowserSecurity()">Sécurité Navigateur</button>
+                <div id="environment-result" class="result-box"></div>
+            </div>
+            
+            <!-- Analyse des erreurs -->
+            <div class="test-section">
+                <h3>🔍 Analyse des Erreurs</h3>
+                <button onclick="simulateFailedFetch()">Simuler Failed to Fetch</button>
+                <button onclick="analyzeCORSError()">Analyser Erreur CORS</button>
+                <button onclick="testWithDifferentMethods()">Test Méthodes HTTP</button>
+                <button onclick="analyzeLogsAutomatically()" style="background: #e74c3c;">Analyse Auto Logs</button>
+                <div id="error-analysis-result" class="result-box"></div>
+            </div>
+        </div>
+        
+        <!-- Console de logs -->
+        <div class="logs-container">
+            <h3>📊 Console de Logs Détaillés</h3>
+            <button class="clear-logs" onclick="clearLogs()">Effacer Logs</button>
+            <button onclick="exportLogs()">Exporter Logs</button>
+            <div id="logs-console" class="result-box" style="max-height: 300px; background: #1a202c;"></div>
+        </div>
+    </div>
+
+    <script>
+        let diagnosticLogs = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toISOString();
+            const logEntry = `[${timestamp}] ${message}`;
+            diagnosticLogs.push(logEntry);
+            
+            const logsConsole = document.getElementById('logs-console');
+            logsConsole.textContent += logEntry + '\n';
+            logsConsole.scrollTop = logsConsole.scrollHeight;
+            
+            console.log(logEntry);
+        }
+        
+        function updateResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `result-box ${type}`;
+            log(`[${elementId}] ${message}`, type);
+        }
+        
+        // Tests de connectivité
+        async function testInternetConnection() {
+            updateResult('connectivity-result', 'Test de connexion internet...', 'info');
+            
+            const testUrls = [
+                'https://httpbin.org/get',
+                'https://jsonplaceholder.typicode.com/posts/1',
+                'https://api.github.com',
+                'https://www.google.com'
+            ];
+            
+            let results = 'RÉSULTATS TEST INTERNET:\n\n';
+            
+            for (const url of testUrls) {
+                try {
+                    const start = performance.now();
+                    const response = await fetch(url, { 
+                        method: 'GET',
+                        mode: 'cors',
+                        cache: 'no-cache'
+                    });
+                    const duration = Math.round(performance.now() - start);
+                    
+                    results += `✅ ${url}: ${response.status} (${duration}ms)\n`;
+                } catch (error) {
+                    results += `❌ ${url}: ${error.message}\n`;
+                }
+            }
+            
+            updateResult('connectivity-result', results, 'success');
+        }
+        
+        async function testCORSPolicy() {
+            updateResult('connectivity-result', 'Test des politiques CORS...', 'info');
+            
+            const corsTests = [
+                { url: 'https://api.openai.com/v1/models', name: 'OpenAI' },
+                { url: 'https://api.anthropic.com/v1/models', name: 'Anthropic' },
+                { url: 'https://api.mistral.ai/v1/models', name: 'Mistral' }
+            ];
+            
+            let results = 'RÉSULTATS TEST CORS:\n\n';
+            
+            for (const test of corsTests) {
+                try {
+                    const response = await fetch(test.url, {
+                        method: 'OPTIONS',
+                        mode: 'cors'
+                    });
+                    results += `✅ ${test.name}: CORS autorisé\n`;
+                } catch (error) {
+                    if (error.message.includes('CORS')) {
+                        results += `❌ ${test.name}: Blocage CORS - ${error.message}\n`;
+                    } else {
+                        results += `🔶 ${test.name}: ${error.message}\n`;
+                    }
+                }
+            }
+            
+            updateResult('connectivity-result', results, 'warning');
+        }
+        
+        async function testDNSResolution() {
+            updateResult('connectivity-result', 'Test de résolution DNS...', 'info');
+            
+            const domains = [
+                'api.openai.com',
+                'api.anthropic.com', 
+                'api.mistral.ai',
+                'httpbin.org'
+            ];
+            
+            let results = 'RÉSULTATS TEST DNS:\n\n';
+            
+            for (const domain of domains) {
+                try {
+                    const start = performance.now();
+                    await fetch(`https://${domain}`, { method: 'HEAD', mode: 'no-cors' });
+                    const duration = Math.round(performance.now() - start);
+                    results += `✅ ${domain}: Résolu (${duration}ms)\n`;
+                } catch (error) {
+                    results += `❌ ${domain}: ${error.message}\n`;
+                }
+            }
+            
+            updateResult('connectivity-result', results, 'info');
+        }
+        
+        async function testHTTPSConnection() {
+            updateResult('connectivity-result', 'Test des connexions HTTPS...', 'info');
+            
+            let results = 'DIAGNOSTIC HTTPS:\n\n';
+            results += `Protocol actuel: ${window.location.protocol}\n`;
+            results += `Host actuel: ${window.location.host}\n`;
+            results += `Secure context: ${window.isSecureContext}\n\n`;
+            
+            // Test TLS
+            try {
+                const response = await fetch('https://badssl.com/api/', { method: 'GET' });
+                results += `✅ TLS/SSL: Fonctionnel\n`;
+            } catch (error) {
+                results += `❌ TLS/SSL: ${error.message}\n`;
+            }
+            
+            updateResult('connectivity-result', results, 'info');
+        }
+        
+        // Tests API avancés
+        async function testOpenAIAdvanced() {
+            updateResult('api-result', 'Test OpenAI avancé...', 'info');
+            
+            const apiKey = localStorage.getItem('openai_api_key');
+            if (!apiKey) {
+                updateResult('api-result', 'Aucune clé API OpenAI sauvegardée', 'error');
+                return;
+            }
+            
+            let results = 'TEST OPENAI AVANCÉ:\n\n';
+            
+            // Test 1: Modèles disponibles
+            try {
+                const modelsResponse = await fetch('https://api.openai.com/v1/models', {
+                    headers: { 'Authorization': `Bearer ${apiKey}` }
+                });
+                results += `✅ Liste modèles: ${modelsResponse.status}\n`;
+            } catch (error) {
+                results += `❌ Liste modèles: ${error.message}\n`;
+            }
+            
+            // Test 2: Chat completion simple
+            try {
+                const chatResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [{ role: 'user', content: 'Test' }],
+                        max_tokens: 5
+                    })
+                });
+                results += `✅ Chat completion: ${chatResponse.status}\n`;
+            } catch (error) {
+                results += `❌ Chat completion: ${error.message}\n`;
+            }
+            
+            updateResult('api-result', results, 'success');
+        }
+        
+        async function simulateFailedFetch() {
+            updateResult('error-analysis-result', 'Simulation Failed to Fetch...', 'info');
+            
+            let results = 'SIMULATION ERREURS FAILED TO FETCH:\n\n';
+            
+            // Test 1: URL inexistante
+            try {
+                await fetch('https://nonexistent-domain-12345.com/api');
+            } catch (error) {
+                results += `Test 1 - URL inexistante:\n`;
+                results += `  Type: ${error.name}\n`;
+                results += `  Message: ${error.message}\n\n`;
+            }
+            
+            // Test 2: Port fermé
+            try {
+                await fetch('https://httpbin.org:9999/get');
+            } catch (error) {
+                results += `Test 2 - Port fermé:\n`;
+                results += `  Type: ${error.name}\n`;
+                results += `  Message: ${error.message}\n\n`;
+            }
+            
+            // Test 3: Timeout simulé
+            try {
+                const controller = new AbortController();
+                setTimeout(() => controller.abort(), 100);
+                await fetch('https://httpbin.org/delay/5', { signal: controller.signal });
+            } catch (error) {
+                results += `Test 3 - Timeout:\n`;
+                results += `  Type: ${error.name}\n`;
+                results += `  Message: ${error.message}\n\n`;
+            }
+            
+            updateResult('error-analysis-result', results, 'warning');
+        }
+        
+        async function analyzeEnvironment() {
+            updateResult('environment-result', 'Analyse de l\'environnement...', 'info');
+            
+            let results = 'DIAGNOSTIC ENVIRONNEMENT COMPLET:\n\n';
+            
+            // Informations navigateur
+            results += `NAVIGATEUR:\n`;
+            results += `  User Agent: ${navigator.userAgent}\n`;
+            results += `  Plateforme: ${navigator.platform}\n`;
+            results += `  Langue: ${navigator.language}\n`;
+            results += `  Online: ${navigator.onLine}\n`;
+            results += `  Cookies activés: ${navigator.cookieEnabled}\n\n`;
+            
+            // Informations réseau
+            results += `RÉSEAU:\n`;
+            results += `  Protocol: ${window.location.protocol}\n`;
+            results += `  Host: ${window.location.host}\n`;
+            results += `  Port: ${window.location.port || 'défaut'}\n`;
+            results += `  Secure context: ${window.isSecureContext}\n\n`;
+            
+            // Test des APIs web
+            results += `APIS WEB DISPONIBLES:\n`;
+            results += `  Fetch API: ${typeof fetch !== 'undefined'}\n`;
+            results += `  Service Workers: ${typeof navigator.serviceWorker !== 'undefined'}\n`;
+            results += `  Local Storage: ${typeof localStorage !== 'undefined'}\n`;
+            results += `  Session Storage: ${typeof sessionStorage !== 'undefined'}\n\n`;
+            
+            // Informations de performance
+            if (typeof performance !== 'undefined') {
+                results += `PERFORMANCE:\n`;
+                results += `  Navigation type: ${performance.navigation?.type || 'N/A'}\n`;
+                results += `  Mémoire JS: ${performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1024 / 1024) + 'MB' : 'N/A'}\n`;
+            }
+            
+            // Diagnostic des extensions navigateur
+            results += `\nEXTENSIONS DÉTECTÉES:\n`;
+            const extensionTests = [
+                { name: 'AdBlock', test: () => typeof window.adblock !== 'undefined' },
+                { name: 'uBlock Origin', test: () => typeof window.uBO_webext !== 'undefined' },
+                { name: 'Privacy Badger', test: () => typeof window.PRIVACY_BADGER !== 'undefined' },
+                { name: 'Ghostery', test: () => typeof window.Ghostery !== 'undefined' },
+                { name: 'NoScript', test: () => typeof window.noscriptAllowedMimeRegExp !== 'undefined' }
+            ];
+            
+            extensionTests.forEach(ext => {
+                try {
+                    const detected = ext.test();
+                    results += `  ${ext.name}: ${detected ? '🚫 DÉTECTÉ (peut bloquer)' : '✅ Non détecté'}\n`;
+                } catch (e) {
+                    results += `  ${ext.name}: ❓ Inconnu\n`;
+                }
+            });
+            
+            updateResult('environment-result', results, 'info');
+        }
+        
+        // Nouvelle fonction d'analyse automatique des logs
+        async function analyzeLogsAutomatically() {
+            updateResult('error-analysis-result', 'Analyse automatique des logs...', 'info');
+            
+            let analysis = 'ANALYSE AUTOMATIQUE DES LOGS:\n\n';
+            
+            // Analyser les patterns d'erreur dans les logs
+            const errorPatterns = [
+                { pattern: /Failed to fetch/i, 
+                  description: 'Erreur réseau générique',
+                  solutions: ['Vérifier connexion internet', 'Désactiver firewall temporairement', 'Essayer navigation privée'] },
+                  
+                { pattern: /CORS policy/i, 
+                  description: 'Blocage politique CORS',
+                  solutions: ['Utiliser un proxy CORS', 'Configurer serveur backend', 'Extensions navigateur'] },
+                  
+                { pattern: /TypeError.*network/i, 
+                  description: 'Erreur type réseau',
+                  solutions: ['Vérifier DNS', 'Redémarrer navigateur', 'Vider cache'] },
+                  
+                { pattern: /Status.*40[0-9]/i, 
+                  description: 'Erreur client HTTP 4xx',
+                  solutions: ['Vérifier clé API', 'Vérifier format requête', 'Permissions insuffisantes'] },
+                  
+                { pattern: /Status.*50[0-9]/i, 
+                  description: 'Erreur serveur HTTP 5xx',
+                  solutions: ['Serveur surchargé', 'Réessayer plus tard', 'API temporairement indisponible'] }
+            ];
+            
+            // Chercher dans les logs
+            let foundErrors = [];
+            diagnosticLogs.forEach((logEntry, index) => {
+                errorPatterns.forEach(pattern => {
+                    if (pattern.pattern.test(logEntry)) {
+                        foundErrors.push({
+                            line: index + 1,
+                            log: logEntry,
+                            pattern: pattern,
+                            timestamp: logEntry.match(/\[(.*?)\]/)?.[1] || 'N/A'
+                        });
+                    }
+                });
+            });
+            
+            if (foundErrors.length === 0) {
+                analysis += '✅ Aucune erreur détectée dans les logs actuels.\n';
+                analysis += 'Effectuez un test de connexion IA pour générer des logs.\n\n';
+            } else {
+                analysis += `❌ ${foundErrors.length} erreur(s) détectée(s):\n\n`;
+                
+                foundErrors.forEach((error, i) => {
+                    analysis += `ERREUR ${i + 1}:\n`;
+                    analysis += `  Ligne: ${error.line}\n`;
+                    analysis += `  Heure: ${error.timestamp}\n`;
+                    analysis += `  Type: ${error.pattern.description}\n`;
+                    analysis += `  Message: ${error.log.substring(0, 100)}...\n`;
+                    analysis += `  Solutions recommandées:\n`;
+                    error.pattern.solutions.forEach(sol => {
+                        analysis += `    - ${sol}\n`;
+                    });
+                    analysis += '\n';
+                });
+            }
+            
+            // Diagnostic spécifique localhost
+            if (window.location.protocol === 'http:') {
+                analysis += '⚠️  PROBLÈME DÉTECTÉ - HTTP sur localhost:\n';
+                analysis += 'Les APIs IA modernes exigent HTTPS pour des raisons de sécurité.\n';
+                analysis += 'Solutions:\n';
+                analysis += '- Utiliser un proxy HTTPS\n';
+                analysis += '- Configurer certificat SSL local\n';
+                analysis += '- Utiliser ngrok ou similar\n\n';
+            }
+            
+            // Test de connectivité en temps réel
+            analysis += 'TEST CONNECTIVITÉ EN TEMPS RÉEL:\n';
+            try {
+                const testStart = performance.now();
+                await fetch('https://httpbin.org/get', { method: 'GET', mode: 'cors' });
+                const testDuration = Math.round(performance.now() - testStart);
+                analysis += `✅ Internet OK (${testDuration}ms)\n`;
+            } catch (e) {
+                analysis += `❌ Internet ÉCHEC: ${e.message}\n`;
+            }
+            
+            updateResult('error-analysis-result', analysis, foundErrors.length > 0 ? 'error' : 'success');
+        }
+        
+        async function clearLogs() {
+            diagnosticLogs = [];
+            document.getElementById('logs-console').textContent = '';
+        }
+        
+        function exportLogs() {
+            const blob = new Blob([diagnosticLogs.join('\n')], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `diagnostic-ia-logs-${new Date().toISOString().slice(0, 19)}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Fonctions d'analyse manquantes
+        async function analyzeCORSError() {
+            updateResult('error-analysis-result', 'Analyse des erreurs CORS...', 'info');
+            
+            let results = 'ANALYSE ERREURS CORS:\n\n';
+            
+            const corsTests = [
+                { url: 'https://api.openai.com/v1/models', name: 'OpenAI', method: 'GET' },
+                { url: 'https://api.anthropic.com/v1/messages', name: 'Anthropic', method: 'POST' },
+                { url: 'https://api.mistral.ai/v1/models', name: 'Mistral', method: 'GET' }
+            ];
+            
+            for (const test of corsTests) {
+                try {
+                    const response = await fetch(test.url, {
+                        method: 'OPTIONS',
+                        mode: 'cors',
+                        headers: {
+                            'Access-Control-Request-Method': test.method,
+                            'Access-Control-Request-Headers': 'authorization,content-type'
+                        }
+                    });
+                    results += `✅ ${test.name}: CORS préflight OK (${response.status})\n`;
+                } catch (error) {
+                    results += `❌ ${test.name}: CORS bloqué - ${error.message}\n`;
+                    if (error.message.includes('CORS')) {
+                        results += `   Solution: Utiliser un proxy CORS ou backend intermédiaire\n`;
+                    }
+                }
+            }
+            
+            updateResult('error-analysis-result', results, 'warning');
+        }
+        
+        async function testWithDifferentMethods() {
+            updateResult('error-analysis-result', 'Test des méthodes HTTP...', 'info');
+            
+            let results = 'TEST MÉTHODES HTTP:\n\n';
+            const testUrl = 'https://httpbin.org';
+            
+            const methods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'];
+            
+            for (const method of methods) {
+                try {
+                    const response = await fetch(`${testUrl}/${method.toLowerCase()}`, {
+                        method: method,
+                        mode: 'cors',
+                        headers: method === 'POST' || method === 'PUT' ? { 'Content-Type': 'application/json' } : {},
+                        body: method === 'POST' || method === 'PUT' ? JSON.stringify({ test: 'data' }) : undefined
+                    });
+                    results += `✅ ${method}: ${response.status} ${response.statusText}\n`;
+                } catch (error) {
+                    results += `❌ ${method}: ${error.message}\n`;
+                }
+            }
+            
+            updateResult('error-analysis-result', results, 'info');
+        }
+        
+        // Auto-start basic diagnostics
+        window.addEventListener('load', () => {
+            log('🔬 Page de diagnostic chargée');
+            log('🌐 Début analyse automatique...');
+            analyzeEnvironment();
+            
+            // Auto-analyse des logs après 2 secondes
+            setTimeout(() => {
+                analyzeLogsAutomatically();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -339,6 +339,32 @@
         font-weight: bold;
         margin: 0 8px;
       }
+
+      /* Styles Configuration IA */
+      .config-group {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .config-group h4 {
+        color: #ecf0f1;
+        margin: 0 0 10px 0;
+        font-size: 16px;
+      }
+      
+      .api-key-container input {
+        background: rgba(155, 89, 182, 0.1) !important;
+        border: 1px solid rgba(155, 89, 182, 0.3) !important;
+        color: #ecf0f1 !important;
+      }
+      
+      .api-key-container input:focus {
+        border-color: #9b59b6 !important;
+        outline: none;
+        box-shadow: 0 0 5px rgba(155, 89, 182, 0.3);
+      }
       
       /* Tous les styles CSS externalisés - BIBLE.MD CONFORME RÈGLE 3 */
       /* - Gains et tableaux → tirage-components.css et lottery-components.css */
@@ -366,8 +392,7 @@
           <li>
             <span class="menu-head">IA</span>
             <ul class="submenu">
-              <li><a href="#" onclick="showSection('status')">Prédictions</a></li>
-              <li><a href="#" onclick="showSection('status')">Analyse</a></li>
+              <li><a href="#" onclick="showSection('ia-config')">Configuration</a></li>
             </ul>
           </li>
           <li>
@@ -756,6 +781,219 @@
         </div>
       </section>
 
+      <!-- Section Configuration IA -->
+      <section id="ia-config" class="section hidden">
+        <h1><span class="tirage-led"></span> Configuration IA</h1>
+
+        <!-- Section OpenAI/ChatGPT -->
+        <div class="gains-section tirage-tag collapsed" id="openai-section">
+          <div class="gains-header tirage-tag-header" onclick="toggleTirageTag('openai-section')">
+            <h3><span class="led_generique_petite collapsed" id="openai-led"></span>OpenAI / ChatGPT</h3>
+            <span class="tirage-expand-arrow">▼</span>
+          </div>
+          <div class="tirage-tag-content" id="openaiContent">
+            
+            <!-- Clé API -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Clé API</h4>
+              <div class="api-key-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <input type="password" id="openaiApiKey" placeholder="sk-..." 
+                       style="flex: 1; padding: 8px; border: 1px solid #9b59b6; border-radius: 5px; background: rgba(155, 89, 182, 0.1); color: #ecf0f1;"
+                       onchange="saveApiKey('openai', 'openaiApiKey')"
+                       oninput="saveApiKey('openai', 'openaiApiKey')">
+                <button onclick="toggleApiKeyVisibility('openaiApiKey')" class="btn-generic" style="min-width: 80px;">
+                  Voir
+                </button>
+              </div>
+              <p style="font-size: 12px; color: #95a5a6; margin-bottom: 15px;">
+                Obtenez votre clé API sur <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #3498db;">platform.openai.com</a>
+              </p>
+            </div>
+
+            <!-- Configuration -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Configuration</h4>
+              <div>
+                <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle:</label>
+                <select id="openaiModel" class="btn-generic" style="width: 100%; text-align: left;" 
+                        onchange="saveApiModel('openai', this.value)">
+                  <option value="gpt-4o">GPT-4o (Recommandé)</option>
+                  <option value="gpt-4o-mini">GPT-4o Mini</option>
+                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Test de connexion -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Test de Connexion</h4>
+              <button onclick="testOpenAIConnection()" class="btn-generic" style="margin-bottom: 10px;">
+                Tester la Connexion
+              </button>
+              
+              <!-- Zone de test API -->
+              <div style="margin-top: 15px; padding: 10px; border: 1px solid #444; border-radius: 5px; background: rgba(0,0,0,0.2);">
+                <label for="openaiTestInput" style="display: block; margin-bottom: 5px; color: #fff;">Question de test :</label>
+                <textarea id="openaiTestInput" placeholder="Entrez votre question pour tester l'API OpenAI..." style="width: 100%; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical;">Quel est le 1er ministre de la France ?</textarea>
+                
+                <button onclick="sendOpenAITestQuestion()" class="btn-generic" style="margin-top: 10px; margin-bottom: 10px;">
+                  Envoi
+                </button>
+                
+                <label for="openaiTestResponse" style="display: block; margin-bottom: 5px; color: #fff;">Réponse :</label>
+                <div id="openaiTestResponse" style="width: 100%; min-height: 100px; max-height: 300px; padding: 10px; border: 1px solid #666; border-radius: 4px; background: #1a1a1a; color: #fff; overflow-y: auto; font-family: monospace; font-size: 12px; white-space: pre-wrap;">Aucune réponse pour le moment...</div>
+              </div>
+              
+              <div id="openaiTestResult" style="padding: 10px; border-radius: 5px; margin-top: 10px; display: none;"></div>
+            </div>
+
+
+
+          </div>
+        </div>
+
+        <!-- Section Claude/Anthropic -->
+        <div class="gains-section tirage-tag collapsed" id="claude-section">
+          <div class="gains-header tirage-tag-header" onclick="toggleTirageTag('claude-section')">
+            <h3><span class="led_generique_petite collapsed" id="claude-led"></span>Claude / Anthropic</h3>
+            <span class="tirage-expand-arrow">▼</span>
+          </div>
+          <div class="tirage-tag-content" id="claudeContent">
+            
+            <!-- Clé API -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Clé API</h4>
+              <div class="api-key-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <input type="password" id="claudeApiKey" placeholder="sk-ant-..." 
+                       style="flex: 1; padding: 8px; border: 1px solid #9b59b6; border-radius: 5px; background: rgba(155, 89, 182, 0.1); color: #ecf0f1;"
+                       onchange="saveApiKey('claude', 'claudeApiKey')"
+                       oninput="saveApiKey('claude', 'claudeApiKey')">
+                <button onclick="toggleApiKeyVisibility('claudeApiKey')" class="btn-generic" style="min-width: 80px;">
+                  Voir
+                </button>
+              </div>
+              <p style="font-size: 12px; color: #95a5a6; margin-bottom: 15px;">
+                Obtenez votre clé API sur <a href="https://console.anthropic.com/" target="_blank" style="color: #3498db;">console.anthropic.com</a>
+              </p>
+            </div>
+
+            <!-- Configuration -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Configuration</h4>
+              <div>
+                <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle:</label>
+                <select id="claudeModel" class="btn-generic" style="width: 100%; text-align: left;"
+                        onchange="saveApiModel('claude', this.value)">
+                  <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet (Recommandé)</option>
+                  <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</option>
+                  <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Test de connexion -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Test de Connexion</h4>
+              <button onclick="testClaudeConnection()" class="btn-generic" style="margin-bottom: 10px;">
+                Tester la Connexion
+              </button>
+              
+              <!-- Zone de test API -->
+              <div style="margin-top: 15px; padding: 10px; border: 1px solid #444; border-radius: 5px; background: rgba(0,0,0,0.2);">
+                <label for="claudeTestInput" style="display: block; margin-bottom: 5px; color: #fff;">Question de test :</label>
+                <textarea id="claudeTestInput" placeholder="Entrez votre question pour tester l'API Claude..." style="width: 100%; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical;">Quel est le 1er ministre de la France ?</textarea>
+                
+                <button onclick="sendClaudeTestQuestion()" class="btn-generic" style="margin-top: 10px; margin-bottom: 10px;">
+                  Envoi
+                </button>
+                
+                <label for="claudeTestResponse" style="display: block; margin-bottom: 5px; color: #fff;">Réponse :</label>
+                <div id="claudeTestResponse" style="width: 100%; min-height: 100px; max-height: 300px; padding: 10px; border: 1px solid #666; border-radius: 4px; background: #1a1a1a; color: #fff; overflow-y: auto; font-family: monospace; font-size: 12px; white-space: pre-wrap;">Aucune réponse pour le moment...</div>
+              </div>
+              
+              <div id="claudeTestResult" style="padding: 10px; border-radius: 5px; margin-top: 10px; display: none;"></div>
+            </div>
+
+
+
+          </div>
+        </div>
+
+        <!-- Section Mistral AI -->
+        <div class="gains-section tirage-tag collapsed" id="mistral-section">
+          <div class="gains-header tirage-tag-header" onclick="toggleTirageTag('mistral-section')">
+            <h3><span class="led_generique_petite collapsed" id="mistral-led"></span>Mistral AI</h3>
+            <span class="tirage-expand-arrow">▼</span>
+          </div>
+          <div class="tirage-tag-content" id="mistralContent">
+            
+            <!-- Clé API -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Clé API</h4>
+              <div class="api-key-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <input type="password" id="mistralApiKey" placeholder="..." 
+                       style="flex: 1; padding: 8px; border: 1px solid #9b59b6; border-radius: 5px; background: rgba(155, 89, 182, 0.1); color: #ecf0f1;"
+                       onchange="saveApiKey('mistral', 'mistralApiKey')"
+                       oninput="saveApiKey('mistral', 'mistralApiKey')">
+                <button onclick="toggleApiKeyVisibility('mistralApiKey')" class="btn-generic" style="min-width: 80px;">
+                  Voir
+                </button>
+              </div>
+              <p style="font-size: 12px; color: #95a5a6; margin-bottom: 15px;">
+                Obtenez votre clé API sur <a href="https://console.mistral.ai/" target="_blank" style="color: #3498db;">console.mistral.ai</a>
+              </p>
+            </div>
+
+            <!-- Configuration -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Configuration</h4>
+              <div>
+                <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle:</label>
+                <select id="mistralModel" class="btn-generic" style="width: 100%; text-align: left;"
+                        onchange="saveApiModel('mistral', this.value)">
+                  <option value="mistral-small-latest">Mistral Small</option>
+                  <option value="pixtral-12b-2409">Magistral Small</option>
+                  <option value="mistral-3b-latest">Mistral 3B</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Test de connexion -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Test de Connexion</h4>
+              <button onclick="testMistralConnection()" class="btn-generic" style="margin-bottom: 10px;">
+                Tester la Connexion
+              </button>
+              
+              <!-- Zone de test API -->
+              <div style="margin-top: 15px; padding: 10px; border: 1px solid #444; border-radius: 5px; background: rgba(0,0,0,0.2);">
+                <label for="mistralTestInput" style="display: block; margin-bottom: 5px; color: #fff;">Question de test :</label>
+                <textarea id="mistralTestInput" placeholder="Entrez votre question pour tester l'API Mistral..." style="width: 100%; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical;">Quel est le 1er ministre de la France ?</textarea>
+                
+                <button onclick="sendMistralTestQuestion()" class="btn-generic" style="margin-top: 10px; margin-bottom: 10px;">
+                  Envoi
+                </button>
+                
+                <label for="mistralTestResponse" style="display: block; margin-bottom: 5px; color: #fff;">Réponse :</label>
+                <div id="mistralTestResponse" style="width: 100%; min-height: 100px; max-height: 300px; padding: 10px; border: 1px solid #666; border-radius: 4px; background: #1a1a1a; color: #fff; overflow-y: auto; font-family: monospace; font-size: 12px; white-space: pre-wrap;">Aucune réponse pour le moment...</div>
+              </div>
+              
+              <div id="mistralTestResult" style="padding: 10px; border-radius: 5px; margin-top: 10px; display: none;"></div>
+            </div>
+
+
+
+          </div>
+        </div>
+
+        <!-- Statut général -->
+        <div class="status" style="margin-top: 20px;">
+          <p><strong>Information :</strong> Les clés API sont stockées localement dans votre navigateur et ne sont jamais transmises à nos serveurs.</p>
+          <p><strong>Sécurité :</strong> Vos données restent privées et les appels API sont effectués directement depuis votre navigateur.</p>
+        </div>
+
+      </section>
+
       <!-- Section Admin - Diagnostic Base -->
       <section id="admin-diagnostic" class="section hidden">
         <h1>🔍 Admin - Diagnostic Base de Données</h1>
@@ -808,13 +1046,13 @@
         </div>
 
         <!-- Section 2: SQLite Backend - Connexion & Tests -->
-        <div class="tirage-tag expanded" id="sqlite-backend-main-tag">
+        <div class="tirage-tag collapsed" id="sqlite-backend-main-tag">
           <div class="tirage-tag-header" onclick="toggleTirageTag('sqlite-backend-main-tag')">
             <h2>
-              <span class="led_generique_petite expanded" id="sqlite-backend-main-led"></span>
+              <span class="led_generique_petite collapsed" id="sqlite-backend-main-led"></span>
               SQLite Backend
             </h2>
-            <span class="tirage-expand-arrow">▲</span>
+            <span class="tirage-expand-arrow">▼</span>
           </div>
           <div class="tirage-tag-content">
 
@@ -928,13 +1166,13 @@
         </div>
 
         <!-- Section 3: Monitoring Tables -->
-        <div class="tirage-tag expanded" id="sqlite-monitoring-main-tag">
+        <div class="tirage-tag collapsed" id="sqlite-monitoring-main-tag">
           <div class="tirage-tag-header" onclick="toggleTirageTag('sqlite-monitoring-main-tag')">
             <h2>
-              <span class="led_generique_petite expanded" id="sqlite-monitoring-main-led"></span>
+              <span class="led_generique_petite collapsed" id="sqlite-monitoring-main-led"></span>
               Monitoring Tables
             </h2>
-            <span class="tirage-expand-arrow">▲</span>
+            <span class="tirage-expand-arrow">▼</span>
           </div>
           <div class="tirage-tag-content">
             <!-- Contrôles de sélection -->
@@ -1393,13 +1631,17 @@
       function initializeMonitoringLEDs() {
         console.log('🔧 Initialisation des LEDs Admin Monitoring');
         
-        // LEDs des sections principales (SQLite)
-        const mainLeds = ['sqlite-main-led'];
-        mainLeds.forEach(ledId => {
-          const led = document.getElementById(ledId);
+        // LEDs des sections principales (SQLite) - Maintenant collapsed par défaut
+        const mainLeds = [
+          {id: 'sqlite-dump-main-led', defaultState: 'collapsed'},
+          {id: 'sqlite-backend-main-led', defaultState: 'collapsed'},
+          {id: 'sqlite-monitoring-main-led', defaultState: 'collapsed'}
+        ];
+        mainLeds.forEach(ledInfo => {
+          const led = document.getElementById(ledInfo.id);
           if (led) {
-            led.classList.remove('collapsed');
-            led.classList.add('expanded');
+            led.classList.remove('collapsed', 'expanded');
+            led.classList.add(ledInfo.defaultState);
           }
         });
         
@@ -1407,10 +1649,9 @@
         const subLeds = [
           {id: 'sqlite-install-led', defaultState: 'collapsed'},
           {id: 'sqlite-persistance-led', defaultState: 'collapsed'},
-          {id: 'sqlite-dump-led', defaultState: 'expanded'},
+          {id: 'sqlite-dump-led', defaultState: 'collapsed'},
           {id: 'sqlite-test-led', defaultState: 'collapsed'},
-          {id: 'sqlite-monitoring-led', defaultState: 'collapsed'},
-          {id: 'localstorage-monitoring-led', defaultState: 'expanded'}
+          {id: 'sqlite-monitoring-led', defaultState: 'collapsed'}
         ];
         
         subLeds.forEach(ledInfo => {
@@ -4261,6 +4502,972 @@
       };
 
       // Initialisation des LEDs au chargement de la page
+      // === FONCTIONS CONFIGURATION IA ===
+      
+      // Variables globales supprimées - gestion via toggleSection générique
+      
+      // Sections IA maintenant gérées par toggleTirageTag() générique
+
+      // Basculer visibilité clé API
+      function toggleApiKeyVisibility(inputId) {
+        const input = document.getElementById(inputId);
+        const button = input.nextElementSibling;
+        
+        if (input.type === 'password') {
+          input.type = 'text';
+          button.textContent = 'Cacher';
+        } else {
+          input.type = 'password';
+          button.textContent = 'Voir';
+        }
+      }
+      
+      // Mettre à jour la valeur de température
+      function updateTemperatureValue(provider, value) {
+        document.getElementById(`${provider}TempValue`).textContent = value;
+      }
+      
+      // Test connexion OpenAI
+      async function testOpenAIConnection() {
+        const apiKey = document.getElementById('openaiApiKey').value;
+        const model = document.getElementById('openaiModel').value;
+        
+        if (!apiKey.trim()) {
+          showTestResult('openaiTestResult', 'Veuillez saisir une clé API', 'error');
+          return;
+        }
+        
+        showTestResult('openaiTestResult', 'Test de connexion en cours...', 'loading');
+        
+        console.log('🤖 [OpenAI] ========== DÉBUT TEST CONNEXION ==========');
+        console.log('🔑 [OpenAI] Clé API longueur:', apiKey.length, 'caractères');
+        console.log('🔑 [OpenAI] Clé API format:', apiKey.substring(0, 10) + '...' + apiKey.substring(apiKey.length - 4));
+        console.log('🔧 [OpenAI] Modèle sélectionné:', model);
+        console.log('🌐 [OpenAI] URL cible: https://api.openai.com/v1/chat/completions');
+        console.log('🕐 [OpenAI] Timestamp:', new Date().toISOString());
+        
+        // Diagnostic environnement
+        console.log('🔍 [OpenAI] DIAGNOSTIC ENVIRONNEMENT:');
+        console.log('   - Navigator online:', navigator.onLine);
+        console.log('   - User Agent:', navigator.userAgent);
+        console.log('   - Location protocol:', window.location.protocol);
+        console.log('   - Location host:', window.location.host);
+        
+        const requestBody = {
+          model: model,
+          messages: [{ role: 'user', content: 'Test de connexion. Répondez simplement "OK".' }],
+          max_tokens: 10,
+          temperature: 0.1
+        };
+        
+        const requestHeaders = {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        };
+        
+        console.log('📦 [OpenAI] BODY REQUEST:', JSON.stringify(requestBody, null, 2));
+        console.log('📡 [OpenAI] HEADERS REQUEST:', JSON.stringify(requestHeaders, null, 2));
+        
+        // Test de connectivité préliminaire
+        console.log('🔍 [OpenAI] TEST CONNECTIVITÉ PRÉLIMINAIRE...');
+        try {
+          const pingResponse = await fetch('https://httpbin.org/get', { 
+            method: 'GET',
+            mode: 'cors'
+          });
+          console.log('✅ [OpenAI] Test connectivité httpbin.org:', pingResponse.status);
+        } catch (pingError) {
+          console.error('❌ [OpenAI] Échec test connectivité httpbin.org:', pingError);
+        }
+        
+        // Mesure du temps de réponse
+        const startTime = performance.now();
+        
+        try {
+          console.log('🌐 [OpenAI] ENVOI REQUÊTE...');
+          
+          const fetchOptions = {
+            method: 'POST',
+            headers: requestHeaders,
+            body: JSON.stringify(requestBody),
+            mode: 'cors',
+            credentials: 'omit',
+            cache: 'no-cache'
+          };
+          
+          console.log('⚙️ [OpenAI] Options fetch:', JSON.stringify(fetchOptions, null, 2));
+          
+          const response = await fetch('https://api.openai.com/v1/chat/completions', fetchOptions);
+          
+          const endTime = performance.now();
+          const duration = endTime - startTime;
+          
+          console.log('📨 [OpenAI] RÉPONSE REÇUE:');
+          console.log('   - Status Code:', response.status);
+          console.log('   - Status Text:', response.statusText);
+          console.log('   - Type:', response.type);
+          console.log('   - URL:', response.url);
+          console.log('   - Redirected:', response.redirected);
+          console.log('   - Duration:', Math.round(duration), 'ms');
+          
+          const responseHeaders = {};
+          for (let [key, value] of response.headers.entries()) {
+            responseHeaders[key] = value;
+          }
+          console.log('📨 [OpenAI] Headers réponse:', JSON.stringify(responseHeaders, null, 2));
+          
+          if (response.ok) {
+            const responseText = await response.text();
+            console.log('📄 [OpenAI] Raw response:', responseText);
+            
+            const data = JSON.parse(responseText);
+            console.log('✅ [OpenAI] Données structurées:', JSON.stringify(data, null, 2));
+            
+            const reply = data.choices[0].message.content.trim();
+            showTestResult('openaiTestResult', `Connexion réussie ! Réponse: "${reply}" (${Math.round(duration)}ms)`, 'success');
+            
+            // Sauvegarder la clé API dans localStorage
+            localStorage.setItem('openai_api_key', apiKey);
+            localStorage.setItem('openai_model', model);
+            console.log('💾 [OpenAI] Clé API sauvegardée');
+          } else {
+            console.error('❌ [OpenAI] ERREUR HTTP DÉTAILLÉE:');
+            const errorText = await response.text();
+            console.error('   - Status:', response.status);
+            console.error('   - Status Text:', response.statusText);
+            console.error('   - Response body:', errorText);
+            
+            try {
+              const error = JSON.parse(errorText);
+              console.error('   - Error object:', JSON.stringify(error, null, 2));
+              showTestResult('openaiTestResult', `Erreur ${response.status}: ${error.error?.message || 'Connexion échouée'}`, 'error');
+            } catch (parseError) {
+              console.error('   - Parse error:', parseError);
+              showTestResult('openaiTestResult', `Erreur ${response.status}: ${errorText}`, 'error');
+            }
+          }
+        } catch (error) {
+          const endTime = performance.now();
+          const duration = endTime - startTime;
+          
+          console.error('❌ [OpenAI] ERREUR RÉSEAU COMPLÈTE:');
+          console.error('   - Type:', error.name);
+          console.error('   - Message:', error.message);
+          console.error('   - Duration avant erreur:', Math.round(duration), 'ms');
+          console.error('   - Stack trace:', error.stack);
+          console.error('   - Error object complet:', error);
+          
+          // Lancer l'analyse rapide automatiquement
+          console.log('🔍 Lancement analyse rapide automatique...');
+          setTimeout(quickErrorAnalysis, 100);
+          
+          // Diagnostic approfondi des erreurs
+          let diagnosticMessage = `Erreur réseau: ${error.message}\n`;
+          diagnosticMessage += `Durée avant erreur: ${Math.round(duration)}ms\n\n`;
+          
+          if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+            diagnosticMessage += '🔍 DIAGNOSTIC DÉTAILLÉ "Failed to fetch":\n';
+            
+            // Diagnostic plus précis basé sur la durée
+            if (duration < 50) {
+              diagnosticMessage += '⚡ ERREUR IMMÉDIATE (<50ms):\n';
+              diagnosticMessage += '➤ CAUSE PROBABLE: Extension navigateur ou blocage local\n';
+              diagnosticMessage += '➤ SOLUTION: Désactiver AdBlock, uBlock, Privacy Badger\n\n';
+            } else if (duration < 200) {
+              diagnosticMessage += '🚫 ERREUR RAPIDE (<200ms):\n';
+              diagnosticMessage += '➤ CAUSE PROBABLE: Firewall ou antivirus\n';
+              diagnosticMessage += '➤ SOLUTION: Désactiver temporairement firewall/antivirus\n\n';
+            } else if (duration > 5000) {
+              diagnosticMessage += '🐌 ERREUR LENTE (>5s):\n';
+              diagnosticMessage += '➤ CAUSE PROBABLE: Problème réseau ou DNS\n';
+              diagnosticMessage += '➤ SOLUTION: Changer DNS (8.8.8.8) ou réseau\n\n';
+            }
+            
+            diagnosticMessage += 'CAUSES COMMUNES:\n';
+            diagnosticMessage += '1. 🛡️  Extensions navigateur (AdBlock, uBlock)\n';
+            diagnosticMessage += '2. 🔥 Firewall Windows/Mac bloquant HTTPS\n';
+            diagnosticMessage += '3. 🛡️  Antivirus analysant le trafic\n';
+            diagnosticMessage += '4. 🌐 Proxy d\'entreprise mal configuré\n';
+            diagnosticMessage += '5. 🔒 CORS - localhost HTTP vers HTTPS API\n\n';
+            
+            diagnosticMessage += '🔧 SOLUTIONS PAR ORDRE DE PRIORITÉ:\n';
+            diagnosticMessage += '1. Ouvrir console (F12) → Rechercher détails erreur\n';
+            diagnosticMessage += '2. Navigation privée (Ctrl+Shift+N)\n';
+            diagnosticMessage += '3. Désactiver TOUTES les extensions\n';
+            diagnosticMessage += '4. Tester avec Chrome/Firefox alternatif\n';
+            diagnosticMessage += '5. Hotspot mobile pour tester réseau\n';
+            diagnosticMessage += '6. Bouton "Diagnostic Réseau" pour analyse complète\n';
+          }
+          
+          showTestResult('openaiTestResult', diagnosticMessage, 'error');
+        }
+        
+        console.log('🤖 [OpenAI] ========== FIN TEST CONNEXION ==========');
+      }
+      
+      // Test connexion Claude
+      async function testClaudeConnection() {
+        const apiKey = document.getElementById('claudeApiKey').value;
+        const model = document.getElementById('claudeModel').value;
+        
+        if (!apiKey.trim()) {
+          showTestResult('claudeTestResult', 'Veuillez saisir une clé API', 'error');
+          return;
+        }
+        
+        showTestResult('claudeTestResult', 'Test de connexion en cours...', 'loading');
+        
+        console.log('🤖 [Claude] Début test connexion');
+        console.log('🔑 [Claude] Clé API:', apiKey.substring(0, 10) + '...');
+        console.log('🔧 [Claude] Modèle:', model);
+        
+        const requestBody = {
+          model: model,
+          max_tokens: 10,
+          messages: [{ role: 'user', content: 'Test de connexion. Répondez simplement "OK".' }]
+        };
+        
+        const requestHeaders = {
+          'x-api-key': apiKey,
+          'Content-Type': 'application/json',
+          'anthropic-version': '2023-06-01'
+        };
+        
+        console.log('📡 [Claude] Headers:', requestHeaders);
+        console.log('📦 [Claude] Body:', requestBody);
+        
+        try {
+          console.log('🌐 [Claude] Envoi requête vers: https://api.anthropic.com/v1/messages');
+          
+          const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: requestHeaders,
+            body: JSON.stringify(requestBody)
+          });
+          
+          console.log('📨 [Claude] Réponse reçue - Status:', response.status);
+          console.log('📨 [Claude] Headers réponse:', Object.fromEntries(response.headers.entries()));
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('✅ [Claude] Données reçues:', data);
+            const reply = data.content[0].text.trim();
+            showTestResult('claudeTestResult', `Connexion réussie ! Réponse: "${reply}"`, 'success');
+            
+            // Sauvegarder la clé API dans localStorage
+            localStorage.setItem('claude_api_key', apiKey);
+            localStorage.setItem('claude_model', model);
+            console.log('💾 [Claude] Clé API sauvegardée');
+          } else {
+            const errorText = await response.text();
+            console.error('❌ [Claude] Erreur HTTP:', response.status, errorText);
+            try {
+              const error = JSON.parse(errorText);
+              showTestResult('claudeTestResult', `Erreur ${response.status}: ${error.error?.message || 'Connexion échouée'}`, 'error');
+            } catch {
+              showTestResult('claudeTestResult', `Erreur ${response.status}: ${errorText}`, 'error');
+            }
+          }
+        } catch (error) {
+          console.error('❌ [Claude] Erreur réseau complète:', error);
+          console.error('❌ [Claude] Type erreur:', error.name);
+          console.error('❌ [Claude] Message erreur:', error.message);
+          console.error('❌ [Claude] Stack:', error.stack);
+          
+          let errorMessage = `Erreur réseau: ${error.message}`;
+          
+          if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+            errorMessage += '\n🔍 Causes possibles:\n- Problème CORS\n- Connexion internet\n- Clé API invalide\n- Firewall/Proxy';
+          }
+          
+          showTestResult('claudeTestResult', errorMessage, 'error');
+        }
+      }
+      
+      // Afficher résultat de test
+      function showTestResult(elementId, message, type) {
+        const element = document.getElementById(elementId);
+        element.style.display = 'block';
+        
+        const colors = {
+          loading: { bg: 'rgba(52, 152, 219, 0.1)', border: '#3498db', color: '#3498db' },
+          success: { bg: 'rgba(46, 204, 113, 0.1)', border: '#2ecc71', color: '#2ecc71' },
+          error: { bg: 'rgba(231, 76, 60, 0.1)', border: '#e74c3c', color: '#e74c3c' }
+        };
+        
+        const style = colors[type] || colors.error;
+        element.style.background = style.bg;
+        element.style.border = `1px solid ${style.border}`;
+        element.style.color = style.color;
+        element.innerHTML = message;
+        
+        // Auto-hide après 5 secondes pour les succès
+        if (type === 'success') {
+          setTimeout(() => {
+            element.style.display = 'none';
+          }, 5000);
+        }
+      }
+      
+      // Test connexion Mistral
+      async function testMistralConnection() {
+        const apiKey = document.getElementById('mistralApiKey').value;
+        const model = document.getElementById('mistralModel').value;
+        
+        if (!apiKey.trim()) {
+          showTestResult('mistralTestResult', 'Veuillez saisir une clé API', 'error');
+          return;
+        }
+        
+        showTestResult('mistralTestResult', 'Test de connexion en cours...', 'loading');
+        
+        console.log('🤖 [Mistral] Début test connexion');
+        console.log('🔑 [Mistral] Clé API:', apiKey.substring(0, 10) + '...');
+        console.log('🔧 [Mistral] Modèle:', model);
+        
+        const requestBody = {
+          model: model,
+          messages: [{ role: 'user', content: 'Test de connexion. Répondez simplement "OK".' }],
+          max_tokens: 10,
+          temperature: 0.1
+        };
+        
+        const requestHeaders = {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        };
+        
+        console.log('📡 [Mistral] Headers:', requestHeaders);
+        console.log('📦 [Mistral] Body:', requestBody);
+        
+        try {
+          console.log('🌐 [Mistral] Envoi requête vers: https://api.mistral.ai/v1/chat/completions');
+          
+          const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+            method: 'POST',
+            headers: requestHeaders,
+            body: JSON.stringify(requestBody)
+          });
+          
+          console.log('📨 [Mistral] Réponse reçue - Status:', response.status);
+          console.log('📨 [Mistral] Headers réponse:', Object.fromEntries(response.headers.entries()));
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('✅ [Mistral] Données reçues:', data);
+            const reply = data.choices[0].message.content.trim();
+            showTestResult('mistralTestResult', `Connexion réussie ! Réponse: "${reply}"`, 'success');
+            
+            // Sauvegarder la clé API dans localStorage
+            localStorage.setItem('mistral_api_key', apiKey);
+            localStorage.setItem('mistral_model', model);
+            console.log('💾 [Mistral] Clé API sauvegardée');
+          } else {
+            const errorText = await response.text();
+            console.error('❌ [Mistral] Erreur HTTP:', response.status, errorText);
+            try {
+              const error = JSON.parse(errorText);
+              showTestResult('mistralTestResult', `Erreur ${response.status}: ${error.error?.message || 'Connexion échouée'}`, 'error');
+            } catch {
+              showTestResult('mistralTestResult', `Erreur ${response.status}: ${errorText}`, 'error');
+            }
+          }
+        } catch (error) {
+          console.error('❌ [Mistral] Erreur réseau complète:', error);
+          console.error('❌ [Mistral] Type erreur:', error.name);
+          console.error('❌ [Mistral] Message erreur:', error.message);
+          console.error('❌ [Mistral] Stack:', error.stack);
+          
+          let errorMessage = `Erreur réseau: ${error.message}`;
+          
+          if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+            errorMessage += '\n🔍 Causes possibles:\n- Problème CORS\n- Connexion internet\n- Clé API invalide\n- Firewall/Proxy';
+          }
+          
+          showTestResult('mistralTestResult', errorMessage, 'error');
+        }
+      }
+
+      // === FONCTIONS SAUVEGARDE AUTOMATIQUE ===
+      
+      // Sauvegarder une clé API immédiatement
+      function saveApiKey(provider, inputId) {
+        const input = document.getElementById(inputId);
+        if (input && input.value.trim()) {
+          localStorage.setItem(`${provider}_api_key`, input.value.trim());
+          console.log(`💾 [${provider.toUpperCase()}] Clé API sauvegardée automatiquement`);
+          
+          // Indicateur visuel de sauvegarde
+          input.style.borderColor = '#2ecc71';
+          setTimeout(() => {
+            input.style.borderColor = '#9b59b6';
+          }, 1000);
+        }
+      }
+      
+      // Sauvegarder un modèle immédiatement
+      function saveApiModel(provider, value) {
+        if (value) {
+          localStorage.setItem(`${provider}_model`, value);
+          console.log(`💾 [${provider.toUpperCase()}] Modèle sauvegardé: ${value}`);
+        }
+      }
+      
+      // Sauvegarder la température immédiatement
+      function saveApiTemperature(provider, value) {
+        if (value !== undefined) {
+          localStorage.setItem(`${provider}_temperature`, value);
+          console.log(`💾 [${provider.toUpperCase()}] Température sauvegardée: ${value}`);
+        }
+      }
+      
+      // Charger les configurations sauvegardées au démarrage
+      function loadSavedConfigs() {
+        console.log('🔄 Chargement des configurations sauvegardées...');
+        
+        // OpenAI
+        const openaiKey = localStorage.getItem('openai_api_key');
+        const openaiModel = localStorage.getItem('openai_model') || 'gpt-4o';
+        const openaiTemp = localStorage.getItem('openai_temperature') || '0.7';
+        if (openaiKey) {
+          const input = document.getElementById('openaiApiKey');
+          if (input) {
+            input.value = openaiKey;
+            console.log('✅ [OpenAI] Clé API rechargée');
+          }
+        }
+        const openaiSelect = document.getElementById('openaiModel');
+        if (openaiSelect) {
+          openaiSelect.value = openaiModel;
+          console.log('✅ [OpenAI] Modèle rechargé:', openaiModel);
+        }
+        // Température OpenAI supprimée de l'interface
+        console.log('✅ [OpenAI] Configuration rechargée (température fixe: 0.7)');
+        
+        // Claude
+        const claudeKey = localStorage.getItem('claude_api_key');
+        const claudeModel = localStorage.getItem('claude_model') || 'claude-3-5-sonnet-20241022';
+        const claudeTemp = localStorage.getItem('claude_temperature') || '0.7';
+        if (claudeKey) {
+          const input = document.getElementById('claudeApiKey');
+          if (input) {
+            input.value = claudeKey;
+            console.log('✅ [Claude] Clé API rechargée');
+          }
+        }
+        const claudeSelect = document.getElementById('claudeModel');
+        if (claudeSelect) {
+          claudeSelect.value = claudeModel;
+          console.log('✅ [Claude] Modèle rechargé:', claudeModel);
+        }
+        // Température Claude supprimée de l'interface
+        console.log('✅ [Claude] Configuration rechargée (température fixe: 0.7)');
+
+        // Mistral
+        const mistralKey = localStorage.getItem('mistral_api_key');
+        const mistralModel = localStorage.getItem('mistral_model') || 'mistral-large-latest';
+        const mistralTemp = localStorage.getItem('mistral_temperature') || '0.7';
+        if (mistralKey) {
+          const input = document.getElementById('mistralApiKey');
+          if (input) {
+            input.value = mistralKey;
+            console.log('✅ [Mistral] Clé API rechargée');
+          }
+        }
+        const mistralSelect = document.getElementById('mistralModel');
+        if (mistralSelect) {
+          mistralSelect.value = mistralModel;
+          console.log('✅ [Mistral] Modèle rechargé:', mistralModel);
+        }
+        // Température Mistral supprimée de l'interface
+        console.log('✅ [Mistral] Configuration rechargée (température fixe: 0.7)');
+        
+        console.log('🎯 Toutes les configurations ont été rechargées');
+      }
+      
+      // Ouvrir la page de diagnostic
+      function openDiagnosticPage() {
+        window.open('diagnostic-ia.html', '_blank', 'width=1200,height=800');
+      }
+      
+      // Fonction d'analyse rapide des erreurs sur la page principale
+      function quickErrorAnalysis() {
+        console.log('🔍 ========== ANALYSE RAPIDE DES ERREURS ==========');
+        
+        // Vérifier les conditions communes d'erreur
+        const checks = [
+          {
+            name: 'Protocol HTTPS',
+            test: () => window.location.protocol === 'https:',
+            issue: 'Les APIs IA exigent HTTPS. Localhost HTTP peut causer "Failed to fetch".',
+            solution: 'Utiliser un proxy HTTPS ou certificat SSL local'
+          },
+          {
+            name: 'Connexion Internet',
+            test: () => navigator.onLine,
+            issue: 'Navigateur indique hors ligne',
+            solution: 'Vérifier connexion réseau'
+          },
+          {
+            name: 'LocalStorage Disponible',
+            test: () => {
+              try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                return true;
+              } catch (e) { return false; }
+            },
+            issue: 'LocalStorage bloqué (navigation privée?)',
+            solution: 'Désactiver navigation privée ou autoriser stockage'
+          },
+          {
+            name: 'Fetch API Disponible',
+            test: () => typeof fetch !== 'undefined',
+            issue: 'API Fetch non supportée',
+            solution: 'Mettre à jour le navigateur'
+          }
+        ];
+        
+        let issuesFound = 0;
+        
+        checks.forEach(check => {
+          try {
+            const result = check.test();
+            if (result) {
+              console.log(`✅ ${check.name}: OK`);
+            } else {
+              console.error(`❌ ${check.name}: PROBLÈME DÉTECTÉ`);
+              console.error(`   Issue: ${check.issue}`);
+              console.error(`   Solution: ${check.solution}`);
+              issuesFound++;
+            }
+          } catch (error) {
+            console.error(`❓ ${check.name}: Erreur test - ${error.message}`);
+            issuesFound++;
+          }
+        });
+        
+        if (issuesFound === 0) {
+          console.log('✅ Aucun problème majeur détecté. L\'erreur peut être due à:');
+          console.log('   - Firewall/Antivirus bloquant les requêtes');
+          console.log('   - Extensions navigateur (AdBlock, etc.)');
+          console.log('   - Proxy/VPN mal configuré');
+          console.log('   - Clé API invalide ou expirée');
+        } else {
+          console.log(`⚠️  ${issuesFound} problème(s) détecté(s). Corrigez-les avant de retester.`);
+        }
+        
+        console.log('🔍 ========== FIN ANALYSE RAPIDE ==========');
+      }
+
+      // === FONCTIONS TEST QUESTIONS IA ===
+      
+      // Envoyer une question test à OpenAI
+      async function sendOpenAIQuestion() {
+        const apiKey = document.getElementById('openaiApiKey').value;
+        const model = document.getElementById('openaiModel').value;
+        const temperature = 0.7; // Température fixe
+        
+        if (!apiKey.trim()) {
+          showTestResult('openaiTestResult', 'Veuillez d\'abord configurer votre clé API', 'error');
+          return;
+        }
+        
+        const question = "Analysez ces 5 numéros EuroMillions : 7, 14, 21, 28, 35 et les étoiles 3, 8. Donnez-moi des statistiques sur ces numéros et proposez une combinaison optimisée pour le prochain tirage.";
+        
+        showTestResult('openaiTestResult', 'Envoi de la question à OpenAI...', 'loading');
+        
+        console.log('🧠 [OpenAI Question] Début envoi question');
+        console.log('🔧 [OpenAI Question] Température:', temperature);
+        console.log('❓ [OpenAI Question] Question:', question);
+        
+        try {
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [{ 
+                role: 'user', 
+                content: question
+              }],
+              max_tokens: 500,
+              temperature: temperature
+            })
+          });
+          
+          console.log('📨 [OpenAI Question] Statut réponse:', response.status);
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log('✅ [OpenAI Question] Réponse reçue:', data);
+            const reply = data.choices[0].message.content;
+            showTestResult('openaiTestResult', `<strong>Question :</strong> ${question}<br><br><strong>Réponse OpenAI :</strong><br>${reply}`, 'success');
+          } else {
+            const errorText = await response.text();
+            console.error('❌ [OpenAI Question] Erreur:', errorText);
+            try {
+              const error = JSON.parse(errorText);
+              showTestResult('openaiTestResult', `Erreur ${response.status}: ${error.error?.message || 'Échec de la requête'}`, 'error');
+            } catch {
+              showTestResult('openaiTestResult', `Erreur ${response.status}: ${errorText}`, 'error');
+            }
+          }
+        } catch (error) {
+          console.error('❌ [OpenAI Question] Erreur réseau:', error);
+          showTestResult('openaiTestResult', `Erreur réseau: ${error.message}`, 'error');
+        }
+      }
+      
+      // Envoyer une question test à Claude
+      async function sendClaudeQuestion() {
+        const apiKey = document.getElementById('claudeApiKey').value;
+        const model = document.getElementById('claudeModel').value;
+        const temperature = 0.7; // Température fixe
+        
+        if (!apiKey.trim()) {
+          showTestResult('claudeTestResult', 'Veuillez d\'abord configurer votre clé API', 'error');
+          return;
+        }
+        
+        const question = "Analysez ces 5 numéros EuroMillions : 12, 19, 26, 33, 42 et les étoiles 5, 11. Quels sont les patterns statistiques de ces numéros et quelle stratégie recommanderiez-vous pour améliorer les chances au prochain tirage ?";
+        
+        showTestResult('claudeTestResult', 'Envoi de la question à Claude...', 'loading');
+        
+        try {
+          const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+              'x-api-key': apiKey,
+              'Content-Type': 'application/json',
+              'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+              model: model,
+              max_tokens: 500,
+              messages: [{ 
+                role: 'user', 
+                content: question
+              }],
+              temperature: temperature
+            })
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.content[0].text;
+            showTestResult('claudeTestResult', `<strong>Question :</strong> ${question}<br><br><strong>Réponse Claude :</strong><br>${reply}`, 'success');
+          } else {
+            const error = await response.json();
+            showTestResult('claudeTestResult', `Erreur ${response.status}: ${error.error?.message || 'Échec de la requête'}`, 'error');
+          }
+        } catch (error) {
+          showTestResult('claudeTestResult', `Erreur réseau: ${error.message}`, 'error');
+        }
+      }
+      
+      // Envoyer une question test à Mistral
+      async function sendMistralQuestion() {
+        const apiKey = document.getElementById('mistralApiKey').value;
+        const model = document.getElementById('mistralModel').value;
+        const temperature = 0.7; // Température fixe
+        
+        if (!apiKey.trim()) {
+          showTestResult('mistralTestResult', 'Veuillez d\'abord configurer votre clé API', 'error');
+          return;
+        }
+        
+        const question = "Analysez ces 5 numéros EuroMillions : 3, 17, 24, 31, 47 et les étoiles 2, 9. Pouvez-vous identifier des tendances dans ces numéros et suggérer une approche mathématique pour optimiser les futures combinaisons ?";
+        
+        showTestResult('mistralTestResult', 'Envoi de la question à Mistral...', 'loading');
+        
+        try {
+          const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [{ 
+                role: 'user', 
+                content: question
+              }],
+              max_tokens: 500,
+              temperature: temperature
+            })
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            showTestResult('mistralTestResult', `<strong>Question :</strong> ${question}<br><br><strong>Réponse Mistral :</strong><br>${reply}`, 'success');
+          } else {
+            const error = await response.json();
+            showTestResult('mistralTestResult', `Erreur ${response.status}: ${error.error?.message || 'Échec de la requête'}`, 'error');
+          }
+        } catch (error) {
+          showTestResult('mistralTestResult', `Erreur réseau: ${error.message}`, 'error');
+        }
+      }
+
+      // Nouvelles fonctions de test avec zones de saisie personnalisées
+      async function sendOpenAITestQuestion() {
+        const apiKey = document.getElementById('openaiApiKey').value;
+        const model = document.getElementById('openaiModel').value;
+        const temperature = 0.7; // Température fixe
+        const question = document.getElementById('openaiTestInput').value.trim();
+        const responseDiv = document.getElementById('openaiTestResponse');
+        
+        if (!apiKey.trim()) {
+          responseDiv.textContent = '❌ ERREUR: Veuillez d\'abord configurer votre clé API OpenAI';
+          return;
+        }
+        
+        if (!question) {
+          responseDiv.textContent = '❌ ERREUR: Veuillez saisir une question';
+          return;
+        }
+        
+        // Dump du début de la requête
+        responseDiv.textContent = `🔄 ENVOI EN COURS...\n\n📤 Question envoyée:\n${question}\n\n⏳ Attente de la réponse OpenAI...`;
+        
+        try {
+          const startTime = Date.now();
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [{ 
+                role: 'user', 
+                content: question
+              }],
+              max_tokens: 500,
+              temperature: temperature
+            })
+          });
+          
+          const endTime = Date.now();
+          const duration = endTime - startTime;
+          
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            responseDiv.textContent = `✅ SUCCÈS (${duration}ms)\n\n📤 Question:\n${question}\n\n📥 Réponse OpenAI:\n${reply}\n\n📊 Métadonnées:\n- Modèle: ${model}\n- Température: ${temperature}\n- Tokens utilisés: ${data.usage?.total_tokens || 'N/A'}\n- Temps de réponse: ${duration}ms`;
+          } else {
+            const error = await response.json();
+            responseDiv.textContent = `❌ ERREUR HTTP ${response.status} (${duration}ms)\n\n📤 Question:\n${question}\n\n🚨 Erreur:\n${error.error?.message || 'Échec de la requête'}\n\n📊 Détails:\n- Code: ${error.error?.code || 'N/A'}\n- Type: ${error.error?.type || 'N/A'}`;
+          }
+        } catch (error) {
+          responseDiv.textContent = `❌ ERREUR RÉSEAU\n\n📤 Question:\n${question}\n\n🚨 Erreur:\n${error.message}\n\n📊 Détails:\n- Type: ${error.name}\n- Stack: ${error.stack}`;
+        }
+      }
+
+      async function sendClaudeTestQuestion() {
+        const apiKey = document.getElementById('claudeApiKey').value;
+        const model = document.getElementById('claudeModel').value;
+        const temperature = 0.7; // Température fixe
+        const question = document.getElementById('claudeTestInput').value.trim();
+        const responseDiv = document.getElementById('claudeTestResponse');
+        
+        if (!apiKey.trim()) {
+          responseDiv.textContent = '❌ ERREUR: Veuillez d\'abord configurer votre clé API Claude';
+          return;
+        }
+        
+        if (!question) {
+          responseDiv.textContent = '❌ ERREUR: Veuillez saisir une question';
+          return;
+        }
+        
+        // Dump du début de la requête
+        responseDiv.textContent = `🔄 ENVOI EN COURS...\n\n📤 Question envoyée:\n${question}\n\n⏳ Attente de la réponse Claude...`;
+        
+        try {
+          const startTime = Date.now();
+          const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+              'x-api-key': apiKey,
+              'Content-Type': 'application/json',
+              'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+              model: model,
+              max_tokens: 500,
+              temperature: temperature,
+              messages: [{ 
+                role: 'user', 
+                content: question
+              }]
+            })
+          });
+          
+          const endTime = Date.now();
+          const duration = endTime - startTime;
+          
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.content[0].text;
+            responseDiv.textContent = `✅ SUCCÈS (${duration}ms)\n\n📤 Question:\n${question}\n\n📥 Réponse Claude:\n${reply}\n\n📊 Métadonnées:\n- Modèle: ${model}\n- Température: ${temperature}\n- Tokens d'entrée: ${data.usage?.input_tokens || 'N/A'}\n- Tokens de sortie: ${data.usage?.output_tokens || 'N/A'}\n- Temps de réponse: ${duration}ms`;
+          } else {
+            const error = await response.json();
+            responseDiv.textContent = `❌ ERREUR HTTP ${response.status} (${duration}ms)\n\n📤 Question:\n${question}\n\n🚨 Erreur:\n${error.error?.message || 'Échec de la requête'}\n\n📊 Détails:\n- Type: ${error.error?.type || 'N/A'}`;
+          }
+        } catch (error) {
+          responseDiv.textContent = `❌ ERREUR RÉSEAU\n\n📤 Question:\n${question}\n\n🚨 Erreur:\n${error.message}\n\n📊 Détails:\n- Type: ${error.name}\n- Stack: ${error.stack}`;
+        }
+      }
+
+      async function sendMistralTestQuestion() {
+        const apiKey = document.getElementById('mistralApiKey').value;
+        const model = document.getElementById('mistralModel').value;
+        const temperature = 0.7; // Température fixe
+        const question = document.getElementById('mistralTestInput').value.trim();
+        const responseDiv = document.getElementById('mistralTestResponse');
+        
+        if (!apiKey.trim()) {
+          responseDiv.textContent = '❌ ERREUR: Veuillez d\'abord configurer votre clé API Mistral';
+          return;
+        }
+        
+        if (!question) {
+          responseDiv.textContent = '❌ ERREUR: Veuillez saisir une question';
+          return;
+        }
+        
+        // Préparer les données de la requête
+        const requestHeaders = {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        };
+        
+        const requestBody = {
+          model: model,
+          messages: [{ 
+            role: 'user', 
+            content: question
+          }],
+          max_tokens: 500,
+          temperature: temperature
+        };
+        
+        // Afficher la requête web complète au début
+        responseDiv.textContent = `🌐 REQUÊTE WEB COMPLÈTE:
+        
+URL: https://api.mistral.ai/v1/chat/completions
+METHOD: POST
+
+HEADERS:
+${JSON.stringify(requestHeaders, null, 2)}
+
+BODY:
+${JSON.stringify(requestBody, null, 2)}
+
+🔄 ENVOI EN COURS...
+
+📤 Question envoyée:
+${question}
+
+⏳ Attente de la réponse Mistral...`;
+        
+        try {
+          const startTime = Date.now();
+          const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+            method: 'POST',
+            headers: requestHeaders,
+            body: JSON.stringify(requestBody)
+          });
+          
+          const endTime = Date.now();
+          const duration = endTime - startTime;
+          
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            responseDiv.textContent = `🌐 REQUÊTE WEB COMPLÈTE:
+        
+URL: https://api.mistral.ai/v1/chat/completions
+METHOD: POST
+
+HEADERS:
+${JSON.stringify(requestHeaders, null, 2)}
+
+BODY:
+${JSON.stringify(requestBody, null, 2)}
+
+✅ SUCCÈS (${duration}ms)
+
+📤 Question:
+${question}
+
+📥 Réponse Mistral:
+${reply}
+
+📊 Métadonnées:
+- Modèle: ${model}
+- Température: ${temperature}
+- Tokens utilisés: ${data.usage?.total_tokens || 'N/A'}
+- Temps de réponse: ${duration}ms`;
+          } else {
+            const error = await response.json();
+            responseDiv.textContent = `🌐 REQUÊTE WEB COMPLÈTE:
+        
+URL: https://api.mistral.ai/v1/chat/completions
+METHOD: POST
+
+HEADERS:
+${JSON.stringify(requestHeaders, null, 2)}
+
+BODY:
+${JSON.stringify(requestBody, null, 2)}
+
+❌ ERREUR HTTP ${response.status} (${duration}ms)
+
+📤 Question:
+${question}
+
+🚨 Erreur:
+${error.error?.message || 'Échec de la requête'}
+
+📊 Détails:
+- Code: ${error.error?.code || 'N/A'}
+- Type: ${error.error?.type || 'N/A'}`;
+          }
+        } catch (error) {
+          responseDiv.textContent = `🌐 REQUÊTE WEB COMPLÈTE:
+        
+URL: https://api.mistral.ai/v1/chat/completions
+METHOD: POST
+
+HEADERS:
+${JSON.stringify(requestHeaders, null, 2)}
+
+BODY:
+${JSON.stringify(requestBody, null, 2)}
+
+❌ ERREUR RÉSEAU
+
+📤 Question:
+${question}
+
+🚨 Erreur:
+${error.message}
+
+📊 Détails:
+- Type: ${error.name}
+- Stack: ${error.stack}`;
+        }
+      }
+
       document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 Initialisation des LEDs de l\'interrupteur');
         updateLeds();
@@ -4273,6 +5480,13 @@
             toggleDataSource();
           });
         }
+
+        // Charger les configurations IA sauvegardées - IMMÉDIATEMENT et aussi plus tard
+        loadSavedConfigs();
+        
+        // Recharger une seconde fois après que tous les éléments soient prêts
+        setTimeout(loadSavedConfigs, 1000);
+        setTimeout(loadSavedConfigs, 3000);
       });
 
       // === VARIABLES GLOBALES SQLITE ===

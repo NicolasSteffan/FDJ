@@ -37,12 +37,26 @@ echo ⏳ Attente demarrage frontend (5 secondes)...
 timeout /t 5 /nobreak >nul
 
 echo 🔗 LANCEMENT NAVIGATEUR...
-start "" "msedge.exe" "http://localhost:3010" 2>nul && (
-    echo ✅ Microsoft Edge lance avec succes !
+echo 🌐 Essai Chrome en premier...
+start "" "chrome.exe" "http://localhost:3010" 2>nul && (
+    echo ✅ Chrome lance avec succes !
     goto :success
 ) || (
-    start "" "http://localhost:3010" 2>nul
-    echo ✅ Navigateur par defaut lance !
+    echo 🌐 Chrome non trouve, essai Firefox...
+    start "" "firefox.exe" "http://localhost:3010" 2>nul && (
+        echo ✅ Firefox lance avec succes !
+        goto :success
+    ) || (
+        echo 🌐 Firefox non trouve, essai Edge...
+        start "" "msedge.exe" "http://localhost:3010" 2>nul && (
+            echo ✅ Microsoft Edge lance avec succes !
+            echo ⚠️  Si Edge demande une connexion Microsoft, utilisez Chrome ou Firefox
+            goto :success
+        ) || (
+            start "" "http://localhost:3010" 2>nul
+            echo ✅ Navigateur par defaut lance !
+        )
+    )
 )
 
 :success
@@ -55,7 +69,8 @@ echo 🎯 Frontend: http://localhost:3010
 echo 📂 Repertoire: %WEB_DIR%
 echo.
 echo 📋 INSTRUCTIONS:
-echo - Microsoft Edge devrait s'ouvrir automatiquement
+echo - Un navigateur devrait s'ouvrir automatiquement (Chrome > Firefox > Edge)
+echo - Si probleme connexion Microsoft: utilisez Chrome ou Firefox
 echo - Sinon ouvrez manuellement: http://localhost:3010
 echo - Pour arreter: fermez les fenetres "BACKEND" et "SERVEUR"
 echo 🔧 VERSION V0.003B-CSV-IMPORT-PAGINATION CARACTERISTIQUES:

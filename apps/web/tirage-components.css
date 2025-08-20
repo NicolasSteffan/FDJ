@@ -987,6 +987,32 @@ select option:focus {
   max-height: 1000px;
 }
 
+/* Hauteur minimale pour les sections fermées (juste le header) */
+.tirage-tag:not(.expanded) {
+  min-height: 60px; /* Hauteur du header + padding */
+}
+
+.tirage-tag:not(.expanded) .tirage-tag-content {
+  max-height: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* Padding pour les sections IA (niveau racine) */
+.gains-section.tirage-tag .tirage-tag-content {
+  padding: 20px;
+}
+
+/* Espacement entre les sections IA pour éviter le chevauchement */
+.gains-section.tirage-tag {
+  margin-bottom: 20px;
+}
+
+/* Espacement entre les sections principales de la page Admin Monitoring */
+#admin-monitoring .tirage-tag {
+  margin-bottom: 25px;
+}
+
 /* Règles spécifiques pour les tirage-tag imbriqués (sections dans Admin Monitoring) */
 .tirage-tag .tirage-tag {
   margin: 10px 20px;
