@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FDJ – Concours IA Euromillions</title>
+    
+    <!-- Styles CSS intégrés pour éviter les problèmes de chemins -->
+    <!-- CSS LED Components - Conforme bible.md règle 3 -->
+    <link rel="stylesheet" href="./led-components.css">
+    
+    <!-- API SQLite Backend -->
+    <script src="sqlite-api.js"></script>
+    <script src="csv-import.js"></script>
+    <script src="force-data-demo.js"></script>
+    <!-- CSS Switch Components - Conforme bible.md règle 3 -->
+    <link rel="stylesheet" href="./switch-components.css">
+    <!-- CSS Homepage Components - Conforme bible.md règle 3 -->
+    <link rel="stylesheet" href="./homepage-components.css">
+    <!-- CSS Lottery Components - Conforme bible.md règle 3 -->
+    <link rel="stylesheet" href="./lottery-components.css">
+    <!-- CSS Tirage Components - Conforme bible.md règle 3 -->
+    <link rel="stylesheet" href="./tirage-components.css">
+    <!-- CSS Tables Components - Conforme bible.md règle 3 -->
+    <link rel="stylesheet" href="./tables-components.css">
+
+    <style>
+      /* Styles page d'accueil externalisés vers homepage-components.css - bible.md conforme */
+
+      /* Boules de loterie externalisées vers lottery-components.css - bible.md conforme */
+
+      /* Boutons et status externalisés vers homepage-components.css - bible.md conforme */
+
+      /* Tables et sélecteurs externalisés vers tables-components.css - bible.md conforme */
+
+      /* Page Tirage externalisée vers tirage-components.css - bible.md conforme */
+      
+      /* Styles interrupteur externalisés vers switch-components.css - bible.md conforme */
+      
+
+      
+      /* Sections résultats et boules externalisées vers tirage-components.css et lottery-components.css - bible.md conforme */
+      
+      /* Page Scraping - Styles spécifiques */
+      .scraping-mode-selector {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+      
+      .scraping-mode-btn {
+        flex: 1;
+        padding: 10px;
+        border: 2px solid #666;
+        background: #2a2a2a;
+        color: #ecf0f1;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .scraping-mode-btn.active {
+        border-color: #3498db;
+        background: #34495e;
+      }
+      
+      .scraping-mode-btn:hover {
+        background: #34495e;
+      }
+
+      /* Styles pour les sections cachées */
+      .section.hidden {
+        display: none;
+      }
+
+      /* Styles pour la navigation active */
+      .menu a.active {
+        background: #3498db;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header avec navigation -->
+    <div id="header-container"></div>
+
+    <main>
+      <!-- Section Accueil -->
+      <section id="home" class="section">
+        <h1><span class="tirage-led"></span> EuroMillions IA - Concours FDJ</h1>
+        
+        <div class="demo-card">
+          <h2>🎯 Objectif du Concours</h2>
+          <p>Développer une IA capable de prédire les numéros EuroMillions avec la meilleure précision possible.</p>
+          <p><strong>Données :</strong> Historique complet des tirages EuroMillions depuis 2004</p>
+          <p><strong>Challenge :</strong> Prédire les 5 numéros + 2 étoiles du prochain tirage</p>
+        </div>
+
+        <div class="demo-card">
+          <h2>🚀 Fonctionnalités</h2>
+          <ul>
+            <li><strong>Scraping :</strong> Récupération automatique des données FDJ</li>
+            <li><strong>Training IA :</strong> Entraînement de modèles sur l'historique</li>
+            <li><strong>Prédictions :</strong> Génération de numéros optimisés</li>
+            <li><strong>Analyse :</strong> Statistiques et patterns des tirages</li>
+          </ul>
+        </div>
+
+        <div class="demo-card">
+          <h2>⚡ Actions Rapides</h2>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="navigateTo('scraping')" class="btn-generic">
+              🔍 Scraper les données
+            </button>
+            <button onclick="navigateTo('training')" class="btn-generic">
+              🤖 Entraîner l'IA
+            </button>
+            <button onclick="navigateTo('tirage')" class="btn-generic">
+              🎲 Nouveau tirage
+            </button>
+            <button onclick="navigateTo('ia-config')" class="btn-generic">
+              ⚙️ Configuration IA
+            </button>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <h2>📊 Statistiques</h2>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div style="background: #2a2a2a; padding: 15px; border-radius: 5px; text-align: center;">
+              <div style="color: #3498db; font-size: 24px; font-weight: bold;" id="totalTirages">0</div>
+              <div style="color: #888; font-size: 12px;">Tirages en base</div>
+            </div>
+            <div style="background: #2a2a2a; padding: 15px; border-radius: 5px; text-align: center;">
+              <div style="color: #27ae60; font-size: 24px; font-weight: bold;" id="modelsCount">0</div>
+              <div style="color: #888; font-size: 12px;">Modèles entraînés</div>
+            </div>
+            <div style="background: #2a2a2a; padding: 15px; border-radius: 5px; text-align: center;">
+              <div style="color: #e74c3c; font-size: 24px; font-weight: bold;" id="lastAccuracy">0%</div>
+              <div style="color: #888; font-size: 12px;">Dernière précision</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status">
+          <p><strong>Version :</strong> V0.004A - Interface Training IA complète</p>
+          <p><strong>Statut :</strong> <span id="systemStatus">🟢 Système opérationnel</span></p>
+          <p><strong>Dernière mise à jour :</strong> <span id="lastUpdate">Chargement...</span></p>
+        </div>
+      </section>
+
+      <!-- Les autres sections seront chargées dynamiquement -->
+      
+    </main>
+
+    <!-- Scripts principaux -->
+    <script src="js/router.js"></script>
+    
+    <!-- Script principal de l'application -->
+    <script>
+      // ========================================
+      // INITIALISATION DE L'APPLICATION
+      // ========================================
+
+      class App {
+        constructor() {
+          this.init();
+        }
+
+        async init() {
+          try {
+            // Charger les composants
+            await this.loadComponents();
+            
+            // Initialiser les statistiques
+            this.updateStats();
+            
+            // Mettre à jour le timestamp
+            this.updateLastUpdate();
+            
+            console.log('✅ Application initialisée avec succès');
+          } catch (error) {
+            console.error('❌ Erreur lors de l\'initialisation:', error);
+          }
+        }
+
+        async loadComponents() {
+          // Charger le header
+          const headerContainer = document.getElementById('header-container');
+          if (headerContainer) {
+            const headerResponse = await fetch('components/header.html');
+            const headerHtml = await headerResponse.text();
+            headerContainer.innerHTML = headerHtml;
+
+            // Charger la navigation dans le header
+            const navContainer = document.getElementById('navigation-container');
+            if (navContainer) {
+              const navResponse = await fetch('components/navigation.html');
+              const navHtml = await navResponse.text();
+              navContainer.innerHTML = navHtml;
+            }
+          }
+        }
+
+        updateStats() {
+          // Simuler des statistiques (à remplacer par de vraies données)
+          document.getElementById('totalTirages').textContent = '2847';
+          document.getElementById('modelsCount').textContent = '3';
+          document.getElementById('lastAccuracy').textContent = '23%';
+        }
+
+        updateLastUpdate() {
+          const now = new Date();
+          document.getElementById('lastUpdate').textContent = now.toLocaleString('fr-FR');
+        }
+      }
+
+      // Initialiser l'application quand le DOM est prêt
+      document.addEventListener('DOMContentLoaded', () => {
+        new App();
+      });
+
+      // ========================================
+      // FONCTIONS UTILITAIRES GLOBALES
+      // ========================================
+
+      // Fonction pour afficher l'historique (compatibilité)
+      function showHistorique() {
+        console.log('Affichage de l\'historique...');
+        // À implémenter avec le nouveau système
+      }
+
+      // Fonction pour afficher une section (compatibilité)
+      function showSection(sectionName) {
+        if (typeof navigateTo === 'function') {
+          navigateTo(sectionName);
+        }
+      }
+
+      // Écouter les changements de page pour mettre à jour les statistiques
+      document.addEventListener('pageChanged', (e) => {
+        const { page } = e.detail;
+        
+        // Mettre à jour le titre de la page
+        const titles = {
+          'home': 'EuroMillions IA - Accueil',
+          'training': 'Training des Modèles IA',
+          'scraping': 'Scraping des Données',
+          'tirage': 'Nouveau Tirage',
+          'ia-config': 'Configuration IA',
+          'status': 'Statut du Système'
+        };
+        
+        document.title = titles[page] || 'FDJ – Concours IA Euromillions';
+      });
+    </script>
+  </body>
+</html>

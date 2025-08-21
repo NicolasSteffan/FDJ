@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Refactorisation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: #2a2a2a;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #27ae60;
+            color: white;
+        }
+        .error {
+            background: #e74c3c;
+            color: white;
+        }
+        .warning {
+            background: #f39c12;
+            color: white;
+        }
+        .info {
+            background: #3498db;
+            color: white;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .file-list {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #555;
+        }
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        .status-icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test de Refactorisation - Architecture Modulaire</h1>
+        
+        <div class="test-section">
+            <h2>📁 Structure des Fichiers</h2>
+            <p>Vérification de la nouvelle architecture modulaire :</p>
+            
+            <div class="file-list">
+                <div class="file-item">
+                    <span>📄 apps/web/pages/training.html</span>
+                    <span class="status-icon" id="training-page-status">⏳</span>
+                </div>
+                <div class="file-item">
+                    <span>📄 apps/web/components/header.html</span>
+                    <span class="status-icon" id="header-component-status">⏳</span>
+                </div>
+                <div class="file-item">
+                    <span>📄 apps/web/components/navigation.html</span>
+                    <span class="status-icon" id="nav-component-status">⏳</span>
+                </div>
+                <div class="file-item">
+                    <span>📄 apps/web/js/training.js</span>
+                    <span class="status-icon" id="training-js-status">⏳</span>
+                </div>
+                <div class="file-item">
+                    <span>📄 apps/web/js/router.js</span>
+                    <span class="status-icon" id="router-js-status">⏳</span>
+                </div>
+                <div class="file-item">
+                    <span>📄 apps/web/index-refactored.html</span>
+                    <span class="status-icon" id="index-refactored-status">⏳</span>
+                </div>
+            </div>
+            
+            <button onclick="checkFileStructure()">🔍 Vérifier la Structure</button>
+            <div id="structure-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🚀 Test du Routeur</h2>
+            <p>Test du système de navigation dynamique :</p>
+            
+            <button onclick="testRouter()">🧭 Tester le Routeur</button>
+            <button onclick="testPageLoading()">📄 Tester le Chargement des Pages</button>
+            <div id="router-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧩 Test des Composants</h2>
+            <p>Test du chargement des composants réutilisables :</p>
+            
+            <button onclick="testComponents()">🔧 Tester les Composants</button>
+            <div id="components-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Test JavaScript Modulaire</h2>
+            <p>Test du JavaScript séparé par page :</p>
+            
+            <button onclick="testTrainingJS()">🤖 Tester Training.js</button>
+            <div id="js-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎯 Test d'Intégration</h2>
+            <p>Test complet de l'application refactorisée :</p>
+            
+            <button onclick="runFullTest()">🚀 Test Complet</button>
+            <button onclick="openRefactoredApp()">🌐 Ouvrir l'App Refactorisée</button>
+            <div id="integration-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>📈 Résultats</h2>
+            <div id="final-results">
+                <div class="info">En attente des tests...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {
+            structure: false,
+            router: false,
+            components: false,
+            javascript: false,
+            integration: false
+        };
+
+        async function checkFileStructure() {
+            const resultsDiv = document.getElementById('structure-results');
+            resultsDiv.innerHTML = '<div class="info">🔍 Vérification en cours...</div>';
+            
+            const files = [
+                { name: 'training-page', path: 'pages/training.html', id: 'training-page-status' },
+                { name: 'header-component', path: 'components/header.html', id: 'header-component-status' },
+                { name: 'nav-component', path: 'components/navigation.html', id: 'nav-component-status' },
+                { name: 'training-js', path: 'js/training.js', id: 'training-js-status' },
+                { name: 'router-js', path: 'js/router.js', id: 'router-js-status' },
+                { name: 'index-refactored', path: 'index-refactored.html', id: 'index-refactored-status' }
+            ];
+
+            let allExists = true;
+            const results = [];
+
+            for (const file of files) {
+                try {
+                    const response = await fetch(file.path);
+                    const exists = response.ok;
+                    
+                    document.getElementById(file.id).textContent = exists ? '✅' : '❌';
+                    
+                    if (exists) {
+                        results.push(`<div class="success">✅ ${file.path} - OK</div>`);
+                    } else {
+                        results.push(`<div class="error">❌ ${file.path} - Manquant</div>`);
+                        allExists = false;
+                    }
+                } catch (error) {
+                    document.getElementById(file.id).textContent = '❌';
+                    results.push(`<div class="error">❌ ${file.path} - Erreur: ${error.message}</div>`);
+                    allExists = false;
+                }
+            }
+
+            testResults.structure = allExists;
+            resultsDiv.innerHTML = results.join('');
+            
+            if (allExists) {
+                resultsDiv.innerHTML += '<div class="success">🎉 Tous les fichiers sont présents !</div>';
+            }
+            
+            updateFinalResults();
+        }
+
+        async function testRouter() {
+            const resultsDiv = document.getElementById('router-results');
+            resultsDiv.innerHTML = '<div class="info">🧭 Test du routeur...</div>';
+            
+            try {
+                // Simuler le test du routeur
+                const routerResponse = await fetch('js/router.js');
+                const routerCode = await routerResponse.text();
+                
+                const hasPageRouter = routerCode.includes('class PageRouter');
+                const hasNavigateTo = routerCode.includes('function navigateTo');
+                const hasEventListeners = routerCode.includes('addEventListener');
+                
+                const results = [];
+                
+                if (hasPageRouter) {
+                    results.push('<div class="success">✅ Classe PageRouter définie</div>');
+                } else {
+                    results.push('<div class="error">❌ Classe PageRouter manquante</div>');
+                }
+                
+                if (hasNavigateTo) {
+                    results.push('<div class="success">✅ Fonction navigateTo disponible</div>');
+                } else {
+                    results.push('<div class="error">❌ Fonction navigateTo manquante</div>');
+                }
+                
+                if (hasEventListeners) {
+                    results.push('<div class="success">✅ Event listeners configurés</div>');
+                } else {
+                    results.push('<div class="error">❌ Event listeners manquants</div>');
+                }
+                
+                testResults.router = hasPageRouter && hasNavigateTo && hasEventListeners;
+                resultsDiv.innerHTML = results.join('');
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">❌ Erreur: ${error.message}</div>`;
+                testResults.router = false;
+            }
+            
+            updateFinalResults();
+        }
+
+        async function testPageLoading() {
+            const resultsDiv = document.getElementById('router-results');
+            
+            try {
+                const trainingResponse = await fetch('pages/training.html');
+                const trainingHtml = await trainingResponse.text();
+                
+                const hasTrainingContent = trainingHtml.includes('Training des Modèles IA');
+                const hasTrainingTable = trainingHtml.includes('training-table');
+                const hasAddModelSection = trainingHtml.includes('add-model-section');
+                
+                if (hasTrainingContent && hasTrainingTable && hasAddModelSection) {
+                    resultsDiv.innerHTML += '<div class="success">✅ Page Training correctement extraite</div>';
+                } else {
+                    resultsDiv.innerHTML += '<div class="warning">⚠️ Page Training incomplète</div>';
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML += `<div class="error">❌ Erreur chargement page: ${error.message}</div>`;
+            }
+        }
+
+        async function testComponents() {
+            const resultsDiv = document.getElementById('components-results');
+            resultsDiv.innerHTML = '<div class="info">🔧 Test des composants...</div>';
+            
+            try {
+                const headerResponse = await fetch('components/header.html');
+                const navResponse = await fetch('components/navigation.html');
+                
+                const headerHtml = await headerResponse.text();
+                const navHtml = await navResponse.text();
+                
+                const results = [];
+                
+                if (headerHtml.includes('topbar')) {
+                    results.push('<div class="success">✅ Composant Header OK</div>');
+                } else {
+                    results.push('<div class="error">❌ Composant Header invalide</div>');
+                }
+                
+                if (navHtml.includes('data-page')) {
+                    results.push('<div class="success">✅ Composant Navigation OK</div>');
+                } else {
+                    results.push('<div class="error">❌ Composant Navigation invalide</div>');
+                }
+                
+                testResults.components = headerResponse.ok && navResponse.ok;
+                resultsDiv.innerHTML = results.join('');
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">❌ Erreur: ${error.message}</div>`;
+                testResults.components = false;
+            }
+            
+            updateFinalResults();
+        }
+
+        async function testTrainingJS() {
+            const resultsDiv = document.getElementById('js-results');
+            resultsDiv.innerHTML = '<div class="info">🤖 Test du JavaScript Training...</div>';
+            
+            try {
+                const jsResponse = await fetch('js/training.js');
+                const jsCode = await jsResponse.text();
+                
+                const results = [];
+                
+                const functions = [
+                    'updateTrainingModels',
+                    'addModel',
+                    'removeModel',
+                    'startModelTraining',
+                    'toggleTrainingSection'
+                ];
+                
+                functions.forEach(func => {
+                    if (jsCode.includes(`function ${func}`)) {
+                        results.push(`<div class="success">✅ Fonction ${func} présente</div>`);
+                    } else {
+                        results.push(`<div class="error">❌ Fonction ${func} manquante</div>`);
+                    }
+                });
+                
+                const hasAIModels = jsCode.includes('AI_MODELS');
+                const hasDynamicModels = jsCode.includes('DYNAMIC_MODELS');
+                
+                if (hasAIModels) {
+                    results.push('<div class="success">✅ Configuration AI_MODELS présente</div>');
+                } else {
+                    results.push('<div class="error">❌ Configuration AI_MODELS manquante</div>');
+                }
+                
+                if (hasDynamicModels) {
+                    results.push('<div class="success">✅ Gestion DYNAMIC_MODELS présente</div>');
+                } else {
+                    results.push('<div class="error">❌ Gestion DYNAMIC_MODELS manquante</div>');
+                }
+                
+                testResults.javascript = jsResponse.ok && hasAIModels && hasDynamicModels;
+                resultsDiv.innerHTML = results.join('');
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">❌ Erreur: ${error.message}</div>`;
+                testResults.javascript = false;
+            }
+            
+            updateFinalResults();
+        }
+
+        async function runFullTest() {
+            const resultsDiv = document.getElementById('integration-results');
+            resultsDiv.innerHTML = '<div class="info">🚀 Test d\'intégration complet...</div>';
+            
+            // Exécuter tous les tests
+            await checkFileStructure();
+            await testRouter();
+            await testComponents();
+            await testTrainingJS();
+            
+            // Vérifier l'index refactorisé
+            try {
+                const indexResponse = await fetch('index-refactored.html');
+                const indexHtml = await indexResponse.text();
+                
+                const hasApp = indexHtml.includes('class App');
+                const hasRouter = indexHtml.includes('js/router.js');
+                const hasComponents = indexHtml.includes('components/');
+                
+                if (hasApp && hasRouter && hasComponents) {
+                    resultsDiv.innerHTML = '<div class="success">✅ Test d\'intégration réussi !</div>';
+                    testResults.integration = true;
+                } else {
+                    resultsDiv.innerHTML = '<div class="warning">⚠️ Test d\'intégration partiel</div>';
+                    testResults.integration = false;
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">❌ Erreur intégration: ${error.message}</div>`;
+                testResults.integration = false;
+            }
+            
+            updateFinalResults();
+        }
+
+        function openRefactoredApp() {
+            window.open('index-refactored.html', '_blank');
+        }
+
+        function updateFinalResults() {
+            const finalDiv = document.getElementById('final-results');
+            const total = Object.keys(testResults).length;
+            const passed = Object.values(testResults).filter(Boolean).length;
+            const percentage = Math.round((passed / total) * 100);
+            
+            let status = 'error';
+            let message = '';
+            
+            if (percentage === 100) {
+                status = 'success';
+                message = '🎉 Refactorisation complète et fonctionnelle !';
+            } else if (percentage >= 80) {
+                status = 'warning';
+                message = '⚠️ Refactorisation majoritairement réussie';
+            } else if (percentage >= 50) {
+                status = 'warning';
+                message = '🔧 Refactorisation en cours, quelques ajustements nécessaires';
+            } else {
+                status = 'error';
+                message = '❌ Refactorisation incomplète, corrections nécessaires';
+            }
+            
+            finalDiv.innerHTML = `
+                <div class="${status}">
+                    ${message}
+                    <br>
+                    <strong>Score: ${passed}/${total} (${percentage}%)</strong>
+                </div>
+                <div style="margin-top: 10px;">
+                    <strong>Détails:</strong>
+                    <ul>
+                        <li>Structure: ${testResults.structure ? '✅' : '❌'}</li>
+                        <li>Routeur: ${testResults.router ? '✅' : '❌'}</li>
+                        <li>Composants: ${testResults.components ? '✅' : '❌'}</li>
+                        <li>JavaScript: ${testResults.javascript ? '✅' : '❌'}</li>
+                        <li>Intégration: ${testResults.integration ? '✅' : '❌'}</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🧪 Page de test chargée');
+        });
+    </script>
+</body>
+</html>

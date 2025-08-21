@@ -1,0 +1,407 @@
+<h1><span class="tirage-led"></span> Training des Modèles IA</h1>
+
+<!-- Configuration du Training -->
+<div class="config-group" style="margin-bottom: 20px;">
+  <h4>Configuration du Training</h4>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+    <div>
+      <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">IA:</label>
+      <select id="trainingAI" class="btn-generic" style="width: 100%; text-align: left;" onchange="updateTrainingModels()">
+        <option value="openai">OpenAI / ChatGPT</option>
+        <option value="claude">Claude / Anthropic</option>
+        <option value="mistral">Mistral AI</option>
+        <option value="gemini">Gemini (Google)</option>
+        <option value="perplexity">Perplexity</option>
+        <option value="deepseek">DeepSeek</option>
+      </select>
+    </div>
+    <div>
+      <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle à entraîner:</label>
+      <select id="trainingModel" class="btn-generic" style="width: 100%; text-align: left;">
+        <!-- Les options seront remplies dynamiquement -->
+      </select>
+    </div>
+  </div>
+  <div style="margin-top: 15px;">
+    <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Type de données:</label>
+    <select id="trainingDataType" class="btn-generic" style="width: 100%; text-align: left;" onchange="updateTrainingButtons()">
+      <option value="training">Training (≤ 2024)</option>
+      <option value="test">Test (2025)</option>
+      <option value="all">Toutes les données</option>
+    </select>
+  </div>
+  
+  <!-- Boutons Lecture/Entraîner -->
+  <div style="margin-top: 15px;">
+    <button id="trainingActionBtn" onclick="executeTrainingAction()" class="btn-generic" style="width: 100%;">
+      Lecture
+    </button>
+  </div>
+  
+  <!-- Bouton Arrêter l'entraînement -->
+  <div style="margin-top: 10px;">
+    <button id="stopTrainingBtn" onclick="stopTraining()" class="btn-generic" style="width: 100%;">
+      Arreter l entrainement
+    </button>
+  </div>
+</div>
+
+<!-- Sous-section Ajouter une modèle -->
+<div class="gains-section" id="add-model-section" style="margin-top: 15px;">
+  <div class="gains-header" onclick="toggleTrainingSection('add-model-section')">
+    <h3><span class="led_generique_petite collapsed" id="add-model-led"></span>Ajouter une modèle</h3>
+  </div>
+  <div class="gains-content expanded" id="add-model-content">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div>
+        <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">IA:</label>
+        <select id="addModelAI" class="btn-generic" style="width: 100%; text-align: left;" onchange="updateAddModelModels()">
+          <option value="openai">OpenAI / ChatGPT</option>
+          <option value="claude">Claude / Anthropic</option>
+          <option value="mistral">Mistral AI</option>
+          <option value="gemini">Gemini (Google)</option>
+          <option value="perplexity">Perplexity</option>
+          <option value="deepseek">DeepSeek</option>
+        </select>
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle à entraîner:</label>
+        <select id="addModelModel" class="btn-generic" style="width: 100%; text-align: left;">
+          <!-- Les options seront remplies dynamiquement -->
+        </select>
+      </div>
+    </div>
+    <div style="margin-top: 15px; display: flex; gap: 10px;">
+      <button onclick="addModel()" class="btn-generic" style="flex: 1;">
+        Ajouter
+      </button>
+      <button onclick="removeModel()" class="btn-generic" style="flex: 1;">
+        Retirer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Wizard d'entraînement -->
+<div class="config-group" style="margin-bottom: 20px;">
+  <h4>Wizard d'Entraînement</h4>
+  <div style="display: flex; flex-direction: column; gap: 10px;">
+    <button onclick="wizardStep(1)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
+      <span class="led_generique_petite collapsed" id="wizard-led-1" style="position: absolute; top: 8px; right: 8px;"></span>
+      <strong>Étape 1:</strong> Préparation des données
+    </button>
+    <button onclick="wizardStep(2)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
+      <span class="led_generique_petite collapsed" id="wizard-led-2" style="position: absolute; top: 8px; right: 8px;"></span>
+      <strong>Étape 2:</strong> Configuration du modèle
+    </button>
+    <button onclick="wizardStep(3)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
+      <span class="led_generique_petite collapsed" id="wizard-led-3" style="position: absolute; top: 8px; right: 8px;"></span>
+      <strong>Étape 3:</strong> Entraînement initial
+    </button>
+    <button onclick="wizardStep(4)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
+      <span class="led_generique_petite collapsed" id="wizard-led-4" style="position: absolute; top: 8px; right: 8px;"></span>
+      <strong>Étape 4:</strong> Validation du modèle
+    </button>
+    <button onclick="wizardStep(5)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
+      <span class="led_generique_petite collapsed" id="wizard-led-5" style="position: absolute; top: 8px; right: 8px;"></span>
+      <strong>Étape 5:</strong> Sauvegarde et export
+    </button>
+  </div>
+  <div style="margin-top: 15px; display: flex; gap: 10px;">
+    <button onclick="resetWizard()" class="btn-generic" style="font-size: 12px;">
+      Reset Wizard
+    </button>
+    <button onclick="runFullWizard()" class="btn-generic" style="font-size: 12px;">
+      Exécuter tout le wizard
+    </button>
+  </div>
+</div>
+
+<!-- Tableau Entraînement / Modèles de données -->
+<div class="config-group" style="margin-bottom: 20px;">
+  <h4>Entraînement / Modèles de données</h4>
+  <div style="overflow-x: auto;">
+    <table id="training-table" style="width: 100%; border-collapse: collapse; background: #2a2a2a; border-radius: 5px;">
+      <thead>
+        <tr style="background: #1a1a1a;">
+          <th style="padding: 12px; text-align: left; border-bottom: 1px solid #444; color: #ecf0f1;">Modèle</th>
+          <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 1</th>
+          <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 2</th>
+          <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 3</th>
+          <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 4</th>
+          <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 5</th>
+          <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 6</th>
+          <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 7</th>
+          <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 8</th>
+          <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 9</th>
+          <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 10</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 12px; border-bottom: 1px solid #333; color: #ecf0f1;">Modèle A</td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite expanded" id="model-a-epoch-1" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite expanded" id="model-a-epoch-2" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite expanded" id="model-a-epoch-3" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite expanded" id="model-a-epoch-4" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite expanded" id="model-a-epoch-5" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-a-epoch-6" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-a-epoch-7" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-a-epoch-8" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-a-epoch-9" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-a-epoch-10" style="display: inline-block;"></span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border-bottom: 1px solid #333; color: #ecf0f1;">Modèle B</td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite expanded" id="model-b-epoch-1" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite expanded" id="model-b-epoch-2" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite expanded" id="model-b-epoch-3" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-b-epoch-4" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-b-epoch-5" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-b-epoch-6" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-b-epoch-7" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-b-epoch-8" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-b-epoch-9" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-b-epoch-10" style="display: inline-block;"></span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border-bottom: 1px solid #333; color: #ecf0f1;">Modèle C</td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite expanded" id="model-c-epoch-1" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-c-epoch-2" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-c-epoch-3" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-c-epoch-4" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-c-epoch-5" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-c-epoch-6" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-c-epoch-7" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-c-epoch-8" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-c-epoch-9" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-c-epoch-10" style="display: inline-block;"></span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border-bottom: 1px solid #333; color: #ecf0f1;">Modèle D</td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-d-epoch-1" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-d-epoch-2" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-d-epoch-3" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-d-epoch-4" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-d-epoch-5" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-d-epoch-6" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-d-epoch-7" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-d-epoch-8" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-d-epoch-9" style="display: inline-block;"></span>
+          </td>
+          <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+            <span class="led_generique_petite collapsed" id="model-d-epoch-10" style="display: inline-block;"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top: 15px; display: flex; gap: 10px;">
+    <button onclick="startModelTraining()" class="btn-generic" style="font-size: 12px;">
+      Démarrer entraînement
+    </button>
+    <button onclick="resetModelTraining()" class="btn-generic" style="font-size: 12px;">
+      Reset entraînement
+    </button>
+  </div>
+</div>
+
+<!-- Pavé de 10 boutons -->
+<div class="config-group" style="margin-bottom: 20px;">
+  <h4>Actions Rapides</h4>
+  <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+    <button onclick="quickAction(1)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+      <span class="led_generique_petite collapsed" id="quick-led-1" style="position: absolute; top: 5px; right: 5px;"></span>
+      Action 1
+    </button>
+    <button onclick="quickAction(2)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+      <span class="led_generique_petite collapsed" id="quick-led-2" style="position: absolute; top: 5px; right: 5px;"></span>
+      Action 2
+    </button>
+    <button onclick="quickAction(3)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+      <span class="led_generique_petite collapsed" id="quick-led-3" style="position: absolute; top: 5px; right: 5px;"></span>
+      Action 3
+    </button>
+    <button onclick="quickAction(4)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+      <span class="led_generique_petite collapsed" id="quick-led-4" style="position: absolute; top: 5px; right: 5px;"></span>
+      Action 4
+    </button>
+    <button onclick="quickAction(5)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+      <span class="led_generique_petite collapsed" id="quick-led-5" style="position: absolute; top: 5px; right: 5px;"></span>
+      Action 5
+    </button>
+    <button onclick="quickAction(6)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+      <span class="led_generique_petite collapsed" id="quick-led-6" style="position: absolute; top: 5px; right: 5px;"></span>
+      Action 6
+    </button>
+    <button onclick="quickAction(7)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+      <span class="led_generique_petite collapsed" id="quick-led-7" style="position: absolute; top: 5px; right: 5px;"></span>
+      Action 7
+    </button>
+    <button onclick="quickAction(8)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+      <span class="led_generique_petite collapsed" id="quick-led-8" style="position: absolute; top: 5px; right: 5px;"></span>
+      Action 8
+    </button>
+    <button onclick="quickAction(9)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+      <span class="led_generique_petite collapsed" id="quick-led-9" style="position: absolute; top: 5px; right: 5px;"></span>
+      Action 9
+    </button>
+    <button onclick="quickAction(10)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+      <span class="led_generique_petite collapsed" id="quick-led-10" style="position: absolute; top: 5px; right: 5px;"></span>
+      Action 10
+    </button>
+  </div>
+</div>
+
+<!-- Logs de Training -->
+<div class="config-group" style="margin-bottom: 20px;">
+  <h4>Logs de Training</h4>
+  <div id="trainingLogs" style="border: 1px solid #444; border-radius: 5px; padding: 15px; height: 200px; overflow-y: auto; background: #1a1a1a; font-family: monospace; font-size: 12px; color: #00ff00;">
+    <div style="color: #ffff00;">Training Logs</div>
+    <div style="color: #888;">En attente de démarrage du training...</div>
+  </div>
+  <div style="margin-top: 10px;">
+    <button onclick="clearTrainingLogs()" class="btn-generic" style="font-size: 12px;">
+      Effacer Logs
+    </button>
+  </div>
+</div>
+
+<!-- Métriques de Performance -->
+<div class="config-group" style="margin-bottom: 20px;">
+  <h4>Métriques de Performance</h4>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+    <div style="background: #2a2a2a; padding: 15px; border-radius: 5px; text-align: center;">
+      <div style="color: #27ae60; font-size: 24px; font-weight: bold;" id="trainingAccuracy">0%</div>
+      <div style="color: #888; font-size: 12px;">Précision</div>
+    </div>
+    <div style="background: #2a2a2a; padding: 15px; border-radius: 5px; text-align: center;">
+      <div style="color: #3498db; font-size: 24px; font-weight: bold;" id="trainingLoss">0.000</div>
+      <div style="color: #888; font-size: 12px;">Loss</div>
+    </div>
+  </div>
+</div>
+
+<!-- Paramètres de Training -->
+<div class="config-group" style="margin-bottom: 20px;">
+  <h4>Paramètres</h4>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+    <div>
+      <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Époques:</label>
+      <input type="number" id="trainingEpochs" value="10" min="1" max="100" 
+             style="width: 100%; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff;">
+    </div>
+    <div>
+      <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Taille du batch:</label>
+      <input type="number" id="trainingBatchSize" value="32" min="1" max="128" 
+             style="width: 100%; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff;">
+    </div>
+  </div>
+  <div style="margin-top: 15px;">
+    <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Taux d'apprentissage:</label>
+    <input type="number" id="trainingLearningRate" value="0.001" min="0.0001" max="0.1" step="0.0001" 
+           style="width: 100%; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff;">
+  </div>
+</div>
+
+<!-- Actions de Training -->
+<div class="config-group" style="margin-bottom: 20px;">
+  <h4>Actions</h4>
+  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <button onclick="startTraining()" class="btn-generic">
+      Démarrer Training
+    </button>
+    <button onclick="stopTraining()" class="btn-generic">
+      Arrêter Training
+    </button>
+    <button onclick="exportTrainedModel()" class="btn-generic">
+      Exporter Modèle
+    </button>
+    <button onclick="evaluateModel()" class="btn-generic">
+      Évaluer Modèle
+    </button>
+  </div>
+</div>
+
+<!-- Statut général -->
+<div class="status" style="margin-top: 20px;">
+  <p><strong>Information :</strong> Le training utilise les données taguées "Training" (≤ 2024) et "Test" (2025) de votre base de données.</p>
+  <p><strong>Sécurité :</strong> Les modèles entraînés sont sauvegardés localement et ne sont jamais transmis à des serveurs externes.</p>
+</div>
