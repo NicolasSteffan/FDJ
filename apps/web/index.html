@@ -1325,7 +1325,7 @@
         <div class="config-group" style="margin-bottom: 20px;">
           <h4>Entraînement / Modèles de données</h4>
           <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; background: #2a2a2a; border-radius: 5px;">
+            <table id="training-table" style="width: 100%; border-collapse: collapse; background: #2a2a2a; border-radius: 5px;">
               <thead>
                 <tr style="background: #1a1a1a;">
                   <th style="padding: 12px; text-align: left; border-bottom: 1px solid #444; color: #ecf0f1;">Modèle</th>
@@ -8144,6 +8144,10 @@ ${error.message}
         ]
       };
 
+      // Modèles ajoutés dynamiquement pour l'entraînement
+      let DYNAMIC_MODELS = [];
+      let NEXT_MODEL_ID = 1;
+
       // Mettre à jour la liste des modèles selon l'IA sélectionnée
       function updateTrainingModels() {
         const selectedAI = document.getElementById('trainingAI').value;
@@ -8190,13 +8194,39 @@ ${error.message}
         const selectedAI = document.getElementById('addModelAI').value;
         const selectedModel = document.getElementById('addModelModel').value;
         
+        if (!selectedAI || !selectedModel) {
+          addTrainingLog(`❌ Veuillez sélectionner une IA et un modèle`, 'error');
+          return;
+        }
+        
+        // Vérifier si le modèle existe déjà
+        const existingModel = DYNAMIC_MODELS.find(m => m.ai === selectedAI && m.model === selectedModel);
+        if (existingModel) {
+          addTrainingLog(`❌ Le modèle ${selectedModel} (${selectedAI}) existe déjà`, 'error');
+          return;
+        }
+        
         addTrainingLog(`➕ Ajout du modèle: ${selectedAI} - ${selectedModel}`, 'info');
         
         // Activer la LED de la section
         activateTrainingSectionLED('add-model-section');
         
-        // Ici vous pouvez ajouter la logique pour ajouter le modèle à la liste
-        // Par exemple, ajouter une nouvelle ligne dans le tableau des modèles
+        // Ajouter le modèle à la liste dynamique
+        const newModel = {
+          id: NEXT_MODEL_ID++,
+          ai: selectedAI,
+          model: selectedModel,
+          name: `Modèle ${String.fromCharCode(64 + DYNAMIC_MODELS.length + 1)}`, // A, B, C, D...
+          epochs: Array(10).fill('collapsed') // 10 époques, toutes en collapsed
+        };
+        
+        DYNAMIC_MODELS.push(newModel);
+        
+        // Mettre à jour le tableau
+        updateTrainingTable();
+        
+        // Sauvegarder les modèles
+        saveDynamicModels();
         
         setTimeout(() => {
           addTrainingLog(`✅ Modèle ${selectedModel} ajouté avec succès`, 'success');
@@ -8208,23 +8238,122 @@ ${error.message}
         const selectedAI = document.getElementById('addModelAI').value;
         const selectedModel = document.getElementById('addModelModel').value;
         
+        if (!selectedAI || !selectedModel) {
+          addTrainingLog(`❌ Veuillez sélectionner une IA et un modèle`, 'error');
+          return;
+        }
+        
+        // Chercher le modèle dans la liste dynamique
+        const modelIndex = DYNAMIC_MODELS.findIndex(m => m.ai === selectedAI && m.model === selectedModel);
+        if (modelIndex === -1) {
+          addTrainingLog(`❌ Le modèle ${selectedModel} (${selectedAI}) n'existe pas dans la liste`, 'error');
+          return;
+        }
+        
+        const modelToRemove = DYNAMIC_MODELS[modelIndex];
         addTrainingLog(`➖ Retrait du modèle: ${selectedAI} - ${selectedModel}`, 'info');
         
         // Activer la LED de la section
         activateTrainingSectionLED('add-model-section');
         
-        // Ici vous pouvez ajouter la logique pour retirer le modèle de la liste
+        // Retirer le modèle de la liste
+        DYNAMIC_MODELS.splice(modelIndex, 1);
+        
+        // Mettre à jour le tableau
+        updateTrainingTable();
+        
+        // Sauvegarder les modèles
+        saveDynamicModels();
         
         setTimeout(() => {
           addTrainingLog(`✅ Modèle ${selectedModel} retiré avec succès`, 'success');
         }, 1000);
       }
 
+      // Mettre à jour le tableau des modèles d'entraînement
+      function updateTrainingTable() {
+        const tbody = document.querySelector('#training-table tbody');
+        if (!tbody) return;
+        
+        // Vider le tableau
+        tbody.innerHTML = '';
+        
+        // Ajouter les modèles dynamiques
+        DYNAMIC_MODELS.forEach((model, index) => {
+          const row = document.createElement('tr');
+          
+          // Cellule du nom du modèle
+          const nameCell = document.createElement('td');
+          nameCell.style.cssText = 'padding: 12px; border-bottom: 1px solid #333; color: #ecf0f1;';
+          nameCell.textContent = model.name;
+          row.appendChild(nameCell);
+          
+          // Cellules des époques
+          for (let epoch = 1; epoch <= 10; epoch++) {
+            const epochCell = document.createElement('td');
+            epochCell.style.cssText = 'padding: 12px; text-align: center; border-bottom: 1px solid #333;';
+            
+            const led = document.createElement('span');
+            led.className = `led_generique_petite ${model.epochs[epoch - 1]}`;
+            led.id = `model-${model.id}-epoch-${epoch}`;
+            led.style.cssText = 'display: inline-block;';
+            
+            epochCell.appendChild(led);
+            row.appendChild(epochCell);
+          }
+          
+          tbody.appendChild(row);
+        });
+        
+        // Si aucun modèle, afficher un message
+        if (DYNAMIC_MODELS.length === 0) {
+          const emptyRow = document.createElement('tr');
+          const emptyCell = document.createElement('td');
+          emptyCell.colSpan = 11;
+          emptyCell.style.cssText = 'padding: 20px; text-align: center; color: #7f8c8d; font-style: italic;';
+          emptyCell.textContent = 'Aucun modèle ajouté. Utilisez la section "Ajouter une modèle" pour commencer.';
+          emptyRow.appendChild(emptyCell);
+          tbody.appendChild(emptyRow);
+        }
+      }
+
+      // Sauvegarder les modèles dynamiques dans localStorage
+      function saveDynamicModels() {
+        try {
+          localStorage.setItem('dynamicModels', JSON.stringify(DYNAMIC_MODELS));
+          localStorage.setItem('nextModelId', NEXT_MODEL_ID.toString());
+        } catch (error) {
+          console.error('Erreur lors de la sauvegarde des modèles:', error);
+        }
+      }
+      
+      // Charger les modèles dynamiques depuis localStorage
+      function loadDynamicModels() {
+        try {
+          const savedModels = localStorage.getItem('dynamicModels');
+          const savedNextId = localStorage.getItem('nextModelId');
+          
+          if (savedModels) {
+            DYNAMIC_MODELS = JSON.parse(savedModels);
+          }
+          
+          if (savedNextId) {
+            NEXT_MODEL_ID = parseInt(savedNextId);
+          }
+        } catch (error) {
+          console.error('Erreur lors du chargement des modèles:', error);
+          DYNAMIC_MODELS = [];
+          NEXT_MODEL_ID = 1;
+        }
+      }
+
       // Initialiser les modèles au chargement de la page
       function initializeTrainingModels() {
+        loadDynamicModels(); // Charger les modèles sauvegardés
         updateTrainingModels();
         updateAddModelModels(); // Initialiser aussi la section "Ajouter une modèle"
         updateTrainingButtons();
+        updateTrainingTable(); // Initialiser le tableau
       }
 
       // ========================================
@@ -8547,23 +8676,33 @@ ${error.message}
           return;
         }
         
+        if (DYNAMIC_MODELS.length === 0) {
+          addTrainingLog('❌ Aucun modèle à entraîner. Ajoutez des modèles d\'abord.', 'error');
+          return;
+        }
+        
         modelTrainingInProgress = true;
-        addTrainingLog('🚀 Démarrage de l\'entraînement des modèles...', 'info');
+        addTrainingLog(`🚀 Démarrage de l'entraînement de ${DYNAMIC_MODELS.length} modèle(s)...`, 'info');
         
-        // Démarrer l'entraînement pour chaque modèle
-        const models = ['a', 'b', 'c', 'd'];
-        const delays = [0, 2000, 4000, 6000]; // Décalage pour chaque modèle
+        // Démarrer l'entraînement pour chaque modèle dynamique
+        const delays = [0, 2000, 4000, 6000, 8000, 10000]; // Décalage pour chaque modèle
         
-        models.forEach((model, index) => {
+        DYNAMIC_MODELS.forEach((model, index) => {
           setTimeout(() => {
-            startModelTrainingSequence(model);
-          }, delays[index]);
+            startModelTrainingSequence(model.id);
+          }, delays[index] || 0);
         });
       }
       
       // Séquence d'entraînement pour un modèle spécifique
-      function startModelTrainingSequence(modelName) {
-        addTrainingLog(`📊 Démarrage entraînement Modèle ${modelName.toUpperCase()}...`, 'info');
+      function startModelTrainingSequence(modelId) {
+        const model = DYNAMIC_MODELS.find(m => m.id === modelId);
+        if (!model) {
+          addTrainingLog(`❌ Modèle avec ID ${modelId} non trouvé`, 'error');
+          return;
+        }
+        
+        addTrainingLog(`📊 Démarrage entraînement ${model.name} (${model.ai} - ${model.model})...`, 'info');
         
         let currentEpoch = 1;
         const maxEpochs = 10;
@@ -8572,15 +8711,18 @@ ${error.message}
         function nextEpoch() {
           if (currentEpoch <= maxEpochs && modelTrainingInProgress) {
             // Activer la LED de l'époque actuelle (progression du bas vers le haut)
-            const ledId = `model-${modelName}-epoch-${currentEpoch}`;
+            const ledId = `model-${modelId}-epoch-${currentEpoch}`;
             const led = document.getElementById(ledId);
             
             if (led) {
               led.classList.remove('collapsed');
               led.classList.add('expanded');
               
+              // Mettre à jour l'état dans le modèle
+              model.epochs[currentEpoch - 1] = 'expanded';
+              
               // Log de progression
-              addTrainingLog(`   Modèle ${modelName.toUpperCase()} - Époque ${currentEpoch}/${maxEpochs}`, 'info');
+              addTrainingLog(`   ${model.name} - Époque ${currentEpoch}/${maxEpochs}`, 'info');
               
               // Simuler une métrique de performance
               const accuracy = Math.floor(45 + (currentEpoch * 3.5) + Math.random() * 5);
@@ -8591,10 +8733,10 @@ ${error.message}
             
             // Programmer la prochaine époque
             if (currentEpoch <= maxEpochs) {
-              modelTrainingIntervals[modelName] = setTimeout(nextEpoch, 1500);
+              modelTrainingIntervals[modelId] = setTimeout(nextEpoch, 1500);
             } else {
               // Entraînement terminé pour ce modèle
-              addTrainingLog(`✅ Entraînement Modèle ${modelName.toUpperCase()} terminé`, 'success');
+              addTrainingLog(`✅ Entraînement ${model.name} terminé`, 'success');
               
               // Vérifier si tous les modèles sont terminés
               checkAllModelsCompleted();
@@ -8627,18 +8769,25 @@ ${error.message}
         modelTrainingIntervals = {};
         modelTrainingInProgress = false;
         
-        // Remettre toutes les LEDs en gris
-        const models = ['a', 'b', 'c', 'd'];
-        models.forEach(model => {
+        // Remettre toutes les LEDs en gris pour les modèles dynamiques
+        DYNAMIC_MODELS.forEach(model => {
           for (let epoch = 1; epoch <= 10; epoch++) {
-            const ledId = `model-${model}-epoch-${epoch}`;
+            const ledId = `model-${model.id}-epoch-${epoch}`;
             const led = document.getElementById(ledId);
             if (led) {
               led.classList.remove('expanded');
               led.classList.add('collapsed');
             }
           }
+          // Réinitialiser l'état des époques
+          model.epochs = Array(10).fill('collapsed');
         });
+        
+        // Mettre à jour le tableau
+        updateTrainingTable();
+        
+        // Sauvegarder les modèles
+        saveDynamicModels();
         
         addTrainingLog('🔄 Reset entraînement - Tous les modèles remis à zéro', 'info');
       }
