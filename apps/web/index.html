@@ -98,8 +98,68 @@
         display: block;
         margin-bottom: 10px;
         color: #ecf0f1;
-        font-size: 14px;
-        font-weight: 500;
+      }
+      
+      /* Styles spécifiques pour les sections pliables du Training */
+      #training .tirage-tag {
+        background: rgba(42, 42, 42, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+      
+      #training .tirage-tag:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+      }
+      
+      #training .tirage-tag-header {
+        padding: 15px 20px;
+        background: rgba(26, 26, 26, 0.9);
+        border-radius: 8px 8px 0 0;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      
+      #training .tirage-tag-header:hover {
+        background: rgba(52, 73, 94, 0.8);
+      }
+      
+      #training .tirage-tag-header h2 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ecf0f1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      #training .tirage-tag-content {
+        padding: 20px;
+        background: rgba(42, 42, 42, 0.6);
+        border-radius: 0 0 8px 8px;
+      }
+      
+      #training .tirage-tag.collapsed .tirage-tag-content {
+        display: none;
+      }
+      
+      #training .tirage-tag.expanded .tirage-tag-content {
+        display: block;
+        animation: slideDown 0.3s ease;
+      }
+      
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
       
       .source-file-container {
@@ -1143,7 +1203,7 @@
       <!-- Section Training -->
       <section id="training" class="section hidden">
         <h1><span class="tirage-led"></span> Training des Modèles IA</h1>
-
+        
         <!-- Configuration du Training -->
         <div class="config-group" style="margin-bottom: 20px;">
           <h4>Configuration du Training</h4>
@@ -1186,6 +1246,243 @@
           <div style="margin-top: 10px;">
             <button id="stopTrainingBtn" onclick="stopTraining()" class="btn-generic" style="width: 100%;">
               Arreter l entrainement
+            </button>
+          </div>
+        </div>
+
+        <!-- Sous-section Ajouter une modèle -->
+        <div class="gains-section" id="add-model-section" style="margin-top: 15px;">
+          <div class="gains-header" onclick="toggleTrainingSection('add-model-section')">
+            <h3><span class="led_generique_petite collapsed" id="add-model-led"></span>Ajouter une modèle</h3>
+          </div>
+          <div class="gains-content expanded" id="add-model-content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+              <div>
+                <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">IA:</label>
+                <select id="addModelAI" class="btn-generic" style="width: 100%; text-align: left;" onchange="updateAddModelModels()">
+                  <option value="openai">OpenAI / ChatGPT</option>
+                  <option value="claude">Claude / Anthropic</option>
+                  <option value="mistral">Mistral AI</option>
+                  <option value="gemini">Gemini (Google)</option>
+                  <option value="perplexity">Perplexity</option>
+                  <option value="deepseek">DeepSeek</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle à entraîner:</label>
+                <select id="addModelModel" class="btn-generic" style="width: 100%; text-align: left;">
+                  <!-- Les options seront remplies dynamiquement -->
+                </select>
+              </div>
+            </div>
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+              <button onclick="addModel()" class="btn-generic" style="flex: 1;">
+                Ajouter
+              </button>
+              <button onclick="removeModel()" class="btn-generic" style="flex: 1;">
+                Retirer
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wizard d'entraînement -->
+        <div class="config-group" style="margin-bottom: 20px;">
+          <h4>Wizard d'Entraînement</h4>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button onclick="wizardStep(1)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
+              <span class="led_generique_petite collapsed" id="wizard-led-1" style="position: absolute; top: 8px; right: 8px;"></span>
+              <strong>Étape 1:</strong> Préparation des données
+            </button>
+            <button onclick="wizardStep(2)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
+              <span class="led_generique_petite collapsed" id="wizard-led-2" style="position: absolute; top: 8px; right: 8px;"></span>
+              <strong>Étape 2:</strong> Configuration du modèle
+            </button>
+            <button onclick="wizardStep(3)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
+              <span class="led_generique_petite collapsed" id="wizard-led-3" style="position: absolute; top: 8px; right: 8px;"></span>
+              <strong>Étape 3:</strong> Entraînement initial
+            </button>
+            <button onclick="wizardStep(4)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
+              <span class="led_generique_petite collapsed" id="wizard-led-4" style="position: absolute; top: 8px; right: 8px;"></span>
+              <strong>Étape 4:</strong> Validation du modèle
+            </button>
+            <button onclick="wizardStep(5)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
+              <span class="led_generique_petite collapsed" id="wizard-led-5" style="position: absolute; top: 8px; right: 8px;"></span>
+              <strong>Étape 5:</strong> Sauvegarde et export
+            </button>
+          </div>
+          <div style="margin-top: 15px; display: flex; gap: 10px;">
+            <button onclick="resetWizard()" class="btn-generic" style="font-size: 12px;">
+              Reset Wizard
+            </button>
+            <button onclick="runFullWizard()" class="btn-generic" style="font-size: 12px;">
+              Exécuter tout le wizard
+            </button>
+          </div>
+        </div>
+
+        <!-- Tableau Entraînement / Modèles de données -->
+        <div class="config-group" style="margin-bottom: 20px;">
+          <h4>Entraînement / Modèles de données</h4>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; background: #2a2a2a; border-radius: 5px;">
+              <thead>
+                <tr style="background: #1a1a1a;">
+                  <th style="padding: 12px; text-align: left; border-bottom: 1px solid #444; color: #ecf0f1;">Modèle</th>
+                  <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 1</th>
+                  <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 2</th>
+                  <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 3</th>
+                  <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 4</th>
+                  <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 5</th>
+                  <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 6</th>
+                  <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 7</th>
+                  <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 8</th>
+                  <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 9</th>
+                  <th style="padding: 12px; text-align: center; border-bottom: 1px solid #444; color: #ecf0f1;">Époque 10</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding: 12px; border-bottom: 1px solid #333; color: #ecf0f1;">Modèle A</td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite expanded" id="model-a-epoch-1" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite expanded" id="model-a-epoch-2" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite expanded" id="model-a-epoch-3" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite expanded" id="model-a-epoch-4" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite expanded" id="model-a-epoch-5" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-a-epoch-6" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-a-epoch-7" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-a-epoch-8" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-a-epoch-9" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-a-epoch-10" style="display: inline-block;"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px; border-bottom: 1px solid #333; color: #ecf0f1;">Modèle B</td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite expanded" id="model-b-epoch-1" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite expanded" id="model-b-epoch-2" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite expanded" id="model-b-epoch-3" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-b-epoch-4" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-b-epoch-5" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-b-epoch-6" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-b-epoch-7" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-b-epoch-8" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-b-epoch-9" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-b-epoch-10" style="display: inline-block;"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px; border-bottom: 1px solid #333; color: #ecf0f1;">Modèle C</td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite expanded" id="model-c-epoch-1" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-c-epoch-2" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-c-epoch-3" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-c-epoch-4" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-c-epoch-5" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-c-epoch-6" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-c-epoch-7" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-c-epoch-8" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-c-epoch-9" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-c-epoch-10" style="display: inline-block;"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px; border-bottom: 1px solid #333; color: #ecf0f1;">Modèle D</td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-d-epoch-1" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-d-epoch-2" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-d-epoch-3" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-d-epoch-4" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-d-epoch-5" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-d-epoch-6" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-d-epoch-7" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-d-epoch-8" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-d-epoch-9" style="display: inline-block;"></span>
+                  </td>
+                  <td style="padding: 12px; text-align: center; border-bottom: 1px solid #333;">
+                    <span class="led_generique_petite collapsed" id="model-d-epoch-10" style="display: inline-block;"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top: 15px; display: flex; gap: 10px;">
+            <button onclick="startModelTraining()" class="btn-generic" style="font-size: 12px;">
+              Démarrer entraînement
+            </button>
+            <button onclick="resetModelTraining()" class="btn-generic" style="font-size: 12px;">
+              Reset entraînement
             </button>
           </div>
         </div>
@@ -7868,10 +8165,65 @@ ${error.message}
         // Ajouter un log pour indiquer le changement
         addTrainingLog(`🔄 IA sélectionnée: ${selectedAI} - ${AI_MODELS[selectedAI]?.length || 0} modèles disponibles`, 'info');
       }
+      
+      // Mettre à jour la liste des modèles pour la section "Ajouter une modèle"
+      function updateAddModelModels() {
+        const selectedAI = document.getElementById('addModelAI').value;
+        const modelSelect = document.getElementById('addModelModel');
+        
+        // Vider la liste actuelle
+        modelSelect.innerHTML = '';
+        
+        // Ajouter les modèles correspondants
+        if (AI_MODELS[selectedAI]) {
+          AI_MODELS[selectedAI].forEach(model => {
+            const option = document.createElement('option');
+            option.value = model.value;
+            option.textContent = model.label;
+            modelSelect.appendChild(option);
+          });
+        }
+      }
+      
+      // Fonction pour ajouter un modèle
+      function addModel() {
+        const selectedAI = document.getElementById('addModelAI').value;
+        const selectedModel = document.getElementById('addModelModel').value;
+        
+        addTrainingLog(`➕ Ajout du modèle: ${selectedAI} - ${selectedModel}`, 'info');
+        
+        // Activer la LED de la section
+        activateTrainingSectionLED('add-model-section');
+        
+        // Ici vous pouvez ajouter la logique pour ajouter le modèle à la liste
+        // Par exemple, ajouter une nouvelle ligne dans le tableau des modèles
+        
+        setTimeout(() => {
+          addTrainingLog(`✅ Modèle ${selectedModel} ajouté avec succès`, 'success');
+        }, 1000);
+      }
+      
+      // Fonction pour retirer un modèle
+      function removeModel() {
+        const selectedAI = document.getElementById('addModelAI').value;
+        const selectedModel = document.getElementById('addModelModel').value;
+        
+        addTrainingLog(`➖ Retrait du modèle: ${selectedAI} - ${selectedModel}`, 'info');
+        
+        // Activer la LED de la section
+        activateTrainingSectionLED('add-model-section');
+        
+        // Ici vous pouvez ajouter la logique pour retirer le modèle de la liste
+        
+        setTimeout(() => {
+          addTrainingLog(`✅ Modèle ${selectedModel} retiré avec succès`, 'success');
+        }, 1000);
+      }
 
       // Initialiser les modèles au chargement de la page
       function initializeTrainingModels() {
         updateTrainingModels();
+        updateAddModelModels(); // Initialiser aussi la section "Ajouter une modèle"
         updateTrainingButtons();
       }
 
@@ -7948,6 +8300,216 @@ ${error.message}
         }, 5000);
       }
 
+      // ========================================
+      // FONCTIONS POUR LE WIZARD D'ENTRAÎNEMENT
+      // ========================================
+      
+      // Variables globales pour le wizard
+      let wizardCurrentStep = 0;
+      let wizardCompletedSteps = [];
+      
+      // Exécuter une étape du wizard
+      function wizardStep(stepNumber) {
+        const led = document.getElementById(`wizard-led-${stepNumber}`);
+        
+        // Vérifier si l'étape précédente est terminée (sauf pour la première)
+        if (stepNumber > 1 && !wizardCompletedSteps.includes(stepNumber - 1)) {
+          addTrainingLog(`⚠️ Étape ${stepNumber - 1} doit être terminée avant l'étape ${stepNumber}`, 'warning');
+          return;
+        }
+        
+        // Activer la LED
+        led.classList.remove('collapsed');
+        led.classList.add('expanded');
+        
+        addTrainingLog(`🔧 Démarrage étape ${stepNumber} du wizard...`, 'info');
+        
+        // Exécuter l'action selon l'étape
+        switch (stepNumber) {
+          case 1:
+            executeWizardStep1();
+            break;
+          case 2:
+            executeWizardStep2();
+            break;
+          case 3:
+            executeWizardStep3();
+            break;
+          case 4:
+            executeWizardStep4();
+            break;
+          case 5:
+            executeWizardStep5();
+            break;
+        }
+      }
+      
+      // Étape 1: Préparation des données
+      function executeWizardStep1() {
+        addTrainingLog('📊 Étape 1: Préparation des données...', 'info');
+        
+        setTimeout(() => {
+          addTrainingLog('   - Chargement des données de training...', 'info');
+        }, 1000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Nettoyage et validation...', 'info');
+        }, 2000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Division train/test...', 'info');
+        }, 3000);
+        
+        setTimeout(() => {
+          addTrainingLog('✅ Étape 1 terminée: Données préparées', 'success');
+          completeWizardStep(1);
+        }, 4000);
+      }
+      
+      // Étape 2: Configuration du modèle
+      function executeWizardStep2() {
+        addTrainingLog('⚙️ Étape 2: Configuration du modèle...', 'info');
+        
+        setTimeout(() => {
+          addTrainingLog('   - Sélection de l\'architecture...', 'info');
+        }, 1000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Initialisation des paramètres...', 'info');
+        }, 2000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Configuration des hyperparamètres...', 'info');
+        }, 3000);
+        
+        setTimeout(() => {
+          addTrainingLog('✅ Étape 2 terminée: Modèle configuré', 'success');
+          completeWizardStep(2);
+        }, 4000);
+      }
+      
+      // Étape 3: Entraînement initial
+      function executeWizardStep3() {
+        addTrainingLog('🚀 Étape 3: Entraînement initial...', 'info');
+        
+        setTimeout(() => {
+          addTrainingLog('   - Démarrage de l\'entraînement...', 'info');
+        }, 1000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Époque 1/10 - Accuracy: 45.2%', 'info');
+        }, 2000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Époque 5/10 - Accuracy: 67.8%', 'info');
+        }, 3000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Époque 10/10 - Accuracy: 82.1%', 'info');
+        }, 4000);
+        
+        setTimeout(() => {
+          addTrainingLog('✅ Étape 3 terminée: Entraînement initial complété', 'success');
+          completeWizardStep(3);
+        }, 5000);
+      }
+      
+      // Étape 4: Validation du modèle
+      function executeWizardStep4() {
+        addTrainingLog('🔍 Étape 4: Validation du modèle...', 'info');
+        
+        setTimeout(() => {
+          addTrainingLog('   - Test sur données de validation...', 'info');
+        }, 1000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Calcul des métriques...', 'info');
+        }, 2000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Précision: 78.5%', 'info');
+        }, 3000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Score F1: 0.756', 'info');
+        }, 4000);
+        
+        setTimeout(() => {
+          addTrainingLog('✅ Étape 4 terminée: Modèle validé', 'success');
+          completeWizardStep(4);
+        }, 5000);
+      }
+      
+      // Étape 5: Sauvegarde et export
+      function executeWizardStep5() {
+        addTrainingLog('💾 Étape 5: Sauvegarde et export...', 'info');
+        
+        setTimeout(() => {
+          addTrainingLog('   - Sauvegarde du modèle...', 'info');
+        }, 1000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Génération du rapport...', 'info');
+        }, 2000);
+        
+        setTimeout(() => {
+          addTrainingLog('   - Export des métriques...', 'info');
+        }, 3000);
+        
+        setTimeout(() => {
+          addTrainingLog('✅ Étape 5 terminée: Modèle sauvegardé et exporté', 'success');
+          completeWizardStep(5);
+        }, 4000);
+      }
+      
+      // Marquer une étape comme terminée
+      function completeWizardStep(stepNumber) {
+        if (!wizardCompletedSteps.includes(stepNumber)) {
+          wizardCompletedSteps.push(stepNumber);
+        }
+        
+        // Garder la LED verte pendant 3 secondes puis la remettre grise
+        setTimeout(() => {
+          const led = document.getElementById(`wizard-led-${stepNumber}`);
+          led.classList.remove('expanded');
+          led.classList.add('collapsed');
+        }, 3000);
+        
+        // Vérifier si toutes les étapes sont terminées
+        if (wizardCompletedSteps.length === 5) {
+          setTimeout(() => {
+            addTrainingLog('🎉 WIZARD TERMINÉ - Toutes les étapes sont complétées !', 'success');
+          }, 1000);
+        }
+      }
+      
+      // Reset du wizard
+      function resetWizard() {
+        wizardCompletedSteps = [];
+        wizardCurrentStep = 0;
+        
+        // Remettre toutes les LEDs en gris
+        for (let i = 1; i <= 5; i++) {
+          const led = document.getElementById(`wizard-led-${i}`);
+          led.classList.remove('expanded');
+          led.classList.add('collapsed');
+        }
+        
+        addTrainingLog('🔄 Wizard reset - Toutes les étapes remises à zéro', 'info');
+      }
+      
+      // Exécuter tout le wizard automatiquement
+      function runFullWizard() {
+        addTrainingLog('🚀 Démarrage automatique du wizard complet...', 'info');
+        
+        // Exécuter les étapes une par une avec délai
+        setTimeout(() => wizardStep(1), 1000);
+        setTimeout(() => wizardStep(2), 6000);
+        setTimeout(() => wizardStep(3), 11000);
+        setTimeout(() => wizardStep(4), 17000);
+        setTimeout(() => wizardStep(5), 23000);
+      }
+
       // Actions rapides pour les 10 boutons
       function quickAction(actionNumber) {
         const led = document.getElementById(`quick-led-${actionNumber}`);
@@ -7969,6 +8531,248 @@ ${error.message}
           }, 2000);
         }, 1500);
       }
+
+      // ========================================
+      // FONCTIONS POUR L'ENTRAÎNEMENT DES MODÈLES
+      // ========================================
+      
+      // Variables globales pour l'entraînement des modèles
+      let modelTrainingInProgress = false;
+      let modelTrainingIntervals = {};
+      
+      // Démarrer l'entraînement des modèles
+      function startModelTraining() {
+        if (modelTrainingInProgress) {
+          addTrainingLog('⚠️ Entraînement déjà en cours...', 'warning');
+          return;
+        }
+        
+        modelTrainingInProgress = true;
+        addTrainingLog('🚀 Démarrage de l\'entraînement des modèles...', 'info');
+        
+        // Démarrer l'entraînement pour chaque modèle
+        const models = ['a', 'b', 'c', 'd'];
+        const delays = [0, 2000, 4000, 6000]; // Décalage pour chaque modèle
+        
+        models.forEach((model, index) => {
+          setTimeout(() => {
+            startModelTrainingSequence(model);
+          }, delays[index]);
+        });
+      }
+      
+      // Séquence d'entraînement pour un modèle spécifique
+      function startModelTrainingSequence(modelName) {
+        addTrainingLog(`📊 Démarrage entraînement Modèle ${modelName.toUpperCase()}...`, 'info');
+        
+        let currentEpoch = 1;
+        const maxEpochs = 10;
+        
+        // Fonction pour passer à l'époque suivante
+        function nextEpoch() {
+          if (currentEpoch <= maxEpochs && modelTrainingInProgress) {
+            // Activer la LED de l'époque actuelle (progression du bas vers le haut)
+            const ledId = `model-${modelName}-epoch-${currentEpoch}`;
+            const led = document.getElementById(ledId);
+            
+            if (led) {
+              led.classList.remove('collapsed');
+              led.classList.add('expanded');
+              
+              // Log de progression
+              addTrainingLog(`   Modèle ${modelName.toUpperCase()} - Époque ${currentEpoch}/${maxEpochs}`, 'info');
+              
+              // Simuler une métrique de performance
+              const accuracy = Math.floor(45 + (currentEpoch * 3.5) + Math.random() * 5);
+              addTrainingLog(`   → Accuracy: ${accuracy}%`, 'info');
+            }
+            
+            currentEpoch++;
+            
+            // Programmer la prochaine époque
+            if (currentEpoch <= maxEpochs) {
+              modelTrainingIntervals[modelName] = setTimeout(nextEpoch, 1500);
+            } else {
+              // Entraînement terminé pour ce modèle
+              addTrainingLog(`✅ Entraînement Modèle ${modelName.toUpperCase()} terminé`, 'success');
+              
+              // Vérifier si tous les modèles sont terminés
+              checkAllModelsCompleted();
+            }
+          }
+        }
+        
+        // Démarrer la séquence
+        nextEpoch();
+      }
+      
+      // Vérifier si tous les modèles ont terminé leur entraînement
+      function checkAllModelsCompleted() {
+        const allIntervals = Object.values(modelTrainingIntervals);
+        const allCompleted = allIntervals.every(interval => interval === null);
+        
+        if (allCompleted) {
+          modelTrainingInProgress = false;
+          addTrainingLog('🎉 Entraînement de tous les modèles terminé !', 'success');
+        }
+      }
+      
+      // Reset de l'entraînement des modèles
+      function resetModelTraining() {
+        // Arrêter tous les intervalles en cours
+        Object.values(modelTrainingIntervals).forEach(interval => {
+          if (interval) clearTimeout(interval);
+        });
+        
+        modelTrainingIntervals = {};
+        modelTrainingInProgress = false;
+        
+        // Remettre toutes les LEDs en gris
+        const models = ['a', 'b', 'c', 'd'];
+        models.forEach(model => {
+          for (let epoch = 1; epoch <= 10; epoch++) {
+            const ledId = `model-${model}-epoch-${epoch}`;
+            const led = document.getElementById(ledId);
+            if (led) {
+              led.classList.remove('expanded');
+              led.classList.add('collapsed');
+            }
+          }
+        });
+        
+        addTrainingLog('🔄 Reset entraînement - Tous les modèles remis à zéro', 'info');
+      }
+
+      // ========================================
+      // FONCTIONS POUR LES SECTIONS PLIABLES DU TRAINING
+      // ========================================
+      
+      // Basculer l'état d'une section du training
+      function toggleTrainingSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        const content = document.getElementById(sectionId.replace('-section', '-content'));
+        const toggle = document.getElementById(sectionId.replace('-section', '-toggle'));
+        const led = document.getElementById(sectionId.replace('-section', '-led'));
+        
+        if (content.classList.contains('collapsed')) {
+          // Déplier le contenu
+          content.classList.remove('collapsed');
+          content.classList.add('expanded');
+          if (toggle) {
+            toggle.classList.remove('collapsed');
+            toggle.classList.add('expanded');
+            toggle.textContent = '▲';
+          }
+          if (led) {
+            led.classList.remove('collapsed');
+            led.classList.add('expanded');
+          }
+        } else {
+          // Plier le contenu
+          content.classList.remove('expanded');
+          content.classList.add('collapsed');
+          if (toggle) {
+            toggle.classList.remove('expanded');
+            toggle.classList.add('collapsed');
+            toggle.textContent = '▼';
+          }
+          if (led) {
+            led.classList.remove('expanded');
+            led.classList.add('collapsed');
+          }
+        }
+      }
+      
+      // Activer les LEDs des sections pliables du training
+      function activateTrainingSectionLED(sectionId) {
+        const ledId = sectionId.replace('-section', '-led');
+        const led = document.getElementById(ledId);
+        if (led) {
+          led.classList.remove('collapsed');
+          led.classList.add('expanded');
+          
+          // Remettre la LED en gris après 3 secondes
+          setTimeout(() => {
+            led.classList.remove('expanded');
+            led.classList.add('collapsed');
+          }, 3000);
+        }
+      }
+      
+      // Fonction pour activer automatiquement les LEDs lors des actions
+      function activateTrainingLEDs() {
+        // Activer la LED de la section appropriée selon l'action
+        const activeSection = document.querySelector('.tirage-tag.expanded');
+        if (activeSection) {
+          activateTrainingSectionLED(activeSection.id);
+        }
+      }
+      
+      // Fonction pour ouvrir automatiquement une section du training
+      function openTrainingSection(sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section && section.style.display === 'none') {
+          // Fermer toutes les autres sections d'abord
+          document.querySelectorAll('#training .gains-section').forEach(s => {
+            s.style.display = 'none';
+            const contentId = s.id.replace('-section', '-content');
+            const content = document.getElementById(contentId);
+            const toggleId = s.id.replace('-section', '-toggle');
+            const toggle = document.getElementById(toggleId);
+            if (content) {
+              content.classList.remove('expanded');
+              content.classList.add('collapsed');
+            }
+            if (toggle) {
+              toggle.classList.remove('expanded');
+              toggle.classList.add('collapsed');
+              toggle.textContent = '▼';
+            }
+          });
+          
+          // Ouvrir la section demandée
+          toggleTrainingSection(sectionId);
+          
+          // Faire défiler vers la section
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+      
+      // Override des fonctions existantes pour activer les LEDs et ouvrir les sections
+      const originalStartTraining = startTraining;
+      startTraining = function() {
+        activateTrainingSectionLED('training-actions-section');
+        openTrainingSection('training-actions-section');
+        return originalStartTraining.apply(this, arguments);
+      };
+      
+      const originalExecuteTrainingAction = executeTrainingAction;
+      executeTrainingAction = function() {
+        activateTrainingSectionLED('training-config-section');
+        openTrainingSection('training-config-section');
+        return originalExecuteTrainingAction.apply(this, arguments);
+      };
+      
+      const originalWizardStep = wizardStep;
+      wizardStep = function(stepNumber) {
+        activateTrainingSectionLED('training-wizard-section');
+        openTrainingSection('training-wizard-section');
+        return originalWizardStep.apply(this, arguments);
+      };
+      
+      const originalStartModelTraining = startModelTraining;
+      startModelTraining = function() {
+        activateTrainingSectionLED('training-models-section');
+        openTrainingSection('training-models-section');
+        return originalStartModelTraining.apply(this, arguments);
+      };
+      
+      const originalQuickAction = quickAction;
+      quickAction = function(actionNumber) {
+        activateTrainingSectionLED('training-quick-actions-section');
+        openTrainingSection('training-quick-actions-section');
+        return originalQuickAction.apply(this, arguments);
+      };
 
     </script>
   </body>
