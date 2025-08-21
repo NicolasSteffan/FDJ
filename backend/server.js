@@ -36,6 +36,7 @@ function initializeDatabase() {
       numeros TEXT NOT NULL,
       etoiles TEXT NOT NULL,
       source TEXT NOT NULL,
+      tag TEXT DEFAULT 'Training',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`,
     
@@ -47,6 +48,7 @@ function initializeDatabase() {
       nombre_gagnants INTEGER NOT NULL,
       gain_unitaire TEXT NOT NULL,
       source TEXT NOT NULL,
+      tag TEXT DEFAULT 'Training',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (tirage_id) REFERENCES tirages (id)
     )`,
@@ -76,6 +78,23 @@ function initializeDatabase() {
         console.log(`✅ Table ${index + 1} initialisée`);
       }
     });
+  });
+
+  // Migration: Ajouter la colonne tag si elle n'existe pas
+  db.run("ALTER TABLE tirages ADD COLUMN tag TEXT DEFAULT 'Training'", (err) => {
+    if (err && !err.message.includes('duplicate column name')) {
+      console.error('❌ Erreur migration tirages.tag:', err.message);
+    } else {
+      console.log('✅ Migration tirages.tag terminée');
+    }
+  });
+
+  db.run("ALTER TABLE gains ADD COLUMN tag TEXT DEFAULT 'Training'", (err) => {
+    if (err && !err.message.includes('duplicate column name')) {
+      console.error('❌ Erreur migration gains.tag:', err.message);
+    } else {
+      console.log('✅ Migration gains.tag terminée');
+    }
   });
 
   // Insertion de données de démonstration si les tables sont vides
@@ -359,7 +378,7 @@ app.post('/api/clear-all-data', (req, res) => {
 
 // Ajouter un nouveau tirage
 app.post('/api/tirages', (req, res) => {
-  const { date, numeros, etoiles, source, gains } = req.body;
+  const { date, numeros, etoiles, source, gains, tag } = req.body;
   
   if (!date || !numeros || !etoiles || !source) {
     return res.status(400).json({
@@ -368,9 +387,12 @@ app.post('/api/tirages', (req, res) => {
     });
   }
 
+  // Déterminer le tag basé sur la date si non fourni
+  const finalTag = tag || (date.startsWith('2025') ? 'Test' : 'Training');
+  
   db.run(
-    "INSERT INTO tirages (date, numeros, etoiles, source) VALUES (?, ?, ?, ?)",
-    [date, numeros, etoiles, source],
+    "INSERT INTO tirages (date, numeros, etoiles, source, tag) VALUES (?, ?, ?, ?, ?)",
+    [date, numeros, etoiles, source, finalTag],
     function(err) {
       if (err) {
         res.status(500).json({
@@ -389,8 +411,8 @@ app.post('/api/tirages', (req, res) => {
           gains.forEach((gain, index) => {
             console.log(`💰 [BACKEND] Insertion gain ${index + 1}:`, gain);
             db.run(
-              "INSERT INTO gains (tirage_id, rang, combinaison, nombre_gagnants, gain_unitaire, source) VALUES (?, ?, ?, ?, ?, ?)",
-              [tirageId, gain.rang, gain.combinaison, gain.nombre_gagnants, gain.gain_unitaire, source],
+              "INSERT INTO gains (tirage_id, rang, combinaison, nombre_gagnants, gain_unitaire, source, tag) VALUES (?, ?, ?, ?, ?, ?, ?)",
+              [tirageId, gain.rang, gain.combinaison, gain.nombre_gagnants, gain.gain_unitaire, source, finalTag],
               (err) => {
                 if (err) {
                   console.error(`❌ [BACKEND] Erreur insertion gain ${index + 1}:`, err.message);

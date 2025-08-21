@@ -47,6 +47,12 @@ function convertDateFormat(dateStr) {
   return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 }
 
+// Déterminer le tag basé sur la date
+function getDataTag(dateStr) {
+  const year = parseInt(dateStr.split('-')[0]);
+  return year === 2025 ? 'Test' : 'Training';
+}
+
 // Parser une ligne CSV
 function parseCSVLine(line) {
   const columns = line.split(';');
@@ -69,11 +75,15 @@ function parseCSVLine(line) {
     };
   }).filter(gain => gain.nombre_gagnants > 0 || gain.gain_unitaire !== '0 €');
 
+  // Déterminer le tag basé sur la date
+  const tag = getDataTag(date);
+
   return {
     date,
     numeros,
     etoiles,
     gains,
+    tag,
     isValid: date && numeros.length === 5 && etoiles.length === 2
   };
 }
@@ -165,10 +175,11 @@ async function importTirage(tirageData) {
     numeros: tirageData.numeros.join(','),
     etoiles: tirageData.etoiles.join(','),
     source: 'import',
-    gains: tirageData.gains
+    gains: tirageData.gains,
+    tag: tirageData.tag
   };
   
-  console.log(`💾 [IMPORT] Import tirage ${tirageData.date}:`, dataToSend);
+  console.log(`💾 [IMPORT] Import tirage ${tirageData.date} [${tirageData.tag}]:`, dataToSend);
   
   try {
     const response = await fetch('http://localhost:3001/api/tirages', {
@@ -203,12 +214,14 @@ async function importCSVFile(fileContent) {
   console.log('🚀 [IMPORT] === DÉBUT IMPORT CSV ===');
   
   const startTime = Date.now();
-  const stats = {
-    total: 0,
-    imported: 0,
-    errors: 0,
-    skipped: 0
-  };
+      const stats = {
+      total: 0,
+      imported: 0,
+      errors: 0,
+      skipped: 0,
+      training: 0,
+      test: 0
+    };
   
   try {
     // Étape 1: Récupérer les dates existantes
@@ -235,6 +248,12 @@ async function importCSVFile(fileContent) {
       
       if (result.success) {
         stats.imported++;
+        // Compter par tag
+        if (tirageData.tag === 'Test') {
+          stats.test++;
+        } else {
+          stats.training++;
+        }
       } else {
         stats.errors++;
       }
@@ -251,6 +270,8 @@ async function importCSVFile(fileContent) {
     console.log(`   - Nouveaux imports: ${stats.imported}`);
     console.log(`   - Déjà en base: ${stats.skipped}`);
     console.log(`   - Erreurs: ${stats.errors}`);
+    console.log(`   - Tag Training: ${stats.training}`);
+    console.log(`   - Tag Test: ${stats.test}`);
     console.log(`   - Durée: ${duration}s`);
     
     return stats;
@@ -284,7 +305,7 @@ async function handleCSVImport(file) {
     if (stats.error) {
       updateScrapingBreadcrumb(`❌ Erreur import: ${stats.error}`);
     } else {
-      updateScrapingBreadcrumb(`✅ Import terminé: ${stats.imported} nouveaux tirages importés`);
+      updateScrapingBreadcrumb(`✅ Import terminé: ${stats.imported} tirages (${stats.training} Training, ${stats.test} Test)`);
     }
     
     return stats;

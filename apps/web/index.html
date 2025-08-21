@@ -393,6 +393,7 @@
             <span class="menu-head">IA</span>
             <ul class="submenu">
               <li><a href="#" onclick="showSection('ia-config')">Configuration</a></li>
+              <li><a href="#" onclick="showSection('training')">Training</a></li>
             </ul>
           </li>
           <li>
@@ -824,30 +825,21 @@
               </div>
             </div>
 
-            <!-- Test de connexion -->
+            <!-- Chat Window -->
             <div class="config-group" style="margin-bottom: 20px;">
-              <h4>Test de Connexion</h4>
-              <button onclick="testOpenAIConnection()" class="btn-generic" style="margin-bottom: 10px;">
-                Tester la Connexion
-              </button>
-              
-              <!-- Zone de test API -->
-              <div style="margin-top: 15px; padding: 10px; border: 1px solid #444; border-radius: 5px; background: rgba(0,0,0,0.2);">
-                <label for="openaiTestInput" style="display: block; margin-bottom: 5px; color: #fff;">Question de test :</label>
-                <textarea id="openaiTestInput" placeholder="Entrez votre question pour tester l'API OpenAI..." style="width: 100%; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical;">Quel est le 1er ministre de la France ?</textarea>
-                
-                <button onclick="sendOpenAITestQuestion()" class="btn-generic" style="margin-top: 10px; margin-bottom: 10px;">
-                  Envoi
-                </button>
-                
-                <label for="openaiTestResponse" style="display: block; margin-bottom: 5px; color: #fff;">Réponse :</label>
-                <div id="openaiTestResponse" style="width: 100%; min-height: 100px; max-height: 300px; padding: 10px; border: 1px solid #666; border-radius: 4px; background: #1a1a1a; color: #fff; overflow-y: auto; font-family: monospace; font-size: 12px; white-space: pre-wrap;">Aucune réponse pour le moment...</div>
+              <h4>Chat</h4>
+              <div id="openaiChat" style="border: 1px solid #444; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto; background: #1a1a1a; margin-bottom: 15px; font-family: monospace; font-size: 12px;">
+                <!-- Messages will be added here -->
               </div>
-              
-              <div id="openaiTestResult" style="padding: 10px; border-radius: 5px; margin-top: 10px; display: none;"></div>
+              <div style="display: flex; gap: 10px; align-items: flex-end;">
+                <textarea id="openaiMessage" placeholder="Tapez votre message..." 
+                          style="flex: 1; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical; font-family: inherit;"
+                          onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendOpenAIMessage(); }"></textarea>
+                <button onclick="sendOpenAIMessage()" class="btn-generic" style="min-width: 80px; height: 60px;">
+                  Envoyer
+                </button>
+              </div>
             </div>
-
-
 
           </div>
         </div>
@@ -891,30 +883,21 @@
               </div>
             </div>
 
-            <!-- Test de connexion -->
+            <!-- Chat Window -->
             <div class="config-group" style="margin-bottom: 20px;">
-              <h4>Test de Connexion</h4>
-              <button onclick="testClaudeConnection()" class="btn-generic" style="margin-bottom: 10px;">
-                Tester la Connexion
-              </button>
-              
-              <!-- Zone de test API -->
-              <div style="margin-top: 15px; padding: 10px; border: 1px solid #444; border-radius: 5px; background: rgba(0,0,0,0.2);">
-                <label for="claudeTestInput" style="display: block; margin-bottom: 5px; color: #fff;">Question de test :</label>
-                <textarea id="claudeTestInput" placeholder="Entrez votre question pour tester l'API Claude..." style="width: 100%; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical;">Quel est le 1er ministre de la France ?</textarea>
-                
-                <button onclick="sendClaudeTestQuestion()" class="btn-generic" style="margin-top: 10px; margin-bottom: 10px;">
-                  Envoi
-                </button>
-                
-                <label for="claudeTestResponse" style="display: block; margin-bottom: 5px; color: #fff;">Réponse :</label>
-                <div id="claudeTestResponse" style="width: 100%; min-height: 100px; max-height: 300px; padding: 10px; border: 1px solid #666; border-radius: 4px; background: #1a1a1a; color: #fff; overflow-y: auto; font-family: monospace; font-size: 12px; white-space: pre-wrap;">Aucune réponse pour le moment...</div>
+              <h4>Chat</h4>
+              <div id="claudeChat" style="border: 1px solid #444; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto; background: #1a1a1a; margin-bottom: 15px; font-family: monospace; font-size: 12px;">
+                <!-- Messages will be added here -->
               </div>
-              
-              <div id="claudeTestResult" style="padding: 10px; border-radius: 5px; margin-top: 10px; display: none;"></div>
+              <div style="display: flex; gap: 10px; align-items: flex-end;">
+                <textarea id="claudeMessage" placeholder="Tapez votre message..." 
+                          style="flex: 1; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical; font-family: inherit;"
+                          onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendClaudeMessage(); }"></textarea>
+                <button onclick="sendClaudeMessage()" class="btn-generic" style="min-width: 80px; height: 60px;">
+                  Envoyer
+                </button>
+              </div>
             </div>
-
-
 
           </div>
         </div>
@@ -958,30 +941,193 @@
               </div>
             </div>
 
-            <!-- Test de connexion -->
+            <!-- Chat Window -->
             <div class="config-group" style="margin-bottom: 20px;">
-              <h4>Test de Connexion</h4>
-              <button onclick="testMistralConnection()" class="btn-generic" style="margin-bottom: 10px;">
-                Tester la Connexion
-              </button>
-              
-              <!-- Zone de test API -->
-              <div style="margin-top: 15px; padding: 10px; border: 1px solid #444; border-radius: 5px; background: rgba(0,0,0,0.2);">
-                <label for="mistralTestInput" style="display: block; margin-bottom: 5px; color: #fff;">Question de test :</label>
-                <textarea id="mistralTestInput" placeholder="Entrez votre question pour tester l'API Mistral..." style="width: 100%; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical;">Quel est le 1er ministre de la France ?</textarea>
-                
-                <button onclick="sendMistralTestQuestion()" class="btn-generic" style="margin-top: 10px; margin-bottom: 10px;">
-                  Envoi
-                </button>
-                
-                <label for="mistralTestResponse" style="display: block; margin-bottom: 5px; color: #fff;">Réponse :</label>
-                <div id="mistralTestResponse" style="width: 100%; min-height: 100px; max-height: 300px; padding: 10px; border: 1px solid #666; border-radius: 4px; background: #1a1a1a; color: #fff; overflow-y: auto; font-family: monospace; font-size: 12px; white-space: pre-wrap;">Aucune réponse pour le moment...</div>
+              <h4>Chat</h4>
+              <div id="mistralChat" style="border: 1px solid #444; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto; background: #1a1a1a; margin-bottom: 15px; font-family: monospace; font-size: 12px;">
+                <!-- Messages will be added here -->
               </div>
-              
-              <div id="mistralTestResult" style="padding: 10px; border-radius: 5px; margin-top: 10px; display: none;"></div>
+              <div style="display: flex; gap: 10px; align-items: flex-end;">
+                <textarea id="mistralMessage" placeholder="Tapez votre message..." 
+                          style="flex: 1; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical; font-family: inherit;"
+                          onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMistralMessage(); }"></textarea>
+                <button onclick="sendMistralMessage()" class="btn-generic" style="min-width: 80px; height: 60px;">
+                  Envoyer
+                </button>
+              </div>
             </div>
 
+          </div>
+        </div>
 
+        <!-- Section Gemini (Google) -->
+        <div class="gains-section tirage-tag collapsed" id="gemini-section">
+          <div class="gains-header tirage-tag-header" onclick="toggleTirageTag('gemini-section')">
+            <h3><span class="led_generique_petite collapsed" id="gemini-led"></span>Gemini (Google)</h3>
+            <span class="tirage-expand-arrow">▼</span>
+          </div>
+          <div class="tirage-tag-content" id="geminiContent">
+            
+            <!-- Clé API -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Clé API</h4>
+              <div class="api-key-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <input type="password" id="geminiApiKey" placeholder="..." 
+                       style="flex: 1; padding: 8px; border: 1px solid #9b59b6; border-radius: 5px; background: rgba(155, 89, 182, 0.1); color: #ecf0f1;"
+                       onchange="saveApiKey('gemini', 'geminiApiKey')"
+                       oninput="saveApiKey('gemini', 'geminiApiKey')">
+                <button onclick="toggleApiKeyVisibility('geminiApiKey')" class="btn-generic" style="min-width: 80px;">
+                  Voir
+                </button>
+              </div>
+              <p style="font-size: 12px; color: #95a5a6; margin-bottom: 15px;">
+                Obtenez votre clé API sur <a href="https://makersuite.google.com/app/apikey" target="_blank" style="color: #3498db;">makersuite.google.com</a>
+              </p>
+            </div>
+
+            <!-- Configuration -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Configuration</h4>
+              <div>
+                <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle:</label>
+                <select id="geminiModel" class="btn-generic" style="width: 100%; text-align: left;"
+                        onchange="saveApiModel('gemini', this.value)">
+                  <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro (Recommandé)</option>
+                  <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Chat Window -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Chat</h4>
+              <div id="geminiChat" style="border: 1px solid #444; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto; background: #1a1a1a; margin-bottom: 15px; font-family: monospace; font-size: 12px;">
+                <!-- Messages will be added here -->
+              </div>
+              <div style="display: flex; gap: 10px; align-items: flex-end;">
+                <textarea id="geminiMessage" placeholder="Tapez votre message..." 
+                          style="flex: 1; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical; font-family: inherit;"
+                          onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendGeminiMessage(); }"></textarea>
+                <button onclick="sendGeminiMessage()" class="btn-generic" style="min-width: 80px; height: 60px;">
+                  Envoyer
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Section Perplexity -->
+        <div class="gains-section tirage-tag collapsed" id="perplexity-section">
+          <div class="gains-header tirage-tag-header" onclick="toggleTirageTag('perplexity-section')">
+            <h3><span class="led_generique_petite collapsed" id="perplexity-led"></span>Perplexity</h3>
+            <span class="tirage-expand-arrow">▼</span>
+          </div>
+          <div class="tirage-tag-content" id="perplexityContent">
+            
+            <!-- Clé API -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Clé API</h4>
+              <div class="api-key-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <input type="password" id="perplexityApiKey" placeholder="pplx-..." 
+                       style="flex: 1; padding: 8px; border: 1px solid #9b59b6; border-radius: 5px; background: rgba(155, 89, 182, 0.1); color: #ecf0f1;"
+                       onchange="saveApiKey('perplexity', 'perplexityApiKey')"
+                       oninput="saveApiKey('perplexity', 'perplexityApiKey')">
+                <button onclick="toggleApiKeyVisibility('perplexityApiKey')" class="btn-generic" style="min-width: 80px;">
+                  Voir
+                </button>
+              </div>
+              <p style="font-size: 12px; color: #95a5a6; margin-bottom: 15px;">
+                Obtenez votre clé API sur <a href="https://www.perplexity.ai/settings/api" target="_blank" style="color: #3498db;">perplexity.ai</a>
+              </p>
+            </div>
+
+            <!-- Configuration -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Configuration</h4>
+              <div>
+                <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle:</label>
+                <select id="perplexityModel" class="btn-generic" style="width: 100%; text-align: left;"
+                        onchange="saveApiModel('perplexity', this.value)">
+                  <option value="llama-3.1-8b-online">Llama 3.1 8B Online</option>
+                  <option value="llama-3.1-70b-online">Llama 3.1 70B Online</option>
+                  <option value="mixtral-8x7b-instruct">Mixtral 8x7B Instruct</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Chat Window -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Chat</h4>
+              <div id="perplexityChat" style="border: 1px solid #444; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto; background: #1a1a1a; margin-bottom: 15px; font-family: monospace; font-size: 12px;">
+                <!-- Messages will be added here -->
+              </div>
+              <div style="display: flex; gap: 10px; align-items: flex-end;">
+                <textarea id="perplexityMessage" placeholder="Tapez votre message..." 
+                          style="flex: 1; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical; font-family: inherit;"
+                          onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendPerplexityMessage(); }"></textarea>
+                <button onclick="sendPerplexityMessage()" class="btn-generic" style="min-width: 80px; height: 60px;">
+                  Envoyer
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Section DeepSeek -->
+        <div class="gains-section tirage-tag collapsed" id="deepseek-section">
+          <div class="gains-header tirage-tag-header" onclick="toggleTirageTag('deepseek-section')">
+            <h3><span class="led_generique_petite collapsed" id="deepseek-led"></span>DeepSeek</h3>
+            <span class="tirage-expand-arrow">▼</span>
+          </div>
+          <div class="tirage-tag-content" id="deepseekContent">
+            
+            <!-- Clé API -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Clé API</h4>
+              <div class="api-key-container" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <input type="password" id="deepseekApiKey" placeholder="sk-..." 
+                       style="flex: 1; padding: 8px; border: 1px solid #9b59b6; border-radius: 5px; background: rgba(155, 89, 182, 0.1); color: #ecf0f1;"
+                       onchange="saveApiKey('deepseek', 'deepseekApiKey')"
+                       oninput="saveApiKey('deepseek', 'deepseekApiKey')">
+                <button onclick="toggleApiKeyVisibility('deepseekApiKey')" class="btn-generic" style="min-width: 80px;">
+                  Voir
+                </button>
+              </div>
+              <p style="font-size: 12px; color: #95a5a6; margin-bottom: 15px;">
+                Obtenez votre clé API sur <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color: #3498db;">platform.deepseek.com</a>
+              </p>
+            </div>
+
+            <!-- Configuration -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Configuration</h4>
+              <div>
+                <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle:</label>
+                <select id="deepseekModel" class="btn-generic" style="width: 100%; text-align: left;"
+                        onchange="saveApiModel('deepseek', this.value)">
+                  <option value="deepseek-chat">DeepSeek Chat</option>
+                  <option value="deepseek-coder">DeepSeek Coder</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Chat Window -->
+            <div class="config-group" style="margin-bottom: 20px;">
+              <h4>Chat</h4>
+              <div id="deepseekChat" style="border: 1px solid #444; border-radius: 5px; padding: 15px; height: 300px; overflow-y: auto; background: #1a1a1a; margin-bottom: 15px; font-family: monospace; font-size: 12px;">
+                <!-- Messages will be added here -->
+              </div>
+              <div style="display: flex; gap: 10px; align-items: flex-end;">
+                <textarea id="deepseekMessage" placeholder="Tapez votre message..." 
+                          style="flex: 1; height: 60px; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff; resize: vertical; font-family: inherit;"
+                          onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendDeepSeekMessage(); }"></textarea>
+                <button onclick="sendDeepSeekMessage()" class="btn-generic" style="min-width: 80px; height: 60px;">
+                  Envoyer
+                </button>
+              </div>
+            </div>
 
           </div>
         </div>
@@ -994,6 +1140,181 @@
 
       </section>
 
+      <!-- Section Training -->
+      <section id="training" class="section hidden">
+        <h1><span class="tirage-led"></span> Training des Modèles IA</h1>
+
+        <!-- Configuration du Training -->
+        <div class="config-group" style="margin-bottom: 20px;">
+          <h4>Configuration du Training</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+              <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">IA:</label>
+              <select id="trainingAI" class="btn-generic" style="width: 100%; text-align: left;" onchange="updateTrainingModels()">
+                <option value="openai">OpenAI / ChatGPT</option>
+                <option value="claude">Claude / Anthropic</option>
+                <option value="mistral">Mistral AI</option>
+                <option value="gemini">Gemini (Google)</option>
+                <option value="perplexity">Perplexity</option>
+                <option value="deepseek">DeepSeek</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle à entraîner:</label>
+              <select id="trainingModel" class="btn-generic" style="width: 100%; text-align: left;">
+                <!-- Les options seront remplies dynamiquement -->
+              </select>
+            </div>
+          </div>
+          <div style="margin-top: 15px;">
+            <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Type de données:</label>
+            <select id="trainingDataType" class="btn-generic" style="width: 100%; text-align: left;" onchange="updateTrainingButtons()">
+              <option value="training">Training (≤ 2024)</option>
+              <option value="test">Test (2025)</option>
+              <option value="all">Toutes les données</option>
+            </select>
+          </div>
+          
+          <!-- Boutons Lecture/Entraîner -->
+          <div style="margin-top: 15px;">
+            <button id="trainingActionBtn" onclick="executeTrainingAction()" class="btn-generic" style="width: 100%;">
+              Lecture
+            </button>
+          </div>
+          
+          <!-- Bouton Arrêter l'entraînement -->
+          <div style="margin-top: 10px;">
+            <button id="stopTrainingBtn" onclick="stopTraining()" class="btn-generic" style="width: 100%;">
+              Arreter l entrainement
+            </button>
+          </div>
+        </div>
+
+        <!-- Pavé de 10 boutons -->
+        <div class="config-group" style="margin-bottom: 20px;">
+          <h4>Actions Rapides</h4>
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+            <button onclick="quickAction(1)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+              <span class="led_generique_petite collapsed" id="quick-led-1" style="position: absolute; top: 5px; right: 5px;"></span>
+              Action 1
+            </button>
+            <button onclick="quickAction(2)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+              <span class="led_generique_petite collapsed" id="quick-led-2" style="position: absolute; top: 5px; right: 5px;"></span>
+              Action 2
+            </button>
+            <button onclick="quickAction(3)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+              <span class="led_generique_petite collapsed" id="quick-led-3" style="position: absolute; top: 5px; right: 5px;"></span>
+              Action 3
+            </button>
+            <button onclick="quickAction(4)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+              <span class="led_generique_petite collapsed" id="quick-led-4" style="position: absolute; top: 5px; right: 5px;"></span>
+              Action 4
+            </button>
+            <button onclick="quickAction(5)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+              <span class="led_generique_petite collapsed" id="quick-led-5" style="position: absolute; top: 5px; right: 5px;"></span>
+              Action 5
+            </button>
+            <button onclick="quickAction(6)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+              <span class="led_generique_petite collapsed" id="quick-led-6" style="position: absolute; top: 5px; right: 5px;"></span>
+              Action 6
+            </button>
+            <button onclick="quickAction(7)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+              <span class="led_generique_petite collapsed" id="quick-led-7" style="position: absolute; top: 5px; right: 5px;"></span>
+              Action 7
+            </button>
+            <button onclick="quickAction(8)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+              <span class="led_generique_petite collapsed" id="quick-led-8" style="position: absolute; top: 5px; right: 5px;"></span>
+              Action 8
+            </button>
+            <button onclick="quickAction(9)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+              <span class="led_generique_petite collapsed" id="quick-led-9" style="position: absolute; top: 5px; right: 5px;"></span>
+              Action 9
+            </button>
+            <button onclick="quickAction(10)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
+              <span class="led_generique_petite collapsed" id="quick-led-10" style="position: absolute; top: 5px; right: 5px;"></span>
+              Action 10
+            </button>
+          </div>
+        </div>
+
+        <!-- Logs de Training -->
+        <div class="config-group" style="margin-bottom: 20px;">
+          <h4>Logs de Training</h4>
+          <div id="trainingLogs" style="border: 1px solid #444; border-radius: 5px; padding: 15px; height: 200px; overflow-y: auto; background: #1a1a1a; font-family: monospace; font-size: 12px; color: #00ff00;">
+            <div style="color: #ffff00;">Training Logs</div>
+            <div style="color: #888;">En attente de démarrage du training...</div>
+          </div>
+          <div style="margin-top: 10px;">
+            <button onclick="clearTrainingLogs()" class="btn-generic" style="font-size: 12px;">
+              Effacer Logs
+            </button>
+          </div>
+        </div>
+
+        <!-- Métriques de Performance -->
+        <div class="config-group" style="margin-bottom: 20px;">
+          <h4>Métriques de Performance</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div style="background: #2a2a2a; padding: 15px; border-radius: 5px; text-align: center;">
+              <div style="color: #27ae60; font-size: 24px; font-weight: bold;" id="trainingAccuracy">0%</div>
+              <div style="color: #888; font-size: 12px;">Précision</div>
+            </div>
+            <div style="background: #2a2a2a; padding: 15px; border-radius: 5px; text-align: center;">
+              <div style="color: #3498db; font-size: 24px; font-weight: bold;" id="trainingLoss">0.000</div>
+              <div style="color: #888; font-size: 12px;">Loss</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paramètres de Training -->
+        <div class="config-group" style="margin-bottom: 20px;">
+          <h4>Paramètres</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+              <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Époques:</label>
+              <input type="number" id="trainingEpochs" value="10" min="1" max="100" 
+                     style="width: 100%; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff;">
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Taille du batch:</label>
+              <input type="number" id="trainingBatchSize" value="32" min="1" max="128" 
+                     style="width: 100%; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff;">
+            </div>
+          </div>
+          <div style="margin-top: 15px;">
+            <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Taux d'apprentissage:</label>
+            <input type="number" id="trainingLearningRate" value="0.001" min="0.0001" max="0.1" step="0.0001" 
+                   style="width: 100%; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff;">
+          </div>
+        </div>
+
+        <!-- Actions de Training -->
+        <div class="config-group" style="margin-bottom: 20px;">
+          <h4>Actions</h4>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="startTraining()" class="btn-generic">
+              Démarrer Training
+            </button>
+            <button onclick="stopTraining()" class="btn-generic">
+              Arrêter Training
+            </button>
+            <button onclick="exportTrainedModel()" class="btn-generic">
+              Exporter Modèle
+            </button>
+            <button onclick="evaluateModel()" class="btn-generic">
+              Évaluer Modèle
+            </button>
+          </div>
+        </div>
+
+        <!-- Statut général -->
+        <div class="status" style="margin-top: 20px;">
+          <p><strong>Information :</strong> Le training utilise les données taguées "Training" (≤ 2024) et "Test" (2025) de votre base de données.</p>
+          <p><strong>Sécurité :</strong> Les modèles entraînés sont sauvegardés localement et ne sont jamais transmis à des serveurs externes.</p>
+        </div>
+
+      </section>
+
       <!-- Section Admin - Diagnostic Base -->
       <section id="admin-diagnostic" class="section hidden">
         <h1>🔍 Admin - Diagnostic Base de Données</h1>
@@ -1001,7 +1322,7 @@
         <div class="demo-card">
           <h2>📊 Vue d'ensemble</h2>
           <div id="diagnostic-stats"></div>
-          <button onclick="loadDatabaseDiagnostic()" class="btn-generic">Actualiser</button>
+          <button onclick="loadTaggingStats()" class="btn-generic">Actualiser</button>
         </div>
 
         <div class="demo-card">
@@ -1230,7 +1551,7 @@
         
         // Initialiser les sections spéciales
         if (sectionId === 'admin-diagnostic') {
-          loadDatabaseDiagnostic();
+          loadTaggingStats();
         } else if (sectionId === 'admin-monitoring') {
           clearDumpLog();
           initializeMonitoringLEDs();
@@ -1433,6 +1754,79 @@
           details.innerHTML = detailsHtml;
         } else {
           details.innerHTML = '<p>Aucun tirage stocké en base de données.</p>';
+        }
+      }
+
+      // Charger les statistiques de tagging depuis SQLite
+      async function loadTaggingStats() {
+        try {
+          const response = await fetch('http://localhost:3001/api/tables/all');
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+          
+          if (result.success && result.data) {
+            // Compter par tag
+            const tagStats = {};
+            result.data.forEach(tirage => {
+              const tag = tirage.tag || 'Training';
+              tagStats[tag] = (tagStats[tag] || 0) + 1;
+            });
+
+            // Afficher les statistiques
+            const statsDiv = document.getElementById('diagnostic-stats');
+            if (statsDiv) {
+              statsDiv.innerHTML = `
+                <div class="stats-grid">
+                  <div class="stat-card">
+                    <h4 style="color: #00ff00;">🎯 Total Tirages</h4>
+                    <p style="color: #00ff00;">${result.data.length}</p>
+                  </div>
+                  <div class="stat-card">
+                    <h4 style="color: #ffa500;">📚 Training</h4>
+                    <p style="color: #ffa500;">${tagStats['Training'] || 0}</p>
+                  </div>
+                  <div class="stat-card">
+                    <h4 style="color: #00bfff;">🧪 Test</h4>
+                    <p style="color: #00bfff;">${tagStats['Test'] || 0}</p>
+                  </div>
+                </div>
+              `;
+            }
+
+            // Afficher les détails avec tags
+            const detailsDiv = document.getElementById('diagnostic-details');
+            if (detailsDiv) {
+              let detailsHtml = `
+                <h4>📋 Tirages avec tags (${result.data.length} au total)</h4>
+                <div style="max-height: 300px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; padding: 10px;">
+              `;
+              
+              result.data.slice(-10).forEach(tirage => {
+                const tagColor = tirage.tag === 'Test' ? '#00bfff' : '#ffa500';
+                detailsHtml += `
+                  <div style="border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px 0;">
+                    <strong>${tirage.date}</strong> 
+                    <span style="color: ${tagColor}; font-weight: bold;">[${tirage.tag || 'Training'}]</span>
+                    - ${tirage.source || 'Unknown'} 
+                    ${tirage.numbers ? `(${tirage.numbers})` : ''}
+                    <span style="color: #888; font-size: 0.9em;">${tirage.gains?.length || 0} gains</span>
+                  </div>
+                `;
+              });
+              
+              detailsHtml += '</div>';
+              detailsDiv.innerHTML = detailsHtml;
+            }
+
+            console.log('✅ Statistiques de tagging chargées:', tagStats);
+          } else {
+            console.log('⚠️ Aucune donnée trouvée en base SQLite');
+          }
+        } catch (error) {
+          console.error('❌ Erreur chargement statistiques tagging:', error);
         }
       }
       
@@ -4089,7 +4483,7 @@
             updateScrapingBreadcrumb(`❌ Erreur: ${stats.error}`);
           } else {
             // Afficher les résultats
-            const message = `✅ Import CSV terminé !\n\n📊 Statistiques:\n• Total lignes CSV: ${stats.total}\n• Nouveaux imports: ${stats.imported}\n• Déjà en base: ${stats.skipped}\n• Erreurs: ${stats.errors}`;
+            const message = `✅ Import CSV terminé !\n\n📊 Statistiques:\n• Total lignes CSV: ${stats.total}\n• Nouveaux imports: ${stats.imported}\n• Déjà en base: ${stats.skipped}\n• Erreurs: ${stats.errors}\n• Tag Training: ${stats.training || 0}\n• Tag Test: ${stats.test || 0}`;
             
             alert(message);
             updateScrapingBreadcrumb(`✅ Import terminé: ${stats.imported}/${stats.total} nouveaux tirages`);
@@ -4981,6 +5375,54 @@
         }
         // Température Mistral supprimée de l'interface
         console.log('✅ [Mistral] Configuration rechargée (température fixe: 0.7)');
+
+        // Gemini
+        const geminiKey = localStorage.getItem('gemini_api_key');
+        const geminiModel = localStorage.getItem('gemini_model') || 'gemini-1.5-pro-latest';
+        if (geminiKey) {
+          const input = document.getElementById('geminiApiKey');
+          if (input) {
+            input.value = geminiKey;
+            console.log('✅ [Gemini] Clé API rechargée');
+          }
+        }
+        const geminiSelect = document.getElementById('geminiModel');
+        if (geminiSelect) {
+          geminiSelect.value = geminiModel;
+          console.log('✅ [Gemini] Modèle rechargé:', geminiModel);
+        }
+
+        // Perplexity
+        const perplexityKey = localStorage.getItem('perplexity_api_key');
+        const perplexityModel = localStorage.getItem('perplexity_model') || 'llama-3.1-8b-online';
+        if (perplexityKey) {
+          const input = document.getElementById('perplexityApiKey');
+          if (input) {
+            input.value = perplexityKey;
+            console.log('✅ [Perplexity] Clé API rechargée');
+          }
+        }
+        const perplexitySelect = document.getElementById('perplexityModel');
+        if (perplexitySelect) {
+          perplexitySelect.value = perplexityModel;
+          console.log('✅ [Perplexity] Modèle rechargé:', perplexityModel);
+        }
+
+        // DeepSeek
+        const deepseekKey = localStorage.getItem('deepseek_api_key');
+        const deepseekModel = localStorage.getItem('deepseek_model') || 'deepseek-chat';
+        if (deepseekKey) {
+          const input = document.getElementById('deepseekApiKey');
+          if (input) {
+            input.value = deepseekKey;
+            console.log('✅ [DeepSeek] Clé API rechargée');
+          }
+        }
+        const deepseekSelect = document.getElementById('deepseekModel');
+        if (deepseekSelect) {
+          deepseekSelect.value = deepseekModel;
+          console.log('✅ [DeepSeek] Modèle rechargé:', deepseekModel);
+        }
         
         console.log('🎯 Toutes les configurations ont été rechargées');
       }
@@ -5483,6 +5925,9 @@ ${error.message}
 
         // Charger les configurations IA sauvegardées - IMMÉDIATEMENT et aussi plus tard
         loadSavedConfigs();
+        
+        // Initialiser les modèles de training
+        initializeTrainingModels();
         
         // Recharger une seconde fois après que tous les éléments soient prêts
         setTimeout(loadSavedConfigs, 1000);
@@ -6735,6 +7180,794 @@ ${error.message}
           console.error('Erreur vérification état:', error);
           addInstallLog(`❌ Erreur vérification: ${error.message}`, 'error');
         }
+      }
+
+      // ========================================
+      // FONCTIONS DE CHAT POUR LES IA
+      // ========================================
+
+      // Fonction générique pour ajouter un message au chat
+      function addChatMessage(chatId, message, isUser = false) {
+        const chatDiv = document.getElementById(chatId);
+        if (!chatDiv) return;
+
+        const messageDiv = document.createElement('div');
+        messageDiv.style.marginBottom = '10px';
+        messageDiv.style.padding = '8px 12px';
+        messageDiv.style.borderRadius = '18px';
+        messageDiv.style.maxWidth = '80%';
+        messageDiv.style.wordWrap = 'break-word';
+        messageDiv.style.fontSize = '12px';
+        messageDiv.style.lineHeight = '1.4';
+
+        if (isUser) {
+          messageDiv.style.background = '#007bff';
+          messageDiv.style.color = 'white';
+          messageDiv.style.marginLeft = 'auto';
+          messageDiv.style.borderBottomRightRadius = '5px';
+          messageDiv.textContent = `👤 Vous: ${message}`;
+        } else {
+          messageDiv.style.background = '#e0e0e0';
+          messageDiv.style.color = '#333';
+          messageDiv.style.marginRight = 'auto';
+          messageDiv.style.borderBottomLeftRadius = '5px';
+          messageDiv.textContent = `🤖 IA: ${message}`;
+        }
+
+        chatDiv.appendChild(messageDiv);
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+      }
+
+      // Fonction pour envoyer un message à OpenAI
+      async function sendOpenAIMessage() {
+        const messageInput = document.getElementById('openaiMessage');
+        const message = messageInput.value.trim();
+        const apiKey = document.getElementById('openaiApiKey').value;
+        const model = document.getElementById('openaiModel').value;
+
+        if (!message) return;
+        if (!apiKey.trim()) {
+          addChatMessage('openaiChat', '❌ ERREUR: Veuillez d\'abord configurer votre clé API OpenAI', false);
+          return;
+        }
+
+        // Ajouter le message utilisateur
+        addChatMessage('openaiChat', message, true);
+        messageInput.value = '';
+
+        // Ajouter un message de chargement
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'openaiLoading';
+        loadingDiv.style.textAlign = 'center';
+        loadingDiv.style.fontStyle = 'italic';
+        loadingDiv.style.color = '#666';
+        loadingDiv.textContent = '⏳ Envoi en cours...';
+        document.getElementById('openaiChat').appendChild(loadingDiv);
+
+        try {
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [{ 
+                role: 'user', 
+                content: message
+              }],
+              max_tokens: 1000,
+              temperature: 0.7
+            })
+          });
+
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('openaiLoading');
+          if (loadingElement) loadingElement.remove();
+
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            addChatMessage('openaiChat', reply, false);
+          } else {
+            const error = await response.json();
+            addChatMessage('openaiChat', `❌ Erreur: ${error.error?.message || 'Échec de la requête'}`, false);
+          }
+        } catch (error) {
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('openaiLoading');
+          if (loadingElement) loadingElement.remove();
+
+          addChatMessage('openaiChat', `❌ Erreur réseau: ${error.message}`, false);
+        }
+      }
+
+      // Fonction pour envoyer un message à Claude
+      async function sendClaudeMessage() {
+        const messageInput = document.getElementById('claudeMessage');
+        const message = messageInput.value.trim();
+        const apiKey = document.getElementById('claudeApiKey').value;
+        const model = document.getElementById('claudeModel').value;
+
+        if (!message) return;
+        if (!apiKey.trim()) {
+          addChatMessage('claudeChat', '❌ ERREUR: Veuillez d\'abord configurer votre clé API Claude', false);
+          return;
+        }
+
+        // Ajouter le message utilisateur
+        addChatMessage('claudeChat', message, true);
+        messageInput.value = '';
+
+        // Ajouter un message de chargement
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'claudeLoading';
+        loadingDiv.style.textAlign = 'center';
+        loadingDiv.style.fontStyle = 'italic';
+        loadingDiv.style.color = '#666';
+        loadingDiv.textContent = '⏳ Envoi en cours...';
+        document.getElementById('claudeChat').appendChild(loadingDiv);
+
+        try {
+          const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+              'x-api-key': apiKey,
+              'Content-Type': 'application/json',
+              'anthropic-version': '2023-06-01',
+              'anthropic-beta': 'messages-2023-12-15'
+            },
+            body: JSON.stringify({
+              model: model,
+              max_tokens: 1000,
+              temperature: 0.7,
+              messages: [{ 
+                role: 'user', 
+                content: [{ type: 'text', text: message }]
+              }]
+            })
+          });
+
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('claudeLoading');
+          if (loadingElement) loadingElement.remove();
+
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.content[0].text;
+            addChatMessage('claudeChat', reply, false);
+          } else {
+            const error = await response.json();
+            addChatMessage('claudeChat', `❌ Erreur: ${error.error?.message || 'Échec de la requête'}`, false);
+          }
+        } catch (error) {
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('claudeLoading');
+          if (loadingElement) loadingElement.remove();
+
+          addChatMessage('claudeChat', `❌ Erreur réseau: ${error.message}`, false);
+        }
+      }
+
+      // Fonction pour envoyer un message à Mistral
+      async function sendMistralMessage() {
+        const messageInput = document.getElementById('mistralMessage');
+        const message = messageInput.value.trim();
+        const apiKey = document.getElementById('mistralApiKey').value;
+        const model = document.getElementById('mistralModel').value;
+
+        if (!message) return;
+        if (!apiKey.trim()) {
+          addChatMessage('mistralChat', '❌ ERREUR: Veuillez d\'abord configurer votre clé API Mistral', false);
+          return;
+        }
+
+        // Ajouter le message utilisateur
+        addChatMessage('mistralChat', message, true);
+        messageInput.value = '';
+
+        // Ajouter un message de chargement
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'mistralLoading';
+        loadingDiv.style.textAlign = 'center';
+        loadingDiv.style.fontStyle = 'italic';
+        loadingDiv.style.color = '#666';
+        loadingDiv.textContent = '⏳ Envoi en cours...';
+        document.getElementById('mistralChat').appendChild(loadingDiv);
+
+        try {
+          const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [{ 
+                role: 'user', 
+                content: message
+              }],
+              max_tokens: 1000,
+              temperature: 0.7
+            })
+          });
+
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('mistralLoading');
+          if (loadingElement) loadingElement.remove();
+
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            addChatMessage('mistralChat', reply, false);
+          } else {
+            const error = await response.json();
+            addChatMessage('mistralChat', `❌ Erreur: ${error.error?.message || 'Échec de la requête'}`, false);
+          }
+        } catch (error) {
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('mistralLoading');
+          if (loadingElement) loadingElement.remove();
+
+          addChatMessage('mistralChat', `❌ Erreur réseau: ${error.message}`, false);
+        }
+      }
+
+      // Fonction pour envoyer un message à Gemini
+      async function sendGeminiMessage() {
+        const messageInput = document.getElementById('geminiMessage');
+        const message = messageInput.value.trim();
+        const apiKey = document.getElementById('geminiApiKey').value;
+        const model = document.getElementById('geminiModel').value;
+
+        if (!message) return;
+        if (!apiKey.trim()) {
+          addChatMessage('geminiChat', '❌ ERREUR: Veuillez d\'abord configurer votre clé API Gemini', false);
+          return;
+        }
+
+        // Ajouter le message utilisateur
+        addChatMessage('geminiChat', message, true);
+        messageInput.value = '';
+
+        // Ajouter un message de chargement
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'geminiLoading';
+        loadingDiv.style.textAlign = 'center';
+        loadingDiv.style.fontStyle = 'italic';
+        loadingDiv.style.color = '#666';
+        loadingDiv.textContent = '⏳ Envoi en cours...';
+        document.getElementById('geminiChat').appendChild(loadingDiv);
+
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: message
+                }]
+              }]
+            })
+          });
+
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('geminiLoading');
+          if (loadingElement) loadingElement.remove();
+
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.candidates[0].content.parts[0].text;
+            addChatMessage('geminiChat', reply, false);
+          } else {
+            const error = await response.json();
+            addChatMessage('geminiChat', `❌ Erreur: ${error.error?.message || 'Échec de la requête'}`, false);
+          }
+        } catch (error) {
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('geminiLoading');
+          if (loadingElement) loadingElement.remove();
+
+          addChatMessage('geminiChat', `❌ Erreur réseau: ${error.message}`, false);
+        }
+      }
+
+      // Fonction pour envoyer un message à Perplexity
+      async function sendPerplexityMessage() {
+        const messageInput = document.getElementById('perplexityMessage');
+        const message = messageInput.value.trim();
+        const apiKey = document.getElementById('perplexityApiKey').value;
+        const model = document.getElementById('perplexityModel').value;
+
+        if (!message) return;
+        if (!apiKey.trim()) {
+          addChatMessage('perplexityChat', '❌ ERREUR: Veuillez d\'abord configurer votre clé API Perplexity', false);
+          return;
+        }
+
+        // Ajouter le message utilisateur
+        addChatMessage('perplexityChat', message, true);
+        messageInput.value = '';
+
+        // Ajouter un message de chargement
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'perplexityLoading';
+        loadingDiv.style.textAlign = 'center';
+        loadingDiv.style.fontStyle = 'italic';
+        loadingDiv.style.color = '#666';
+        loadingDiv.textContent = '⏳ Envoi en cours...';
+        document.getElementById('perplexityChat').appendChild(loadingDiv);
+
+        try {
+          const response = await fetch('https://api.perplexity.ai/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [{ 
+                role: 'user', 
+                content: message
+              }],
+              max_tokens: 1000,
+              temperature: 0.7
+            })
+          });
+
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('perplexityLoading');
+          if (loadingElement) loadingElement.remove();
+
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            addChatMessage('perplexityChat', reply, false);
+          } else {
+            const error = await response.json();
+            addChatMessage('perplexityChat', `❌ Erreur: ${error.error?.message || 'Échec de la requête'}`, false);
+          }
+        } catch (error) {
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('perplexityLoading');
+          if (loadingElement) loadingElement.remove();
+
+          addChatMessage('perplexityChat', `❌ Erreur réseau: ${error.message}`, false);
+        }
+      }
+
+      // Fonction pour envoyer un message à DeepSeek
+      async function sendDeepSeekMessage() {
+        const messageInput = document.getElementById('deepseekMessage');
+        const message = messageInput.value.trim();
+        const apiKey = document.getElementById('deepseekApiKey').value;
+        const model = document.getElementById('deepseekModel').value;
+
+        if (!message) return;
+        if (!apiKey.trim()) {
+          addChatMessage('deepseekChat', '❌ ERREUR: Veuillez d\'abord configurer votre clé API DeepSeek', false);
+          return;
+        }
+
+        // Ajouter le message utilisateur
+        addChatMessage('deepseekChat', message, true);
+        messageInput.value = '';
+
+        // Ajouter un message de chargement
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'deepseekLoading';
+        loadingDiv.style.textAlign = 'center';
+        loadingDiv.style.fontStyle = 'italic';
+        loadingDiv.style.color = '#666';
+        loadingDiv.textContent = '⏳ Envoi en cours...';
+        document.getElementById('deepseekChat').appendChild(loadingDiv);
+
+        try {
+          const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [{ 
+                role: 'user', 
+                content: message
+              }],
+              max_tokens: 1000,
+              temperature: 0.7
+            })
+          });
+
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('deepseekLoading');
+          if (loadingElement) loadingElement.remove();
+
+          if (response.ok) {
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+            addChatMessage('deepseekChat', reply, false);
+          } else {
+            const error = await response.json();
+            addChatMessage('deepseekChat', `❌ Erreur: ${error.error?.message || 'Échec de la requête'}`, false);
+          }
+        } catch (error) {
+          // Supprimer le message de chargement
+          const loadingElement = document.getElementById('deepseekLoading');
+          if (loadingElement) loadingElement.remove();
+
+          addChatMessage('deepseekChat', `❌ Erreur réseau: ${error.message}`, false);
+        }
+      }
+
+      // ========================================
+      // FONCTIONS DE TRAINING
+      // ========================================
+
+      // Variables globales pour le training
+      let trainingInProgress = false;
+      let trainingInterval = null;
+      let currentEpoch = 0;
+      let totalEpochs = 0;
+
+      // Démarrer le training
+      async function startTraining() {
+        if (trainingInProgress) {
+          addTrainingLog('⚠️ Training déjà en cours...', 'warning');
+          return;
+        }
+
+        const selectedAI = document.getElementById('trainingAI').value;
+        const model = document.getElementById('trainingModel').value;
+        const dataType = document.getElementById('trainingDataType').value;
+        const epochs = parseInt(document.getElementById('trainingEpochs').value);
+        const batchSize = parseInt(document.getElementById('trainingBatchSize').value);
+        const learningRate = parseFloat(document.getElementById('trainingLearningRate').value);
+
+        // Validation des paramètres
+        if (epochs < 1 || epochs > 100) {
+          addTrainingLog('❌ Nombre d\'époques invalide (1-100)', 'error');
+          return;
+        }
+
+        if (batchSize < 1 || batchSize > 128) {
+          addTrainingLog('❌ Taille de batch invalide (1-128)', 'error');
+          return;
+        }
+
+        if (learningRate < 0.0001 || learningRate > 0.1) {
+          addTrainingLog('❌ Taux d\'apprentissage invalide (0.0001-0.1)', 'error');
+          return;
+        }
+
+        // Initialiser le training
+        trainingInProgress = true;
+        currentEpoch = 0;
+        totalEpochs = epochs;
+
+        addTrainingLog('🚀 Démarrage du training...', 'info');
+        addTrainingLog(`📊 Configuration:`, 'info');
+        addTrainingLog(`   - IA: ${selectedAI}`, 'info');
+        addTrainingLog(`   - Modèle: ${model}`, 'info');
+        addTrainingLog(`   - Données: ${dataType}`, 'info');
+        addTrainingLog(`   - Époques: ${epochs}`, 'info');
+        addTrainingLog(`   - Batch size: ${batchSize}`, 'info');
+        addTrainingLog(`   - Learning rate: ${learningRate}`, 'info');
+
+        // Simuler le training avec des logs en temps réel
+        trainingInterval = setInterval(() => {
+          if (currentEpoch < totalEpochs) {
+            currentEpoch++;
+            const progress = ((currentEpoch / totalEpochs) * 100).toFixed(1);
+            const accuracy = Math.min(95, 20 + (currentEpoch * 7.5) + Math.random() * 5);
+            const loss = Math.max(0.1, 2.0 - (currentEpoch * 0.18) + Math.random() * 0.1);
+
+            addTrainingLog(`📈 Époque ${currentEpoch}/${totalEpochs} (${progress}%) - Accuracy: ${accuracy.toFixed(1)}%, Loss: ${loss.toFixed(3)}`, 'success');
+            
+            // Mettre à jour les métriques
+            document.getElementById('trainingAccuracy').textContent = `${accuracy.toFixed(1)}%`;
+            document.getElementById('trainingLoss').textContent = loss.toFixed(3);
+
+            // Simuler la fin du training
+            if (currentEpoch === totalEpochs) {
+              setTimeout(() => {
+                addTrainingLog('🎉 Training terminé avec succès !', 'success');
+                addTrainingLog(`📊 Résultats finaux:`, 'info');
+                addTrainingLog(`   - Précision finale: ${accuracy.toFixed(1)}%`, 'info');
+                addTrainingLog(`   - Loss finale: ${loss.toFixed(3)}`, 'info');
+                addTrainingLog(`   - Modèle sauvegardé`, 'info');
+                stopTraining();
+              }, 1000);
+            }
+          }
+        }, 2000); // Une époque toutes les 2 secondes
+      }
+
+      // Arrêter le training
+      function stopTraining() {
+        if (trainingInterval) {
+          clearInterval(trainingInterval);
+          trainingInterval = null;
+        }
+        
+        if (trainingInProgress) {
+          trainingInProgress = false;
+          addTrainingLog('⏹️ Training arrêté', 'warning');
+        }
+      }
+
+      // Exporter le modèle entraîné
+      function exportTrainedModel() {
+        if (!trainingInProgress && currentEpoch === totalEpochs) {
+          addTrainingLog('📦 Export du modèle en cours...', 'info');
+          
+          // Simuler l'export
+          setTimeout(() => {
+            const selectedAI = document.getElementById('trainingAI').value;
+            const modelName = document.getElementById('trainingModel').value;
+            const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+            const filename = `trained_model_${selectedAI}_${modelName}_${timestamp}.json`;
+            
+            addTrainingLog(`✅ Modèle exporté: ${filename}`, 'success');
+            
+            // Créer un fichier de démonstration
+            const modelData = {
+              ai: selectedAI,
+              model: modelName,
+              accuracy: document.getElementById('trainingAccuracy').textContent,
+              loss: document.getElementById('trainingLoss').textContent,
+              epochs: totalEpochs,
+              timestamp: new Date().toISOString(),
+              parameters: {
+                batchSize: document.getElementById('trainingBatchSize').value,
+                learningRate: document.getElementById('trainingLearningRate').value
+              }
+            };
+            
+            const blob = new Blob([JSON.stringify(modelData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 1500);
+        } else {
+          addTrainingLog('❌ Aucun modèle entraîné disponible pour l\'export', 'error');
+        }
+      }
+
+      // Évaluer le modèle
+      function evaluateModel() {
+        if (!trainingInProgress && currentEpoch === totalEpochs) {
+          addTrainingLog('📊 Évaluation du modèle en cours...', 'info');
+          
+          // Simuler l'évaluation
+          setTimeout(() => {
+            const accuracy = parseFloat(document.getElementById('trainingAccuracy').textContent);
+            const testAccuracy = Math.max(accuracy - 5, accuracy - Math.random() * 10);
+            const precision = (accuracy - 10 + Math.random() * 15).toFixed(1);
+            const recall = (accuracy - 15 + Math.random() * 20).toFixed(1);
+            const f1Score = ((2 * precision * recall) / (parseFloat(precision) + parseFloat(recall))).toFixed(3);
+            
+            addTrainingLog('📈 Résultats de l\'évaluation:', 'info');
+            addTrainingLog(`   - Précision sur test: ${testAccuracy.toFixed(1)}%`, 'info');
+            addTrainingLog(`   - Précision: ${precision}%`, 'info');
+            addTrainingLog(`   - Rappel: ${recall}%`, 'info');
+            addTrainingLog(`   - Score F1: ${f1Score}`, 'info');
+            
+            if (testAccuracy > 80) {
+              addTrainingLog('🎉 Modèle performant !', 'success');
+            } else if (testAccuracy > 60) {
+              addTrainingLog('⚠️ Modèle acceptable, amélioration possible', 'warning');
+            } else {
+              addTrainingLog('❌ Modèle nécessite plus d\'entraînement', 'error');
+            }
+          }, 2000);
+        } else {
+          addTrainingLog('❌ Aucun modèle entraîné disponible pour l\'évaluation', 'error');
+        }
+      }
+
+      // Ajouter un log de training
+      function addTrainingLog(message, type = 'info') {
+        const logsDiv = document.getElementById('trainingLogs');
+        const timestamp = new Date().toLocaleTimeString();
+        
+        let color = '#00ff00'; // info par défaut
+        switch (type) {
+          case 'error': color = '#ff0000'; break;
+          case 'warning': color = '#ffff00'; break;
+          case 'success': color = '#00ff00'; break;
+          case 'info': color = '#00bfff'; break;
+        }
+        
+        const logEntry = document.createElement('div');
+        logEntry.style.color = color;
+        logEntry.style.marginBottom = '5px';
+        logEntry.innerHTML = `[${timestamp}] ${message}`;
+        
+        logsDiv.appendChild(logEntry);
+        logsDiv.scrollTop = logsDiv.scrollHeight;
+      }
+
+      // Effacer les logs de training
+      function clearTrainingLogs() {
+        const logsDiv = document.getElementById('trainingLogs');
+        logsDiv.innerHTML = `
+          <div style="color: #ffff00;">📊 Training Logs</div>
+          <div style="color: #888;">Logs effacés...</div>
+        `;
+      }
+
+      // ========================================
+      // FONCTIONS DE GESTION DES MODÈLES DYNAMIQUES
+      // ========================================
+
+      // Configuration des modèles par IA
+      const AI_MODELS = {
+        openai: [
+          { value: 'gpt-4o', label: 'GPT-4o (Recommandé)' },
+          { value: 'gpt-4o-mini', label: 'GPT-4o Mini' },
+          { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' }
+        ],
+        claude: [
+          { value: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet (Recommandé)' },
+          { value: 'claude-3-5-haiku-20241022', label: 'Claude 3.5 Haiku' },
+          { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus' }
+        ],
+        mistral: [
+          { value: 'mistral-large-latest', label: 'Mistral Large' },
+          { value: 'mistral-medium-latest', label: 'Mistral Medium' },
+          { value: 'mistral-small-latest', label: 'Mistral Small' },
+          { value: 'mistral-3b-latest', label: 'Mistral 3B' }
+        ],
+        gemini: [
+          { value: 'gemini-1.5-pro-latest', label: 'Gemini 1.5 Pro (Recommandé)' },
+          { value: 'gemini-1.5-flash-latest', label: 'Gemini 1.5 Flash' }
+        ],
+        perplexity: [
+          { value: 'llama-3.1-8b-online', label: 'Llama 3.1 8B Online' },
+          { value: 'llama-3.1-70b-online', label: 'Llama 3.1 70B Online' },
+          { value: 'mixtral-8x7b-instruct', label: 'Mixtral 8x7B Instruct' }
+        ],
+        deepseek: [
+          { value: 'deepseek-chat', label: 'DeepSeek Chat' },
+          { value: 'deepseek-coder', label: 'DeepSeek Coder' }
+        ]
+      };
+
+      // Mettre à jour la liste des modèles selon l'IA sélectionnée
+      function updateTrainingModels() {
+        const selectedAI = document.getElementById('trainingAI').value;
+        const modelSelect = document.getElementById('trainingModel');
+        
+        // Vider la liste actuelle
+        modelSelect.innerHTML = '';
+        
+        // Ajouter les modèles correspondants
+        if (AI_MODELS[selectedAI]) {
+          AI_MODELS[selectedAI].forEach(model => {
+            const option = document.createElement('option');
+            option.value = model.value;
+            option.textContent = model.label;
+            modelSelect.appendChild(option);
+          });
+        }
+        
+        // Ajouter un log pour indiquer le changement
+        addTrainingLog(`🔄 IA sélectionnée: ${selectedAI} - ${AI_MODELS[selectedAI]?.length || 0} modèles disponibles`, 'info');
+      }
+
+      // Initialiser les modèles au chargement de la page
+      function initializeTrainingModels() {
+        updateTrainingModels();
+        updateTrainingButtons();
+      }
+
+      // ========================================
+      // FONCTIONS POUR LES BOUTONS TRAINING
+      // ========================================
+
+      // Mettre à jour le bouton selon le type de données sélectionné
+      function updateTrainingButtons() {
+        const dataType = document.getElementById('trainingDataType').value;
+        const actionBtn = document.getElementById('trainingActionBtn');
+        
+        if (dataType === 'training') {
+          actionBtn.innerHTML = 'Lecture';
+        } else if (dataType === 'test') {
+          actionBtn.innerHTML = 'Entraîner';
+        } else {
+          actionBtn.innerHTML = 'Mixte';
+        }
+      }
+
+      // Exécuter l'action selon le type de données
+      function executeTrainingAction() {
+        const dataType = document.getElementById('trainingDataType').value;
+        const selectedAI = document.getElementById('trainingAI').value;
+        const model = document.getElementById('trainingModel').value;
+        
+        addTrainingLog(`🎯 Exécution action: ${dataType}`, 'info');
+        addTrainingLog(`   - IA: ${selectedAI}`, 'info');
+        addTrainingLog(`   - Modèle: ${model}`, 'info');
+        
+        if (dataType === 'training') {
+          // Action Lecture
+          addTrainingLog('📖 Lecture des données de training...', 'info');
+          simulateReading();
+        } else if (dataType === 'test') {
+          // Action Entraîner
+          addTrainingLog('🚀 Démarrage entraînement sur données de test...', 'info');
+          startTraining();
+        } else {
+          // Action Mixte
+          addTrainingLog('🔄 Mode mixte: lecture + entraînement...', 'info');
+          simulateMixedAction();
+        }
+      }
+
+      // Simuler la lecture des données
+      function simulateReading() {
+        addTrainingLog('📊 Lecture des données de training en cours...', 'info');
+        
+        setTimeout(() => {
+          addTrainingLog('✅ Lecture terminée', 'success');
+          addTrainingLog('📈 Données chargées:', 'info');
+          addTrainingLog('   - Tirages: 1,247', 'info');
+          addTrainingLog('   - Gains: 16,211', 'info');
+          addTrainingLog('   - Période: 2020-2024', 'info');
+        }, 2000);
+      }
+
+      // Simuler l'action mixte
+      function simulateMixedAction() {
+        addTrainingLog('🔄 Mode mixte activé...', 'info');
+        
+        setTimeout(() => {
+          addTrainingLog('📖 Lecture des données...', 'info');
+        }, 1000);
+        
+        setTimeout(() => {
+          addTrainingLog('🚀 Démarrage entraînement...', 'info');
+        }, 3000);
+        
+        setTimeout(() => {
+          addTrainingLog('✅ Processus mixte terminé', 'success');
+        }, 5000);
+      }
+
+      // Actions rapides pour les 10 boutons
+      function quickAction(actionNumber) {
+        const led = document.getElementById(`quick-led-${actionNumber}`);
+        
+        // Activer la LED
+        led.classList.remove('collapsed');
+        led.classList.add('expanded');
+        
+        addTrainingLog(`⚡ Action rapide ${actionNumber} exécutée`, 'info');
+        
+        // Simuler une action
+        setTimeout(() => {
+          addTrainingLog(`✅ Action ${actionNumber} terminée`, 'success');
+          
+          // Désactiver la LED après 2 secondes
+          setTimeout(() => {
+            led.classList.remove('expanded');
+            led.classList.add('collapsed');
+          }, 2000);
+        }, 1500);
       }
 
     </script>
