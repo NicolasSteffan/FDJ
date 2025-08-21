@@ -1,8 +1,12 @@
 <h1><span class="tirage-led"></span> Training des Modèles IA</h1>
 
 <!-- Configuration du Training -->
-<div class="config-group" style="margin-bottom: 20px;">
-  <h4>Configuration du Training</h4>
+<div class="gains-section" id="training-config-section" style="margin-bottom: 30px;">
+  <div class="gains-header" onclick="toggleTrainingSection('training-config-section')">
+    <h3><span class="led_generique_petite collapsed" id="training-config-led"></span>Configuration du Training</h3>
+    <span class="gains-toggle collapsed" id="training-config-toggle">▼</span>
+  </div>
+  <div class="gains-content collapsed" id="training-config-content">
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
     <div>
       <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">IA:</label>
@@ -44,12 +48,14 @@
       Arreter l entrainement
     </button>
   </div>
+  </div>
 </div>
 
 <!-- Sous-section Ajouter une modèle -->
-<div class="gains-section" id="add-model-section" style="margin-top: 15px;">
+<div class="gains-section" id="add-model-section" style="margin-bottom: 30px;">
   <div class="gains-header" onclick="toggleTrainingSection('add-model-section')">
     <h3><span class="led_generique_petite collapsed" id="add-model-led"></span>Ajouter une modèle</h3>
+    <span class="gains-toggle collapsed" id="add-model-toggle">▼</span>
   </div>
   <div class="gains-content expanded" id="add-model-content">
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -83,8 +89,12 @@
 </div>
 
 <!-- Wizard d'entraînement -->
-<div class="config-group" style="margin-bottom: 20px;">
-  <h4>Wizard d'Entraînement</h4>
+<div class="gains-section" id="wizard-section" style="margin-bottom: 30px;">
+  <div class="gains-header" onclick="toggleTrainingSection('wizard-section')">
+    <h3><span class="led_generique_petite collapsed" id="wizard-led"></span>Wizard d'Entraînement</h3>
+    <span class="gains-toggle collapsed" id="wizard-toggle">▼</span>
+  </div>
+  <div class="gains-content collapsed" id="wizard-content">
   <div style="display: flex; flex-direction: column; gap: 10px;">
     <button onclick="wizardStep(1)" class="btn-generic" style="padding: 12px; font-size: 14px; position: relative; text-align: left;">
       <span class="led_generique_petite collapsed" id="wizard-led-1" style="position: absolute; top: 8px; right: 8px;"></span>
@@ -115,11 +125,16 @@
       Exécuter tout le wizard
     </button>
   </div>
+  </div>
 </div>
 
 <!-- Tableau Entraînement / Modèles de données -->
-<div class="config-group" style="margin-bottom: 20px;">
-  <h4>Entraînement / Modèles de données</h4>
+<div class="gains-section" id="training-table-section" style="margin-bottom: 30px;">
+  <div class="gains-header" onclick="toggleTrainingSection('training-table-section')">
+    <h3><span class="led_generique_petite collapsed" id="training-table-led"></span>Entraînement / Modèles de données</h3>
+    <span class="gains-toggle collapsed" id="training-table-toggle">▼</span>
+  </div>
+  <div class="gains-content collapsed" id="training-table-content">
   <div style="overflow-x: auto;">
     <table id="training-table" style="width: 100%; border-collapse: collapse; background: #2a2a2a; border-radius: 5px;">
       <thead>
@@ -281,11 +296,16 @@
       Reset entraînement
     </button>
   </div>
+  </div>
 </div>
 
 <!-- Pavé de 10 boutons -->
-<div class="config-group" style="margin-bottom: 20px;">
-  <h4>Actions Rapides</h4>
+<div class="gains-section" id="actions-rapides-section" style="margin-bottom: 30px;">
+  <div class="gains-header" onclick="toggleTrainingSection('actions-rapides-section')">
+    <h3><span class="led_generique_petite collapsed" id="actions-rapides-led"></span>Actions Rapides</h3>
+    <span class="gains-toggle collapsed" id="actions-rapides-toggle">▼</span>
+  </div>
+  <div class="gains-content collapsed" id="actions-rapides-content">
   <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
     <button onclick="quickAction(1)" class="btn-generic" style="padding: 10px; font-size: 12px; position: relative;">
       <span class="led_generique_petite collapsed" id="quick-led-1" style="position: absolute; top: 5px; right: 5px;"></span>
@@ -328,11 +348,16 @@
       Action 10
     </button>
   </div>
+  </div>
 </div>
 
 <!-- Logs de Training -->
-<div class="config-group" style="margin-bottom: 20px;">
-  <h4>Logs de Training</h4>
+<div class="gains-section" id="logs-section" style="margin-bottom: 30px;">
+  <div class="gains-header" onclick="toggleTrainingSection('logs-section')">
+    <h3><span class="led_generique_petite collapsed" id="logs-led"></span>Logs de Training</h3>
+    <span class="gains-toggle collapsed" id="logs-toggle">▼</span>
+  </div>
+  <div class="gains-content collapsed" id="logs-content">
   <div id="trainingLogs" style="border: 1px solid #444; border-radius: 5px; padding: 15px; height: 200px; overflow-y: auto; background: #1a1a1a; font-family: monospace; font-size: 12px; color: #00ff00;">
     <div style="color: #ffff00;">Training Logs</div>
     <div style="color: #888;">En attente de démarrage du training...</div>
@@ -342,11 +367,16 @@
       Effacer Logs
     </button>
   </div>
+  </div>
 </div>
 
 <!-- Métriques de Performance -->
-<div class="config-group" style="margin-bottom: 20px;">
-  <h4>Métriques de Performance</h4>
+<div class="gains-section" id="metriques-section" style="margin-bottom: 30px;">
+  <div class="gains-header" onclick="toggleTrainingSection('metriques-section')">
+    <h3><span class="led_generique_petite collapsed" id="metriques-led"></span>Métriques de Performance</h3>
+    <span class="gains-toggle collapsed" id="metriques-toggle">▼</span>
+  </div>
+  <div class="gains-content collapsed" id="metriques-content">
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
     <div style="background: #2a2a2a; padding: 15px; border-radius: 5px; text-align: center;">
       <div style="color: #27ae60; font-size: 24px; font-weight: bold;" id="trainingAccuracy">0%</div>
@@ -357,11 +387,16 @@
       <div style="color: #888; font-size: 12px;">Loss</div>
     </div>
   </div>
+  </div>
 </div>
 
 <!-- Paramètres de Training -->
-<div class="config-group" style="margin-bottom: 20px;">
-  <h4>Paramètres</h4>
+<div class="gains-section" id="parametres-section" style="margin-bottom: 30px;">
+  <div class="gains-header" onclick="toggleTrainingSection('parametres-section')">
+    <h3><span class="led_generique_petite collapsed" id="parametres-led"></span>Paramètres</h3>
+    <span class="gains-toggle collapsed" id="parametres-toggle">▼</span>
+  </div>
+  <div class="gains-content collapsed" id="parametres-content">
   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
     <div>
       <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Époques:</label>
@@ -379,11 +414,16 @@
     <input type="number" id="trainingLearningRate" value="0.001" min="0.0001" max="0.1" step="0.0001" 
            style="width: 100%; padding: 8px; border: 1px solid #666; border-radius: 4px; background: #2a2a2a; color: #fff;">
   </div>
+  </div>
 </div>
 
 <!-- Actions de Training -->
-<div class="config-group" style="margin-bottom: 20px;">
-  <h4>Actions</h4>
+<div class="gains-section" id="actions-section" style="margin-bottom: 30px;">
+  <div class="gains-header" onclick="toggleTrainingSection('actions-section')">
+    <h3><span class="led_generique_petite collapsed" id="actions-led"></span>Actions</h3>
+    <span class="gains-toggle collapsed" id="actions-toggle">▼</span>
+  </div>
+  <div class="gains-content collapsed" id="actions-content">
   <div style="display: flex; gap: 10px; flex-wrap: wrap;">
     <button onclick="startTraining()" class="btn-generic">
       Démarrer Training
@@ -398,10 +438,19 @@
       Évaluer Modèle
     </button>
   </div>
+  </div>
 </div>
 
 <!-- Statut général -->
-<div class="status" style="margin-top: 20px;">
-  <p><strong>Information :</strong> Le training utilise les données taguées "Training" (≤ 2024) et "Test" (2025) de votre base de données.</p>
-  <p><strong>Sécurité :</strong> Les modèles entraînés sont sauvegardés localement et ne sont jamais transmis à des serveurs externes.</p>
+<div class="gains-section" id="statut-section" style="margin-bottom: 30px;">
+  <div class="gains-header" onclick="toggleTrainingSection('statut-section')">
+    <h3><span class="led_generique_petite collapsed" id="statut-led"></span>Statut général</h3>
+    <span class="gains-toggle collapsed" id="statut-toggle">▼</span>
+  </div>
+  <div class="gains-content collapsed" id="statut-content">
+    <div class="status" style="margin-top: 20px;">
+      <p><strong>Information :</strong> Le training utilise les données taguées "Training" (≤ 2024) et "Test" (2025) de votre base de données.</p>
+      <p><strong>Sécurité :</strong> Les modèles entraînés sont sauvegardés localement et ne sont jamais transmis à des serveurs externes.</p>
+    </div>
+  </div>
 </div>
