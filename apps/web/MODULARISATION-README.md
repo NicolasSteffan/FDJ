@@ -164,3 +164,5 @@ http://localhost:3010#training
 ---
 
 **🎯 La page Training des Modèles IA est maintenant complètement modulaire !**
+
+

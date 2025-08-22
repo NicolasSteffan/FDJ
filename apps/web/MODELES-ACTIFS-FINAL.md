@@ -180,3 +180,5 @@ L'application est maintenant équipée d'un système complet de gestion des mod�
 ---
 
 **🎯 Toutes les fonctionnalités demandées sont implémentées et opérationnelles !**
+
+

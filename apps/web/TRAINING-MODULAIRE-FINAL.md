@@ -122,3 +122,5 @@ http://localhost:3010#training
 ---
 
 **🎯 La page Training est maintenant modulaire, maintenable et fonctionnelle !**
+
+

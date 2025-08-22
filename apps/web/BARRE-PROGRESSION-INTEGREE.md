@@ -155,3 +155,5 @@ http://localhost:3010/test-barre-progression.html
 ---
 
 **🎯 Le bouton "Étape 1" a maintenant la même taille que les autres avec une barre de progression élégamment intégrée !**
+
+
