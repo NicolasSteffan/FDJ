@@ -664,6 +664,8 @@ function initializeTrainingModels() {
   updateTrainingTable(); // Initialiser le tableau
 }
 
+
+
 // Initialiser quand la page Training est chargée
 if (typeof window !== 'undefined') {
   // Auto-initialisation si on est dans le navigateur

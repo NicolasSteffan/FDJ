@@ -8,25 +8,18 @@ class PageRouter {
     this.pages = {
       'home': { file: null, script: null }, // Page d'accueil intégrée
       'training': { file: 'pages/training.html', script: 'js/training.js' },
-      'scraping': { file: null, script: null }, // À extraire
-      'tirage': { file: null, script: null }, // À extraire
-      'ia-config': { file: null, script: null }, // À extraire
-      'status': { file: null, script: null } // À extraire
+      't2': { file: 'pages/t2.html', script: 'js/t2.js' },
+      'scraping': { file: 'pages/scraping.html', script: null }, // Page extraite
+      'tirage': { file: 'pages/tirage.html', script: null }, // Page extraite
+      'ia-config': { file: 'pages/ia-config.html', script: null }, // Page extraite
+      'admin-diagnostic': { file: null, script: null }, // Section intégrée (à extraire)
+      'admin-monitoring': { file: null, script: null } // Section intégrée (à extraire)
     };
     this.loadedScripts = new Set();
     this.init();
   }
 
   init() {
-    // Écouter les clics sur les liens de navigation
-    document.addEventListener('click', (e) => {
-      if (e.target.matches('[data-page]')) {
-        e.preventDefault();
-        const pageName = e.target.getAttribute('data-page');
-        this.navigateTo(pageName);
-      }
-    });
-
     // Gérer l'historique du navigateur
     window.addEventListener('popstate', (e) => {
       if (e.state && e.state.page) {
@@ -56,9 +49,6 @@ class PageRouter {
 
     // Charger la page
     await this.loadPage(pageName, addToHistory);
-
-    // Mettre à jour la navigation active
-    this.updateActiveNavigation(pageName);
 
     this.currentPage = pageName;
   }
@@ -145,18 +135,7 @@ class PageRouter {
     }
   }
 
-  updateActiveNavigation(pageName) {
-    // Retirer la classe active de tous les liens
-    document.querySelectorAll('[data-page]').forEach(link => {
-      link.classList.remove('active');
-    });
 
-    // Ajouter la classe active au lien correspondant
-    const activeLink = document.querySelector(`[data-page="${pageName}"]`);
-    if (activeLink) {
-      activeLink.classList.add('active');
-    }
-  }
 
   triggerPageChangeEvent(pageName) {
     const event = new CustomEvent('pageChanged', {
@@ -194,12 +173,32 @@ class PageRouter {
 let router;
 
 // Initialiser le routeur quand le DOM est prêt
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Charger la navigation d'abord
+  await loadNavigation();
+  
+  // Puis initialiser le routeur
   router = new PageRouter();
   
   // Exposer le routeur globalement pour les autres scripts
   window.router = router;
 });
+
+// Fonction pour charger la navigation
+async function loadNavigation() {
+  try {
+    const response = await fetch('components/navigation.html');
+    if (response.ok) {
+      const navHTML = await response.text();
+      const navContainer = document.getElementById('navigation-container');
+      if (navContainer) {
+        navContainer.innerHTML = navHTML;
+      }
+    }
+  } catch (error) {
+    console.error('Erreur lors du chargement de la navigation:', error);
+  }
+}
 
 // ========================================
 // API PUBLIQUE
@@ -216,6 +215,19 @@ function getCurrentPage() {
   return router ? router.getCurrentPage() : null;
 }
 
+// Fonction de compatibilité pour l'ancien système
+function showSection(sectionId) {
+  if (router) {
+    router.navigateTo(sectionId);
+  }
+}
+
+// Fonction spéciale pour l'historique
+function showHistorique() {
+  // Cette fonction peut être implémentée selon les besoins spécifiques
+  console.log('showHistorique appelée - à implémenter selon les besoins');
+}
+
 // Écouter les changements de page pour les actions spécifiques
 document.addEventListener('pageChanged', (e) => {
   const { page, previousPage } = e.detail;
@@ -228,6 +240,13 @@ document.addEventListener('pageChanged', (e) => {
       // Initialiser les modèles de training si nécessaire
       if (typeof initializeTrainingModels === 'function') {
         initializeTrainingModels();
+      }
+      break;
+      
+    case 't2':
+      // Initialiser la page T2 si nécessaire
+      if (typeof initializeT2 === 'function') {
+        initializeT2();
       }
       break;
       

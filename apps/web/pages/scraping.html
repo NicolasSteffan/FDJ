@@ -1,0 +1,173 @@
+<h1><span class="tirage-led"></span> Scrapping</h1>
+
+<!-- Contrôles de Scraping -->
+<div class="tirage-controls">
+  <!-- Ligne 1: Titres -->
+  <div class="controls-titles">
+    <div class="date-title-section">
+      <h4>Mode de scraping</h4>
+    </div>
+    <div class="title-group">
+      <h4>Configuration</h4>
+    </div>
+  </div>
+  
+  <!-- Ligne 2: Contrôles -->
+  <div class="controls-row">
+    <div class="date-load-group">
+      <!-- Sélecteur de mode -->
+      <div class="scraping-mode-selector">
+        <label>
+          <input type="radio" name="scrapingMode" value="single" checked onchange="toggleScrapingMode()">
+          Date unique
+        </label>
+        <label>
+          <input type="radio" name="scrapingMode" value="range" onchange="toggleScrapingMode()">
+          Intervalle
+        </label>
+      </div>
+      
+      <!-- Contrôles date unique -->
+      <div id="singleDateControls" class="date-controls-merged">
+        <button onclick="changeScrapingDate(-1)" class="btn-generic">Précédent</button>
+        <input type="date" id="scrapingDate" value="2025-08-13">
+        <button onclick="changeScrapingDate(1)" class="btn-generic">Suivant</button>
+      </div>
+
+      <!-- Contrôles intervalle de dates -->
+      <div id="rangeDateControls" class="date-range-controls" style="display: none;">
+        <div class="date-range-group">
+          <label>De:</label>
+          <input type="date" id="scrapingDateFrom" value="2025-07-01" min="2004-01-01">
+        </div>
+        <div class="date-range-group">
+          <label>À:</label>
+          <input type="date" id="scrapingDateTo" value="2025-08-13">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sélecteur de fichier source -->
+    <div class="date-selection">
+      <div class="date-source-controls">
+        <label for="sourceFileSelector" class="source-file-label">📂 Import de données EuroMillions:</label>
+        <div class="source-file-container">
+          <input type="file" id="sourceFileSelector" accept=".csv,.json,.txt" style="display: none;" onchange="handleSourceFileSelect(event)">
+          <button onclick="document.getElementById('sourceFileSelector').click()" class="load-btn source-file-btn">
+            📁 Fichier source
+          </button>
+          <span id="sourceFileName" class="source-file-name">Sélectionnez un fichier CSV EuroMillions</span>
+        </div>
+        <div style="margin-top: 8px; font-size: 12px; color: #95a5a6;">
+          💡 <strong>CSV automatique :</strong> Les fichiers .csv EuroMillions sont détectés et importés automatiquement<br/>
+          🎯 <strong>Format supporté :</strong> CSV officiel FDJ avec colonnes date, numéros, étoiles et gains
+        </div>
+      </div>
+    </div>
+    
+    <!-- Actions de scraping -->
+    <div class="toggle-switch">
+      <div class="switch-container scraping-actions">
+        <button onclick="startScraping()" class="btn-generic">
+          Lancer Scraping
+        </button>
+        
+        <button onclick="stopScraping()" class="btn-generic" title="Arrêter le scraping en cours" style="display: none;" id="stopScrapingBtn">
+          Arrêter
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Ligne 3: Fil d'Ariane -->
+  <div class="breadcrumb active" id="scrapingBreadcrumb">
+    <div class="breadcrumb-content">
+      <span class="breadcrumb-icon">🌐</span>
+      <span class="breadcrumb-text" id="scrapingBreadcrumbText">Prêt pour le scraping</span>
+    </div>
+  </div>
+</div>
+
+<!-- Section Configuration (pliable) -->
+<div class="gains-section" id="scrapingConfigSection">
+  <div class="gains-header" onclick="toggleScrapingConfig()">
+    <h3><span class="led_generique_petite expanded" id="config-led"></span>Configuration avancée</h3>
+    <span class="gains-toggle expanded" id="configToggle">▲</span>
+  </div>
+  <div class="gains-content expanded" id="configContent">
+    <div class="scraping-config">
+      <div class="config-row">
+        <label for="scrapingDelay">Délai entre requests (ms):</label>
+        <input type="number" id="scrapingDelay" value="1000" min="500" max="5000" step="100">
+      </div>
+      <div class="config-row">
+        <label for="scrapingRetries">Nombre de tentatives:</label>
+        <input type="number" id="scrapingRetries" value="3" min="1" max="10">
+      </div>
+      <div class="config-row">
+        <label for="scrapingBatch">Taille des lots:</label>
+        <input type="number" id="scrapingBatch" value="10" min="1" max="50">
+      </div>
+      <div class="config-row">
+        <label>
+          <input type="checkbox" id="skipExisting" checked>
+          Ignorer les tirages déjà en base
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section Progrès (pliable) -->
+<div class="gains-section" id="scrapingProgressSection" style="display: none;">
+  <div class="gains-header" onclick="toggleScrapingProgress()">
+    <h3><span class="led_generique_petite expanded" id="progress-led"></span>Progrès du scraping</h3>
+    <span class="gains-toggle expanded" id="progressToggle">▲</span>
+  </div>
+  <div class="gains-content expanded" id="progressContent">
+    <div class="scraping-progress">
+      <div class="progress-stats">
+        <div class="stat-item">
+          <span class="stat-label">Progression:</span>
+          <span class="stat-value" id="progressPercent">0%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Traités:</span>
+          <span class="stat-value" id="progressProcessed">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Réussis:</span>
+          <span class="stat-value" id="progressSuccess">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Erreurs:</span>
+          <span class="stat-value" id="progressErrors">0</span>
+        </div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
+      </div>
+      <div class="progress-log" id="progressLog">
+        <!-- Logs de progression -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section Résultats (pliable) -->
+<div class="gains-section" id="scrapingResultsSection" style="display: none;">
+  <div class="gains-header" onclick="toggleScrapingResults()">
+    <h3><span class="led_generique_petite expanded" id="results-led"></span>Résultats du scraping</h3>
+    <span class="gains-toggle expanded" id="resultsToggle">▲</span>
+  </div>
+  <div class="gains-content expanded" id="resultsContent">
+    <div class="scraping-results">
+      <div id="scrapingResultsStats" class="results-stats">
+        <!-- Statistiques des résultats -->
+      </div>
+      <div id="scrapingResultsList" class="results-list">
+        <!-- Liste des tirages scrapés -->
+      </div>
+    </div>
+  </div>
+</div>

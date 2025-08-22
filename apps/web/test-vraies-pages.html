@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test des Vraies Pages</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-info {
+            background: #2a2a2a;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #27ae60;
+        }
+        .page-test {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .page-card {
+            background: #34495e;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .page-card h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .test-button {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #2ecc71;
+        }
+        .result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .ok { background: #27ae60; }
+        .error { background: #e74c3c; }
+        .warning { background: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-info">
+            <h1>🎯 Test des Vraies Pages Extraites</h1>
+            <p><strong>Objectif :</strong> Vérifier que les vraies pages (non-démo) sont bien chargées depuis le dossier <code>pages/</code></p>
+            <p><strong>Statut :</strong> Les pages Scraping, Tirage et IA-Config ont été extraites de <code>index-old.html</code></p>
+        </div>
+        
+        <div class="page-test">
+            <div class="page-card">
+                <h3>🔍 Page Scraping</h3>
+                <p><strong>Fichier :</strong> <code>pages/scraping.html</code></p>
+                <p><strong>Contenu :</strong> Interface complète de scraping avec contrôles de date, configuration avancée, progrès et résultats</p>
+                <button class="test-button" onclick="testPage('scraping')">Tester Scraping</button>
+                <button class="test-button" onclick="openPage('scraping')">Ouvrir</button>
+                <div id="scraping-result"></div>
+            </div>
+            
+            <div class="page-card">
+                <h3>🎲 Page Tirage</h3>
+                <p><strong>Fichier :</strong> <code>pages/tirage.html</code></p>
+                <p><strong>Contenu :</strong> Interface de tirage avec contrôles de date, switch Scrap/Mock, résultats et gains</p>
+                <button class="test-button" onclick="testPage('tirage')">Tester Tirage</button>
+                <button class="test-button" onclick="openPage('tirage')">Ouvrir</button>
+                <div id="tirage-result"></div>
+            </div>
+            
+            <div class="page-card">
+                <h3>⚙️ Page Configuration IA</h3>
+                <p><strong>Fichier :</strong> <code>pages/ia-config.html</code></p>
+                <p><strong>Contenu :</strong> Configuration OpenAI, Claude, Mistral avec clés API et tests de connexion</p>
+                <button class="test-button" onclick="testPage('ia-config')">Tester Config IA</button>
+                <button class="test-button" onclick="openPage('ia-config')">Ouvrir</button>
+                <div id="ia-config-result"></div>
+            </div>
+            
+            <div class="page-card">
+                <h3>🤖 Page Training IA</h3>
+                <p><strong>Fichier :</strong> <code>pages/training.html</code></p>
+                <p><strong>Contenu :</strong> Interface de training avec sections pliables (sans AAA)</p>
+                <button class="test-button" onclick="testPage('training')">Tester Training</button>
+                <button class="test-button" onclick="openPage('training')">Ouvrir</button>
+                <div id="training-result"></div>
+            </div>
+            
+            <div class="page-card">
+                <h3>📄 Page T2</h3>
+                <p><strong>Fichier :</strong> <code>pages/t2.html</code></p>
+                <p><strong>Contenu :</strong> 10 sections pliables style DUMP (Alpha à Kappa)</p>
+                <button class="test-button" onclick="testPage('t2')">Tester T2</button>
+                <button class="test-button" onclick="openPage('t2')">Ouvrir</button>
+                <div id="t2-result"></div>
+            </div>
+        </div>
+        
+        <div id="global-results">
+            <h2>📊 Résultats des tests</h2>
+        </div>
+        
+        <div class="test-info">
+            <h2>🔧 Actions de test</h2>
+            <button class="test-button" onclick="testAllPages()">Tester toutes les pages</button>
+            <button class="test-button" onclick="clearResults()">Effacer les résultats</button>
+        </div>
+    </div>
+
+    <script>
+        const globalResults = document.getElementById('global-results');
+        
+        function addResult(message, type, targetId = 'global-results') {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            
+            const target = document.getElementById(targetId) || globalResults;
+            target.appendChild(div);
+        }
+        
+        async function testPage(pageName) {
+            const resultId = pageName + '-result';
+            document.getElementById(resultId).innerHTML = '';
+            
+            addResult(`Test de la page ${pageName}...`, 'ok', resultId);
+            
+            try {
+                // Test 1: Vérifier que le fichier existe
+                const response = await fetch(`pages/${pageName}.html`);
+                if (response.ok) {
+                    const content = await response.text();
+                    addResult(`✅ Fichier pages/${pageName}.html trouvé (${content.length} caractères)`, 'ok', resultId);
+                    
+                    // Test 2: Vérifier le contenu spécifique
+                    const tests = {
+                        'scraping': ['scraping-mode-selector', 'scrapingDate', 'startScraping'],
+                        'tirage': ['drawDate', 'loadDraw', 'dataToggle'],
+                        'ia-config': ['openaiApiKey', 'claudeApiKey', 'mistralApiKey'],
+                        'training': ['add-model-section', 'training-config-section'],
+                        't2': ['alpha-main-tag', 'beta-main-tag', 'kappa-main-tag']
+                    };
+                    
+                    const pageTests = tests[pageName] || [];
+                    let foundElements = 0;
+                    
+                    pageTests.forEach(elementId => {
+                        if (content.includes(elementId)) {
+                            foundElements++;
+                        }
+                    });
+                    
+                    if (foundElements === pageTests.length) {
+                        addResult(`✅ Tous les éléments clés trouvés (${foundElements}/${pageTests.length})`, 'ok', resultId);
+                    } else {
+                        addResult(`⚠️ Éléments partiels (${foundElements}/${pageTests.length})`, 'warning', resultId);
+                    }
+                    
+                    // Test 3: Vérifier qu'il ne s'agit pas d'une page de démo
+                    if (content.includes('alert(') && content.includes('à implémenter')) {
+                        addResult(`❌ Page de démo détectée !`, 'error', resultId);
+                    } else {
+                        addResult(`✅ Vraie page (pas de démo)`, 'ok', resultId);
+                    }
+                    
+                } else {
+                    addResult(`❌ Fichier pages/${pageName}.html non trouvé (${response.status})`, 'error', resultId);
+                }
+            } catch (error) {
+                addResult(`❌ Erreur: ${error.message}`, 'error', resultId);
+            }
+        }
+        
+        function openPage(pageName) {
+            const url = `http://localhost:3010#${pageName}`;
+            window.open(url, '_blank');
+            addResult(`Ouverture: ${url}`, 'ok');
+        }
+        
+        async function testAllPages() {
+            const pages = ['scraping', 'tirage', 'ia-config', 'training', 't2'];
+            addResult('🚀 Test de toutes les pages...', 'ok');
+            
+            for (const page of pages) {
+                await testPage(page);
+                await new Promise(resolve => setTimeout(resolve, 500)); // Pause entre les tests
+            }
+            
+            addResult('🏁 Tests terminés !', 'ok');
+        }
+        
+        function clearResults() {
+            document.querySelectorAll('.result').forEach(el => el.remove());
+            ['scraping-result', 'tirage-result', 'ia-config-result', 'training-result', 't2-result'].forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+        }
+        
+        // Test automatique au chargement
+        addResult('🎯 Page de test des vraies pages chargée', 'ok');
+        addResult('💡 Cliquez sur "Tester toutes les pages" pour vérifier', 'ok');
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Tous les Menus</title>
+    
+    <!-- CSS nécessaires -->
+    <link rel="stylesheet" href="./led-components.css">
+    <link rel="stylesheet" href="./tirage-components.css">
+    <link rel="stylesheet" href="./homepage-components.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-info {
+            background: #2a2a2a;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .menu-test {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .menu-button {
+            background: #34495e;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .menu-button:hover {
+            background: #3498db;
+        }
+        .result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+        .ok { background: #27ae60; }
+        .error { background: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-info">
+            <h1>🧪 Test de Tous les Menus</h1>
+            <p>Cette page teste tous les liens de navigation de l'application.</p>
+            <p><strong>Instructions :</strong> Cliquez sur chaque bouton pour tester la navigation.</p>
+        </div>
+        
+        <div class="menu-test">
+            <button class="menu-button" onclick="testMenu('home')">🏠 Accueil</button>
+            <button class="menu-button" onclick="testMenu('tirage')">🎲 Tirage</button>
+            <button class="menu-button" onclick="testMenu('scraping')">🔍 Scrapping</button>
+            <button class="menu-button" onclick="testMenu('ia-config')">⚙️ Configuration IA</button>
+            <button class="menu-button" onclick="testMenu('training')">🤖 Training IA</button>
+            <button class="menu-button" onclick="testMenu('t2')">📄 T2</button>
+            <button class="menu-button" onclick="testMenu('admin-diagnostic')">🔍 Diagnostic</button>
+            <button class="menu-button" onclick="testMenu('admin-monitoring')">📊 Monitoring</button>
+        </div>
+        
+        <div id="results">
+            <h2>📋 Résultats des tests</h2>
+        </div>
+        
+        <div class="test-info">
+            <h2>🔗 Liens directs</h2>
+            <ul>
+                <li><a href="http://localhost:3010#home" target="_blank">Accueil</a></li>
+                <li><a href="http://localhost:3010#tirage" target="_blank">Tirage</a></li>
+                <li><a href="http://localhost:3010#scraping" target="_blank">Scrapping</a></li>
+                <li><a href="http://localhost:3010#ia-config" target="_blank">Configuration IA</a></li>
+                <li><a href="http://localhost:3010#training" target="_blank">Training IA</a></li>
+                <li><a href="http://localhost:3010#t2" target="_blank">T2</a></li>
+                <li><a href="http://localhost:3010#admin-diagnostic" target="_blank">Diagnostic</a></li>
+                <li><a href="http://localhost:3010#admin-monitoring" target="_blank">Monitoring</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(message, type) {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            resultsDiv.appendChild(div);
+        }
+        
+        function testMenu(pageName) {
+            addResult(`Test navigation vers: ${pageName}`, 'ok');
+            
+            // Ouvrir dans une nouvelle fenêtre pour tester
+            const url = `http://localhost:3010#${pageName}`;
+            window.open(url, '_blank');
+            
+            addResult(`Ouverture: ${url}`, 'ok');
+        }
+        
+        // Test automatique au chargement
+        async function runAutoTests() {
+            addResult('🚀 Démarrage des tests automatiques...', 'ok');
+            
+            // Tester la disponibilité de l'application principale
+            try {
+                const response = await fetch('http://localhost:3010');
+                if (response.ok) {
+                    addResult('✅ Application principale accessible', 'ok');
+                } else {
+                    addResult('❌ Application principale inaccessible', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Erreur connexion: ${error.message}`, 'error');
+            }
+            
+            // Tester les fichiers de navigation
+            try {
+                const navResponse = await fetch('components/navigation.html');
+                if (navResponse.ok) {
+                    const navContent = await navResponse.text();
+                    const menus = ['home', 'tirage', 'scraping', 'ia-config', 'training', 't2', 'admin-diagnostic', 'admin-monitoring'];
+                    
+                    menus.forEach(menu => {
+                        if (navContent.includes(`showSection('${menu}')`)) {
+                            addResult(`✅ Menu ${menu} configuré`, 'ok');
+                        } else {
+                            addResult(`❌ Menu ${menu} manquant`, 'error');
+                        }
+                    });
+                } else {
+                    addResult('❌ Impossible de charger la navigation', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Erreur navigation: ${error.message}`, 'error');
+            }
+        }
+        
+        runAutoTests();
+    </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page T2</title>
+    
+    <!-- CSS nécessaires -->
+    <link rel="stylesheet" href="./led-components.css">
+    <link rel="stylesheet" href="./tirage-components.css">
+    <link rel="stylesheet" href="./homepage-components.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-info {
+            background: #2a2a2a;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-info">
+            <h1>🧪 Test Page T2</h1>
+            <p>Cette page teste directement le contenu de T2 sans le routeur.</p>
+            <p><strong>URL de test :</strong> <code>http://localhost:3010/test-t2.html</code></p>
+        </div>
+        
+        <div id="t2-content">
+            <!-- Le contenu de T2 sera chargé ici -->
+        </div>
+    </div>
+
+    <!-- JavaScript pour charger T2 -->
+    <script src="js/t2.js"></script>
+    <script>
+        // Charger le contenu de la page T2
+        fetch('pages/t2.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('t2-content').innerHTML = html;
+                console.log('Page T2 chargée avec succès !');
+                
+                // Initialiser T2 si la fonction existe
+                if (typeof initializeT2 === 'function') {
+                    initializeT2();
+                    console.log('T2 initialisé !');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement de T2:', error);
+                document.getElementById('t2-content').innerHTML = 
+                    '<div style="color: #e74c3c; padding: 20px;">❌ Erreur lors du chargement de T2: ' + error.message + '</div>';
+            });
+    </script>
+</body>
+</html>

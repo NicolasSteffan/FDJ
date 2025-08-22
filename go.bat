@@ -2,7 +2,7 @@
 setlocal
 
 echo ==========================================
-echo FDJ - VERSION V0.003B-CSV-IMPORT-PAGINATION
+echo FDJ - VERSION V0.004B-REFACTO-T2
 echo SERVEUR BACKEND + FRONTEND LOCALHOST
 echo ==========================================
 
@@ -73,7 +73,7 @@ echo - Un navigateur devrait s'ouvrir automatiquement (Chrome > Firefox > Edge)
 echo - Si probleme connexion Microsoft: utilisez Chrome ou Firefox
 echo - Sinon ouvrez manuellement: http://localhost:3010
 echo - Pour arreter: fermez les fenetres "BACKEND" et "SERVEUR"
-echo 🔧 VERSION V0.003B-CSV-IMPORT-PAGINATION CARACTERISTIQUES:
+echo 🔧 VERSION V0.004B-REFACTO-T2 CARACTERISTIQUES:
 echo - Backend SQLite file-based partage
 echo - API REST complete avec CORS
 echo - Base de donnees persistante SQLite
@@ -93,6 +93,14 @@ echo - CSS ENTIEREMENT EXTERNE - 100%% bible.md conforme
 echo - Architecture CSS modulaire complete
 echo - Index.html totalement nettoye (ZERO CSS inline)
 echo - Conforme bible.md regles 3, 7 et 8
+echo - ARCHITECTURE MODULAIRE REFACTORISEE:
+echo   * Pages isolees dans repertoire pages/
+echo   * JavaScript separe par page dans js/
+echo   * Composants reutilisables dans components/
+echo   * Routage dynamique client-side
+echo - PAGE T2 avec 10 sous-sections pliables style DUMP
+echo - Training des Modeles IA avec sections collapsibles
+echo - Navigation IA enrichie (Configuration, Training, T2)
 echo ==========================================
 
 cd /d "%~dp0"

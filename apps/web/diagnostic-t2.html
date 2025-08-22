@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic T2</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .diagnostic {
+            background: #000;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        .ok { color: #00ff00; }
+        .error { color: #ff0000; }
+        .warning { color: #ffff00; }
+        .info { color: #00ffff; }
+    </style>
+</head>
+<body>
+    <div class="diagnostic">
+        <h1>🔍 DIAGNOSTIC PAGE T2</h1>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const results = document.getElementById('results');
+        
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            results.appendChild(div);
+        }
+        
+        async function runDiagnostic() {
+            log('🚀 Démarrage du diagnostic T2...', 'info');
+            
+            // Test 1: Vérifier les fichiers
+            const files = [
+                'pages/t2.html',
+                'js/t2.js',
+                'components/navigation.html',
+                'js/router.js'
+            ];
+            
+            for (const file of files) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        log(`✅ ${file} - OK`, 'ok');
+                    } else {
+                        log(`❌ ${file} - Erreur ${response.status}`, 'error');
+                    }
+                } catch (error) {
+                    log(`❌ ${file} - Erreur: ${error.message}`, 'error');
+                }
+            }
+            
+            // Test 2: Vérifier le contenu de navigation
+            try {
+                const navResponse = await fetch('components/navigation.html');
+                const navContent = await navResponse.text();
+                if (navContent.includes('data-page="t2"')) {
+                    log('✅ Menu T2 présent dans navigation', 'ok');
+                } else {
+                    log('❌ Menu T2 manquant dans navigation', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erreur navigation: ${error.message}`, 'error');
+            }
+            
+            // Test 3: Vérifier le contenu de T2
+            try {
+                const t2Response = await fetch('pages/t2.html');
+                const t2Content = await t2Response.text();
+                const sections = [
+                    'alpha-main-tag',
+                    'beta-main-tag', 
+                    'gamma-main-tag',
+                    'delta-main-tag',
+                    'epsilon-main-tag',
+                    'zeta-main-tag',
+                    'eta-main-tag',
+                    'theta-main-tag',
+                    'iota-main-tag',
+                    'kappa-main-tag'
+                ];
+                
+                let foundSections = 0;
+                sections.forEach(section => {
+                    if (t2Content.includes(section)) {
+                        foundSections++;
+                    }
+                });
+                
+                if (foundSections === 10) {
+                    log(`✅ Toutes les 10 sections trouvées dans T2`, 'ok');
+                } else {
+                    log(`⚠️ Seulement ${foundSections}/10 sections trouvées`, 'warning');
+                }
+            } catch (error) {
+                log(`❌ Erreur T2 content: ${error.message}`, 'error');
+            }
+            
+            // Test 4: Vérifier le routeur
+            try {
+                const routerResponse = await fetch('js/router.js');
+                const routerContent = await routerResponse.text();
+                if (routerContent.includes("'t2':")) {
+                    log('✅ Configuration T2 présente dans routeur', 'ok');
+                } else {
+                    log('❌ Configuration T2 manquante dans routeur', 'error');
+                }
+            } catch (error) {
+                log(`❌ Erreur routeur: ${error.message}`, 'error');
+            }
+            
+            log('🏁 Diagnostic terminé !', 'info');
+            log('', 'info');
+            log('📋 INSTRUCTIONS:', 'info');
+            log('1. Ouvrir http://localhost:3010', 'info');
+            log('2. Cliquer sur IA > T2 dans le menu', 'info');
+            log('3. Vérifier que les 10 sections sont visibles', 'info');
+            log('4. Tester le pliage/dépliage des sections', 'info');
+        }
+        
+        runDiagnostic();
+    </script>
+</body>
+</html>

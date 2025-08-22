@@ -1,0 +1,97 @@
+<h1><span class="tirage-led"></span> Tirage</h1>
+
+<!-- Contrôles -->
+<div class="tirage-controls">
+  <!-- Ligne 1: Titres -->
+  <div class="controls-titles">
+    <div class="date-title-section">
+      <h4>Date de tirage</h4>
+    </div>
+    <div class="title-group">
+      <h4>Source de données</h4>
+    </div>
+  </div>
+  
+  <!-- Ligne 2: Contrôles -->
+  <div class="controls-row">
+    <div class="date-load-group">
+      <div class="date-controls-merged">
+        <button onclick="changeDate(-1)" class="btn-generic">Précédent</button>
+        <input type="date" id="drawDate" value="2025-08-13">
+        <button onclick="changeDate(1)" class="btn-generic">Suivant</button>
+      </div>
+      
+      <button onclick="loadDraw()" class="btn-generic">
+        Charger
+      </button>
+      
+      <button onclick="loadDrawForced()" class="btn-generic" title="Forcer un nouveau scraping même si en base">
+        Force
+      </button>
+    </div>
+    
+    <div class="toggle-switch">
+      <div class="switch-container">
+        <span class="switch-label-left">Scrap</span>
+        <div class="led_generique_petite expanded" id="scrapLed"></div>
+        <div class="switch scrap">
+          <input type="checkbox" id="dataToggle" checked>
+          <span class="slider"></span>
+        </div>
+        <div class="led_generique_petite collapsed" id="jsonLed"></div>
+        <span class="switch-label-right">Mock</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Ligne 3: Fil d'Ariane -->
+  <div class="breadcrumb active" id="dataBreadcrumb">
+    <div class="breadcrumb-content">
+      <span class="breadcrumb-icon">🌐</span>
+      <span class="breadcrumb-text">Source: Scrap (données réelles)</span>
+    </div>
+  </div>
+</div>
+
+<!-- Section Résultats (pliable) -->
+<div class="gains-section" id="resultsSection" style="display: none;">
+  <div class="gains-header" onclick="toggleResults()">
+    <h3><span class="led_generique_petite expanded" id="results-led"></span>Résultat</h3>
+    <span class="gains-toggle expanded" id="resultsToggle"></span>
+  </div>
+  <div class="gains-content expanded" id="resultsContent">
+    <div class="draw-result">
+      <div class="draw-date" id="resultDate">Mardi 13 Août 2025</div>
+      <div class="draw-balls" id="resultBalls">
+        <!-- Les boules seront générées dynamiquement -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Section Gains (pliable) -->
+<div class="gains-section" id="gainsSection" style="display: none;">
+  <div class="gains-header" onclick="toggleGains()">
+    <h3><span class="led_generique_petite expanded" id="gains-led"></span>Gains et Répartitions</h3>
+    <span class="gains-toggle expanded" id="gainsToggle"></span>
+  </div>
+  <div class="gains-content expanded" id="gainsContent">
+    <table class="gains-table">
+      <thead>
+        <tr>
+          <th>Rang</th>
+          <th>Combinaison</th>
+          <th>Gagnants</th>
+          <th>Gain par gagnant</th>
+        </tr>
+      </thead>
+      <tbody id="gainsTableBody">
+        <!-- Données générées dynamiquement -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="status" style="margin-top: 20px;">
+  <p>💡 <strong>Utilisation :</strong> Sélectionnez une date, choisissez entre données simulées (Mock) ou scraping réel (Scrap), puis cliquez sur Charger pour afficher les résultats du tirage.</p>
+</div>

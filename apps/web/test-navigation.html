@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Navigation et Marges</title>
+    
+    <!-- CSS nécessaires -->
+    <link rel="stylesheet" href="./led-components.css">
+    <link rel="stylesheet" href="./tirage-components.css">
+    <link rel="stylesheet" href="./homepage-components.css">
+    <link rel="stylesheet" href="./switch-components.css">
+    <link rel="stylesheet" href="./lottery-components.css">
+    <link rel="stylesheet" href="./tables-components.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-info {
+            background: #2a2a2a;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .ok { background: #27ae60; color: white; }
+        .error { background: #e74c3c; color: white; }
+        .warning { background: #f39c12; color: white; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-info">
+            <h1>🧪 Test Navigation et Structure</h1>
+            <p>Cette page teste la navigation et la structure de l'application.</p>
+            <p><strong>URL de test :</strong> <code>http://localhost:3010/test-navigation.html</code></p>
+        </div>
+        
+        <div id="test-results">
+            <h2>🔍 Résultats des tests</h2>
+        </div>
+        
+        <div class="test-info">
+            <h2>📋 Tests manuels</h2>
+            <ol>
+                <li>Ouvrir <a href="http://localhost:3010" target="_blank">http://localhost:3010</a></li>
+                <li>Vérifier que le header avec logo et menu est visible</li>
+                <li>Vérifier que les marges gauche/droite sont présentes</li>
+                <li>Tester le menu IA > T2</li>
+                <li>Vérifier que les 10 sections de T2 sont visibles</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const resultsDiv = document.getElementById('test-results');
+        
+        function addResult(message, type) {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            resultsDiv.appendChild(div);
+        }
+        
+        async function runTests() {
+            addResult('🚀 Démarrage des tests...', 'ok');
+            
+            // Test 1: Vérifier les fichiers CSS
+            const cssFiles = [
+                'led-components.css',
+                'tirage-components.css', 
+                'homepage-components.css',
+                'switch-components.css',
+                'lottery-components.css',
+                'tables-components.css'
+            ];
+            
+            for (const file of cssFiles) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        addResult(`✅ CSS ${file} - OK`, 'ok');
+                    } else {
+                        addResult(`❌ CSS ${file} - Erreur ${response.status}`, 'error');
+                    }
+                } catch (error) {
+                    addResult(`❌ CSS ${file} - ${error.message}`, 'error');
+                }
+            }
+            
+            // Test 2: Vérifier la navigation
+            try {
+                const navResponse = await fetch('components/navigation.html');
+                if (navResponse.ok) {
+                    const navContent = await navResponse.text();
+                    if (navContent.includes('onclick="showSection(\'t2\')"')) {
+                        addResult('✅ Navigation T2 configurée correctement', 'ok');
+                    } else {
+                        addResult('⚠️ Navigation T2 non trouvée', 'warning');
+                    }
+                } else {
+                    addResult('❌ Impossible de charger la navigation', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Erreur navigation: ${error.message}`, 'error');
+            }
+            
+            // Test 3: Vérifier le routeur
+            try {
+                const routerResponse = await fetch('js/router.js');
+                if (routerResponse.ok) {
+                    const routerContent = await routerResponse.text();
+                    if (routerContent.includes('function showSection')) {
+                        addResult('✅ Fonction showSection présente', 'ok');
+                    } else {
+                        addResult('❌ Fonction showSection manquante', 'error');
+                    }
+                } else {
+                    addResult('❌ Impossible de charger le routeur', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Erreur routeur: ${error.message}`, 'error');
+            }
+            
+            // Test 4: Vérifier l'index.html principal
+            try {
+                const indexResponse = await fetch('index.html');
+                if (indexResponse.ok) {
+                    const indexContent = await indexResponse.text();
+                    if (indexContent.includes('class="topbar"')) {
+                        addResult('✅ Structure header présente', 'ok');
+                    } else {
+                        addResult('❌ Structure header manquante', 'error');
+                    }
+                    if (indexContent.includes('class="content"')) {
+                        addResult('✅ Structure main content présente', 'ok');
+                    } else {
+                        addResult('❌ Structure main content manquante', 'error');
+                    }
+                } else {
+                    addResult('❌ Impossible de charger index.html', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Erreur index.html: ${error.message}`, 'error');
+            }
+            
+            addResult('🏁 Tests terminés !', 'ok');
+        }
+        
+        runTests();
+    </script>
+</body>
+</html>

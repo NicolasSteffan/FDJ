@@ -1,6 +1,44 @@
 <h1><span class="tirage-led"></span> Training des Modèles IA</h1>
 
-<!-- Configuration du Training -->
+
+<!-- Sous-section Ajouter une modèle -->
+<div class="gains-section" id="add-model-section" style="margin-bottom: 30px;">
+  <div class="gains-header" onclick="toggleTrainingSection('add-model-section')">
+    <h3><span class="led_generique_petite expanded" id="add-model-led"></span>Ajouter une modèle</h3>
+    <span class="gains-toggle expanded" id="add-model-toggle">▲</span>
+  </div>
+  <div class="gains-content expanded" id="add-model-content">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+      <div>
+        <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">IA:</label>
+        <select id="addModelAI" class="btn-generic" style="width: 100%; text-align: left;" onchange="updateAddModelModels()">
+          <option value="openai">OpenAI / ChatGPT</option>
+          <option value="claude">Claude / Anthropic</option>
+          <option value="mistral">Mistral AI</option>
+          <option value="gemini">Gemini (Google)</option>
+          <option value="perplexity">Perplexity</option>
+          <option value="deepseek">DeepSeek</option>
+        </select>
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle à entraîner:</label>
+        <select id="addModelModel" class="btn-generic" style="width: 100%; text-align: left;">
+          <!-- Les options seront remplies dynamiquement -->
+        </select>
+      </div>
+    </div>
+    <div style="margin-top: 15px; display: flex; gap: 10px;">
+      <button onclick="addModel()" class="btn-generic" style="flex: 1;">
+        Ajouter
+      </button>
+      <button onclick="removeModel()" class="btn-generic" style="flex: 1;">
+        Retirer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Sous-section Configuration du Training -->
 <div class="gains-section" id="training-config-section" style="margin-bottom: 30px;">
   <div class="gains-header" onclick="toggleTrainingSection('training-config-section')">
     <h3><span class="led_generique_petite collapsed" id="training-config-led"></span>Configuration du Training</h3>
@@ -48,43 +86,6 @@
       Arreter l entrainement
     </button>
   </div>
-  </div>
-</div>
-
-<!-- Sous-section Ajouter une modèle -->
-<div class="gains-section" id="add-model-section" style="margin-bottom: 30px;">
-  <div class="gains-header" onclick="toggleTrainingSection('add-model-section')">
-    <h3><span class="led_generique_petite collapsed" id="add-model-led"></span>Ajouter une modèle</h3>
-    <span class="gains-toggle collapsed" id="add-model-toggle">▼</span>
-  </div>
-  <div class="gains-content expanded" id="add-model-content">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-      <div>
-        <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">IA:</label>
-        <select id="addModelAI" class="btn-generic" style="width: 100%; text-align: left;" onchange="updateAddModelModels()">
-          <option value="openai">OpenAI / ChatGPT</option>
-          <option value="claude">Claude / Anthropic</option>
-          <option value="mistral">Mistral AI</option>
-          <option value="gemini">Gemini (Google)</option>
-          <option value="perplexity">Perplexity</option>
-          <option value="deepseek">DeepSeek</option>
-        </select>
-      </div>
-      <div>
-        <label style="display: block; margin-bottom: 5px; color: #ecf0f1;">Modèle à entraîner:</label>
-        <select id="addModelModel" class="btn-generic" style="width: 100%; text-align: left;">
-          <!-- Les options seront remplies dynamiquement -->
-        </select>
-      </div>
-    </div>
-    <div style="margin-top: 15px; display: flex; gap: 10px;">
-      <button onclick="addModel()" class="btn-generic" style="flex: 1;">
-        Ajouter
-      </button>
-      <button onclick="removeModel()" class="btn-generic" style="flex: 1;">
-        Retirer
-      </button>
-    </div>
   </div>
 </div>
 
