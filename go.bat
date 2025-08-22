@@ -2,7 +2,7 @@
 setlocal
 
 echo ==========================================
-echo FDJ - VERSION V0.003B-CSV-IMPORT-PAGINATION
+echo FDJ - VERSION V0.004A
 echo SERVEUR BACKEND + FRONTEND LOCALHOST
 echo ==========================================
 
@@ -73,7 +73,7 @@ echo - Un navigateur devrait s'ouvrir automatiquement (Chrome > Firefox > Edge)
 echo - Si probleme connexion Microsoft: utilisez Chrome ou Firefox
 echo - Sinon ouvrez manuellement: http://localhost:3010
 echo - Pour arreter: fermez les fenetres "BACKEND" et "SERVEUR"
-echo 🔧 VERSION V0.003B-CSV-IMPORT-PAGINATION CARACTERISTIQUES:
+echo 🔧 VERSION V0.004A CARACTERISTIQUES:
 echo - Backend SQLite file-based partage
 echo - API REST complete avec CORS
 echo - Base de donnees persistante SQLite
@@ -93,6 +93,12 @@ echo - CSS ENTIEREMENT EXTERNE - 100%% bible.md conforme
 echo - Architecture CSS modulaire complete
 echo - Index.html totalement nettoye (ZERO CSS inline)
 echo - Conforme bible.md regles 3, 7 et 8
+echo - TRAINING DES MODELES IA avec sections collapsibles
+echo - Sous-section "Ajouter une modele" implementee
+echo - Systeme dynamique ajout/suppression modeles
+echo - LEDs et fleches bleues sur sections pliables
+echo - Tableau "Entrainement / Modeles de donnees" sous wizard
+echo - Actions Ajouter/Retirer modeles avec persistance
 echo ==========================================
 
 cd /d "%~dp0"

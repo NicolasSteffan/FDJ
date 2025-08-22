@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Barre de Progression Intégrée</title>
+    
+    <!-- Styles CSS -->
+    <link rel="stylesheet" href="./led-components.css">
+    <link rel="stylesheet" href="./switch-components.css">
+    <link rel="stylesheet" href="./homepage-components.css">
+    <link rel="stylesheet" href="./lottery-components.css">
+    <link rel="stylesheet" href="./tirage-components.css">
+    <link rel="stylesheet" href="./tables-components.css">
+    
+    <!-- Routeur -->
+    <script src="js/router.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-info {
+            background: #2a2a2a;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .test-button {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #2ecc71;
+        }
+        .section {
+            background: #2a2a2a;
+            border-radius: 8px;
+            margin: 20px 0;
+            padding: 20px;
+        }
+        .section.hidden {
+            display: none;
+        }
+        .result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { background: #27ae60; }
+        .error { background: #e74c3c; }
+        .warning { background: #f39c12; }
+        .info { background: #3498db; }
+        
+        /* Style pour simuler les boutons du wizard */
+        .demo-wizard {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .demo-button {
+            padding: 12px;
+            font-size: 14px;
+            position: relative;
+            text-align: left;
+            overflow: hidden;
+            background: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .demo-button:hover {
+            background: #8e44ad;
+        }
+        
+        .demo-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            transition: width 0.3s ease;
+            z-index: 1;
+        }
+        
+        .demo-text {
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-info">
+            <h1>🧪 Test - Barre de Progression Intégrée</h1>
+            <p><strong>Objectif :</strong> Tester la barre de progression intégrée dans le bouton "Étape 1"</p>
+            <ul>
+                <li>✅ Bouton à la même taille que les autres</li>
+                <li>✅ Barre de progression à l'intérieur du bouton</li>
+                <li>✅ Animation fluide de 0% à 100%</li>
+                <li>✅ Reset fonctionnel</li>
+            </ul>
+        </div>
+        
+        <div class="test-info">
+            <h2>🎯 Démo visuelle</h2>
+            <p>Voici comment les boutons apparaissent maintenant :</p>
+            
+            <div class="demo-wizard">
+                <button class="demo-button" onclick="testProgress(this)">
+                    <span class="demo-text"><strong>Étape 1:</strong> Entraînement du modèle</span>
+                    <div class="demo-progress" id="demo-progress"></div>
+                </button>
+                <button class="demo-button">
+                    <span class="demo-text"><strong>Étape 2:</strong> Configuration du modèle</span>
+                </button>
+                <button class="demo-button">
+                    <span class="demo-text"><strong>Étape 3:</strong> Entraînement initial</span>
+                </button>
+            </div>
+            
+            <button class="test-button" onclick="resetDemo()">Reset Démo</button>
+        </div>
+        
+        <div class="test-info">
+            <h2>🔧 Tests disponibles</h2>
+            <button class="test-button" onclick="testRealButton()">Test Bouton Réel</button>
+            <button class="test-button" onclick="testButtonSizes()">Test Tailles Boutons</button>
+            <button class="test-button" onclick="testProgressAnimation()">Test Animation</button>
+            <button class="test-button" onclick="showTrainingPage()">Afficher Page Training</button>
+        </div>
+        
+        <!-- Section Training pour le test -->
+        <section id="training" class="section hidden">
+            <!-- Le contenu sera chargé dynamiquement depuis pages/training.html -->
+        </section>
+        
+        <div id="test-results" style="margin-top: 20px;">
+            <h2>📊 Résultats des tests</h2>
+            <div id="results-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const resultsContainer = document.getElementById('results-container');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            
+            resultsContainer.appendChild(div);
+            resultsContainer.scrollTop = resultsContainer.scrollHeight;
+        }
+        
+        function testProgress(button) {
+            const progress = button.querySelector('.demo-progress');
+            if (progress) {
+                let width = 0;
+                const interval = setInterval(() => {
+                    width += 10;
+                    progress.style.width = `${width}%`;
+                    
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        addResult('✅ Démo progression terminée', 'success');
+                    }
+                }, 200);
+                
+                addResult('🚀 Démo progression démarrée', 'info');
+            }
+        }
+        
+        function resetDemo() {
+            const progress = document.getElementById('demo-progress');
+            if (progress) {
+                progress.style.width = '0%';
+                addResult('🔄 Démo remise à zéro', 'warning');
+            }
+        }
+        
+        function testRealButton() {
+            addResult('🔄 Test du bouton réel...', 'info');
+            
+            // Charger la page training d'abord
+            showSection('training');
+            
+            setTimeout(() => {
+                // Chercher le bouton Étape 1 réel
+                const step1Button = document.querySelector('button[onclick="wizardStep(1)"]');
+                if (step1Button) {
+                    addResult('✅ Bouton Étape 1 trouvé', 'success');
+                    
+                    // Vérifier la structure
+                    const progressBar = step1Button.querySelector('#step1-progress');
+                    if (progressBar) {
+                        addResult('✅ Barre de progression intégrée trouvée', 'success');
+                        
+                        // Tester l'animation
+                        step1Button.click();
+                        addResult('🚀 Animation déclenchée', 'info');
+                    } else {
+                        addResult('❌ Barre de progression non trouvée dans le bouton', 'error');
+                    }
+                } else {
+                    addResult('❌ Bouton Étape 1 non trouvé', 'error');
+                }
+            }, 2000);
+        }
+        
+        function testButtonSizes() {
+            addResult('🔄 Test des tailles de boutons...', 'info');
+            
+            setTimeout(() => {
+                const wizardButtons = document.querySelectorAll('button[onclick^="wizardStep"]');
+                if (wizardButtons.length > 0) {
+                    const heights = Array.from(wizardButtons).map(btn => btn.offsetHeight);
+                    const widths = Array.from(wizardButtons).map(btn => btn.offsetWidth);
+                    
+                    addResult(`📏 Hauteurs des boutons: ${heights.join(', ')}px`, 'info');
+                    
+                    // Vérifier si toutes les hauteurs sont identiques
+                    const sameHeight = heights.every(h => h === heights[0]);
+                    if (sameHeight) {
+                        addResult('✅ Tous les boutons ont la même hauteur', 'success');
+                    } else {
+                        addResult('⚠️ Les boutons ont des hauteurs différentes', 'warning');
+                    }
+                } else {
+                    addResult('❌ Boutons wizard non trouvés', 'error');
+                }
+            }, 2000);
+        }
+        
+        function testProgressAnimation() {
+            addResult('🔄 Test de l\'animation de progression...', 'info');
+            
+            setTimeout(() => {
+                const progressBar = document.getElementById('step1-progress');
+                if (progressBar) {
+                    // Tester l'animation manuellement
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        width += 20;
+                        progressBar.style.width = `${width}%`;
+                        addResult(`📊 Progression: ${width}%`, 'info');
+                        
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            addResult('✅ Animation de test terminée', 'success');
+                            
+                            // Reset après 2 secondes
+                            setTimeout(() => {
+                                progressBar.style.width = '0%';
+                                addResult('🔄 Progression remise à zéro', 'warning');
+                            }, 2000);
+                        }
+                    }, 300);
+                } else {
+                    addResult('❌ Barre de progression non trouvée', 'error');
+                }
+            }, 2000);
+        }
+        
+        function showTrainingPage() {
+            addResult('🔄 Affichage de la page training...', 'info');
+            
+            const trainingSection = document.getElementById('training');
+            if (trainingSection) {
+                trainingSection.classList.remove('hidden');
+                addResult('✅ Section training affichée', 'success');
+                
+                // Déclencher le chargement si le routeur est disponible
+                if (typeof router !== 'undefined') {
+                    router.navigateTo('training');
+                }
+            } else {
+                addResult('❌ Section training non trouvée', 'error');
+            }
+        }
+        
+        // Log d'initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('🎯 Test barre de progression intégrée initialisé', 'success');
+            addResult('📋 Cliquez sur "Étape 1" dans la démo pour voir l\'animation', 'info');
+        });
+    </script>
+</body>
+</html>

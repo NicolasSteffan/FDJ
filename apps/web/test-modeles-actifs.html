@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Modèles Actifs</title>
+    
+    <!-- Styles CSS -->
+    <link rel="stylesheet" href="./led-components.css">
+    <link rel="stylesheet" href="./switch-components.css">
+    <link rel="stylesheet" href="./homepage-components.css">
+    <link rel="stylesheet" href="./lottery-components.css">
+    <link rel="stylesheet" href="./tirage-components.css">
+    <link rel="stylesheet" href="./tables-components.css">
+    
+    <!-- Routeur -->
+    <script src="js/router.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-info {
+            background: #2a2a2a;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .test-button {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #2ecc71;
+        }
+        .section {
+            background: #2a2a2a;
+            border-radius: 8px;
+            margin: 20px 0;
+            padding: 20px;
+        }
+        .section.hidden {
+            display: none;
+        }
+        .result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { background: #27ae60; }
+        .error { background: #e74c3c; }
+        .warning { background: #f39c12; }
+        .info { background: #3498db; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-info">
+            <h1>🧪 Test - Modèles Actifs et Fonctionnalités</h1>
+            <p><strong>Objectif :</strong> Tester les nouvelles fonctionnalités de gestion des modèles actifs</p>
+            <ul>
+                <li>✅ ChatGPT-4o et ChatGPT-4 par défaut</li>
+                <li>✅ Mémorisation des modèles ajoutés</li>
+                <li>✅ Limitation aux modèles actifs seulement</li>
+                <li>✅ Barre de progression Étape 1</li>
+                <li>✅ Renommage "Étape 1: Entraînement du modèle"</li>
+            </ul>
+        </div>
+        
+        <div class="test-info">
+            <h2>🎯 Tests disponibles</h2>
+            <button class="test-button" onclick="testDefaultModels()">Test Modèles par Défaut</button>
+            <button class="test-button" onclick="testAddModel()">Test Ajout Modèle</button>
+            <button class="test-button" onclick="testActiveModelsOnly()">Test Modèles Actifs Seulement</button>
+            <button class="test-button" onclick="testProgressBar()">Test Barre de Progression</button>
+            <button class="test-button" onclick="showTrainingPage()">Afficher Page Training</button>
+        </div>
+        
+        <!-- Section Training pour le test -->
+        <section id="training" class="section hidden">
+            <!-- Le contenu sera chargé dynamiquement depuis pages/training.html -->
+        </section>
+        
+        <div id="test-results" style="margin-top: 20px;">
+            <h2>📊 Résultats des tests</h2>
+            <div id="results-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const resultsContainer = document.getElementById('results-container');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            
+            resultsContainer.appendChild(div);
+            resultsContainer.scrollTop = resultsContainer.scrollHeight;
+        }
+        
+        function testDefaultModels() {
+            addResult('🔄 Test des modèles par défaut...', 'info');
+            
+            // Charger la page training d'abord
+            showSection('training');
+            
+            setTimeout(() => {
+                // Vérifier les dropdowns
+                const trainingAI = document.getElementById('trainingAI');
+                const addModelAI = document.getElementById('addModelAI');
+                
+                if (trainingAI && trainingAI.value === 'openai') {
+                    addResult('✅ IA par défaut: OpenAI sélectionné', 'success');
+                } else {
+                    addResult('❌ IA par défaut non sélectionné', 'error');
+                }
+                
+                // Vérifier les modèles disponibles
+                const trainingModel = document.getElementById('trainingModel');
+                if (trainingModel) {
+                    const options = Array.from(trainingModel.options).map(opt => opt.textContent);
+                    if (options.includes('ChatGPT-4o') && options.includes('ChatGPT-4')) {
+                        addResult('✅ Modèles par défaut trouvés: ChatGPT-4o, ChatGPT-4', 'success');
+                    } else {
+                        addResult(`⚠️ Modèles trouvés: ${options.join(', ')}`, 'warning');
+                    }
+                }
+            }, 2000);
+        }
+        
+        function testAddModel() {
+            addResult('🔄 Test ajout de modèle...', 'info');
+            
+            setTimeout(() => {
+                // Simuler l'ajout d'un modèle Claude
+                const addModelAI = document.getElementById('addModelAI');
+                const addModelModel = document.getElementById('addModelModel');
+                
+                if (addModelAI && addModelModel) {
+                    addModelAI.value = 'claude';
+                    
+                    // Déclencher la mise à jour des modèles
+                    if (typeof updateAddModelModels === 'function') {
+                        updateAddModelModels();
+                        
+                        setTimeout(() => {
+                            if (addModelModel.options.length > 0) {
+                                addModelModel.selectedIndex = 0;
+                                
+                                // Simuler l'ajout
+                                if (typeof addModel === 'function') {
+                                    addModel();
+                                    addResult('✅ Modèle Claude ajouté avec succès', 'success');
+                                } else {
+                                    addResult('❌ Fonction addModel non disponible', 'error');
+                                }
+                            }
+                        }, 500);
+                    }
+                } else {
+                    addResult('❌ Éléments de sélection non trouvés', 'error');
+                }
+            }, 1000);
+        }
+        
+        function testActiveModelsOnly() {
+            addResult('🔄 Test limitation aux modèles actifs...', 'info');
+            
+            setTimeout(() => {
+                const trainingModel = document.getElementById('trainingModel');
+                if (trainingModel) {
+                    const modelCount = trainingModel.options.length;
+                    addResult(`📊 Nombre de modèles dans la liste: ${modelCount}`, 'info');
+                    
+                    // Vérifier que seuls les modèles actifs sont présents
+                    const modelNames = Array.from(trainingModel.options).map(opt => opt.textContent);
+                    addResult(`📋 Modèles disponibles: ${modelNames.join(', ')}`, 'info');
+                    
+                    if (modelNames.every(name => name.includes('ChatGPT') || name.includes('Claude'))) {
+                        addResult('✅ Seuls les modèles actifs sont affichés', 'success');
+                    } else {
+                        addResult('⚠️ Des modèles non-actifs pourraient être présents', 'warning');
+                    }
+                }
+            }, 1500);
+        }
+        
+        function testProgressBar() {
+            addResult('🔄 Test de la barre de progression...', 'info');
+            
+            setTimeout(() => {
+                // Chercher le bouton Étape 1
+                const step1Button = document.querySelector('button[onclick="wizardStep(1)"]');
+                if (step1Button) {
+                    const buttonText = step1Button.textContent;
+                    if (buttonText.includes('Entraînement du modèle')) {
+                        addResult('✅ Bouton renommé: "Étape 1: Entraînement du modèle"', 'success');
+                    } else {
+                        addResult(`⚠️ Texte du bouton: ${buttonText}`, 'warning');
+                    }
+                    
+                    // Vérifier la présence de la barre de progression
+                    const progressBar = document.getElementById('step1-progress');
+                    if (progressBar) {
+                        addResult('✅ Barre de progression trouvée', 'success');
+                        
+                        // Tester la barre de progression
+                        step1Button.click();
+                        addResult('🚀 Barre de progression activée', 'info');
+                    } else {
+                        addResult('❌ Barre de progression non trouvée', 'error');
+                    }
+                } else {
+                    addResult('❌ Bouton Étape 1 non trouvé', 'error');
+                }
+            }, 2000);
+        }
+        
+        function showTrainingPage() {
+            addResult('🔄 Affichage de la page training...', 'info');
+            
+            const trainingSection = document.getElementById('training');
+            if (trainingSection) {
+                trainingSection.classList.remove('hidden');
+                addResult('✅ Section training affichée', 'success');
+                
+                // Déclencher le chargement si le routeur est disponible
+                if (typeof router !== 'undefined') {
+                    router.navigateTo('training');
+                }
+            } else {
+                addResult('❌ Section training non trouvée', 'error');
+            }
+        }
+        
+        // Log d'initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('🎯 Test modèles actifs initialisé', 'success');
+            addResult('📋 Cliquez sur les boutons pour tester les fonctionnalités', 'info');
+        });
+    </script>
+</body>
+</html>

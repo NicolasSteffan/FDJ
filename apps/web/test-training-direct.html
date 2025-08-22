@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Training Direct</title>
+    
+    <!-- Styles CSS -->
+    <link rel="stylesheet" href="./led-components.css">
+    <link rel="stylesheet" href="./switch-components.css">
+    <link rel="stylesheet" href="./homepage-components.css">
+    <link rel="stylesheet" href="./lottery-components.css">
+    <link rel="stylesheet" href="./tirage-components.css">
+    <link rel="stylesheet" href="./tables-components.css">
+    
+    <!-- Routeur -->
+    <script src="js/router.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-button {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #2ecc71;
+        }
+        .section {
+            background: #2a2a2a;
+            border-radius: 8px;
+            margin: 20px 0;
+            padding: 20px;
+        }
+        .section.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test Training Direct</h1>
+        <p>Test du chargement automatique de la vraie page training</p>
+        
+        <button class="test-button" onclick="showSection('training')">Charger Training</button>
+        <button class="test-button" onclick="testDirectAccess()">Test Accès Direct</button>
+        
+        <!-- Section Training -->
+        <section id="training" class="section hidden">
+            <!-- Le contenu sera chargé dynamiquement depuis pages/training.html -->
+        </section>
+        
+        <div id="log" style="margin-top: 20px; font-family: monospace; font-size: 12px;"></div>
+    </div>
+
+    <script>
+        const logDiv = document.getElementById('log');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function testDirectAccess() {
+            log('🔄 Test accès direct à la page training...');
+            
+            // Simuler un clic sur le menu
+            showSection('training');
+            
+            // Vérifier après un délai
+            setTimeout(() => {
+                const trainingSection = document.getElementById('training');
+                if (trainingSection && !trainingSection.classList.contains('hidden')) {
+                    const content = trainingSection.innerHTML;
+                    if (content.includes('Training des Modèles IA')) {
+                        log('✅ Page training chargée avec succès !');
+                    } else {
+                        log('⚠️ Page training visible mais contenu non chargé');
+                        log(`Contenu actuel: ${content.substring(0, 100)}...`);
+                    }
+                } else {
+                    log('❌ Section training non visible');
+                }
+            }, 2000);
+        }
+        
+        // Log d'initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🎯 Test training direct initialisé');
+        });
+    </script>
+</body>
+</html>

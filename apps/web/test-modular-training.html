@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Page Training Modulaire</title>
+    
+    <!-- Styles CSS -->
+    <link rel="stylesheet" href="./led-components.css">
+    <link rel="stylesheet" href="./switch-components.css">
+    <link rel="stylesheet" href="./homepage-components.css">
+    <link rel="stylesheet" href="./lottery-components.css">
+    <link rel="stylesheet" href="./tirage-components.css">
+    <link rel="stylesheet" href="./tables-components.css">
+    
+    <!-- Routeur -->
+    <script src="js/router.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-info {
+            background: #2a2a2a;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .test-button {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #2ecc71;
+        }
+        .section {
+            background: #2a2a2a;
+            border-radius: 8px;
+            margin: 20px 0;
+            padding: 20px;
+        }
+        .section.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-info">
+            <h1>🧪 Test - Page Training Modulaire</h1>
+            <p><strong>Objectif :</strong> Tester le chargement dynamique de la page Training depuis pages/training.html</p>
+            <p><strong>Version :</strong> V0.004A avec système modulaire</p>
+        </div>
+        
+        <div class="test-info">
+            <h2>🎯 Tests disponibles</h2>
+            <button class="test-button" onclick="testDirectLoad()">Test Chargement Direct</button>
+            <button class="test-button" onclick="testRouterNavigation()">Test Navigation Routeur</button>
+            <button class="test-button" onclick="testTrainingFunctions()">Test Fonctions Training</button>
+            <button class="test-button" onclick="showTrainingPage()">Afficher Page Training</button>
+        </div>
+        
+        <!-- Section Training pour le test -->
+        <section id="training" class="section hidden">
+            <div style="text-align: center; padding: 50px; color: #888;">
+                <h2>🔄 Chargement de la page Training...</h2>
+                <p>Le contenu sera chargé dynamiquement depuis pages/training.html</p>
+            </div>
+        </section>
+        
+        <div id="test-results" style="margin-top: 20px;">
+            <h2>📊 Résultats des tests</h2>
+            <div id="results-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const resultsContainer = document.getElementById('results-container');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.style.padding = '10px';
+            div.style.margin = '5px 0';
+            div.style.borderRadius = '4px';
+            div.style.fontFamily = 'monospace';
+            div.style.fontSize = '12px';
+            
+            const colors = {
+                success: '#27ae60',
+                error: '#e74c3c',
+                warning: '#f39c12',
+                info: '#3498db'
+            };
+            
+            div.style.backgroundColor = colors[type] || colors.info;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            
+            resultsContainer.appendChild(div);
+            resultsContainer.scrollTop = resultsContainer.scrollHeight;
+        }
+        
+        async function testDirectLoad() {
+            addResult('🔄 Test chargement direct de pages/training.html...', 'info');
+            
+            try {
+                const response = await fetch('pages/training.html');
+                if (response.ok) {
+                    const content = await response.text();
+                    addResult(`✅ Fichier chargé (${content.length} caractères)`, 'success');
+                    
+                    // Vérifier le contenu
+                    if (content.includes('Training des Modèles IA')) {
+                        addResult('✅ Titre principal trouvé', 'success');
+                    }
+                    
+                    if (content.includes('Ajouter une modèle')) {
+                        addResult('✅ Section "Ajouter une modèle" trouvée', 'success');
+                    }
+                    
+                    if (content.includes('Configuration du Training')) {
+                        addResult('✅ Section "Configuration du Training" trouvée', 'success');
+                    }
+                    
+                    if (content.includes('gains-section')) {
+                        addResult('✅ Sections pliables détectées', 'success');
+                    }
+                    
+                } else {
+                    addResult(`❌ Erreur ${response.status}: ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Erreur: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testRouterNavigation() {
+            addResult('🔄 Test navigation via routeur...', 'info');
+            
+            try {
+                if (typeof router !== 'undefined') {
+                    addResult('✅ Routeur disponible', 'success');
+                    
+                    // Tester la navigation
+                    await router.navigateTo('training');
+                    addResult('✅ Navigation vers training exécutée', 'success');
+                    
+                    // Vérifier si le contenu a été chargé
+                    setTimeout(() => {
+                        const trainingSection = document.getElementById('training');
+                        if (trainingSection && trainingSection.innerHTML.includes('Training des Modèles IA')) {
+                            addResult('✅ Contenu training chargé dans la section', 'success');
+                        } else {
+                            addResult('⚠️ Contenu training non détecté', 'warning');
+                        }
+                    }, 1000);
+                    
+                } else {
+                    addResult('❌ Routeur non disponible', 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Erreur navigation: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testTrainingFunctions() {
+            addResult('🔄 Test des fonctions training...', 'info');
+            
+            // Charger d'abord le script training
+            try {
+                await loadScript('js/training.js');
+                addResult('✅ Script training.js chargé', 'success');
+                
+                // Tester quelques fonctions
+                if (typeof updateTrainingModels === 'function') {
+                    addResult('✅ Fonction updateTrainingModels disponible', 'success');
+                }
+                
+                if (typeof addModel === 'function') {
+                    addResult('✅ Fonction addModel disponible', 'success');
+                }
+                
+                if (typeof toggleTrainingSection === 'function') {
+                    addResult('✅ Fonction toggleTrainingSection disponible', 'success');
+                }
+                
+            } catch (error) {
+                addResult(`❌ Erreur chargement script: ${error.message}`, 'error');
+            }
+        }
+        
+        function showTrainingPage() {
+            addResult('🔄 Affichage de la page training...', 'info');
+            
+            const trainingSection = document.getElementById('training');
+            if (trainingSection) {
+                trainingSection.classList.remove('hidden');
+                addResult('✅ Section training affichée', 'success');
+                
+                // Déclencher le chargement si le routeur est disponible
+                if (typeof router !== 'undefined') {
+                    router.navigateTo('training');
+                }
+            } else {
+                addResult('❌ Section training non trouvée', 'error');
+            }
+        }
+        
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            addResult('🎯 Test modulaire training initialisé', 'success');
+            addResult('📋 Cliquez sur les boutons pour tester les fonctionnalités', 'info');
+        });
+    </script>
+</body>
+</html>
